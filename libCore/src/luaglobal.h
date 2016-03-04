@@ -7,13 +7,13 @@ public:
 	LUA_EXPORT(LuaGlobal)
 
 	//export function
-	static int TableToStr(lua_State* L);
-	static int Log(lua_State* L);
-	static int Info(lua_State* L);
-	static int Error(lua_State* L);
-	static int GetServerID(lua_State* L);
-	static int GetConfig(lua_State* L);
-	static int GetMTime(lua_State* L);
-	static int StopServer(lua_State* L);
-	static int GetHashCode(lua_State* L);
+	static int C_TableToStr(lua_State* L);
+	static int C_Log(lua_State* L);
+	static int C_Info(lua_State* L);
+	static int C_Error(lua_State* L);
+	static int C_GetServerID(lua_State* L);
+	static int C_GetConfig(lua_State* L);
+	static int C_GetMTime(lua_State* L);
+	static int C_StopServer(lua_State* L);
+	static int C_GetHashCode(lua_State* L);
 };

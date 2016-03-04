@@ -10,8 +10,8 @@ function hiredis_init()
 	gsRedisIp = C_GetConfig("redis_ip")
 	giRedisPort = tonumber(C_GetConfig("redis_port"))
 
-	C_Info("gsRedisIp = " .. gsRedisIp)
-	C_Info("giRedisPort = " .. giRedisPort)
+	CLogInfo("gsRedisIp = " .. gsRedisIp)
+	CLogInfo("giRedisPort = " .. giRedisPort)
 	hiredis_connect()
 end
 
@@ -30,7 +30,7 @@ function hiredis_connect()
 		C_Error("==========hiredis_connect failed:%s", conn)
 	elseif type(conn) == "userdata" then
 		--print_r(conn)
-		C_Info("==========hiredis_connect success================")
+		CLogInfo("==========hiredis_connect success================")
 		guRedisConn = conn
 		--hiredis_close()
 		print(hiredis_command("PING"))
@@ -46,7 +46,7 @@ function hiredis_close()
 		return
 	end
 	guRedisConn:close()
-	C_Info("hiredis_close success")
+	CLogInfo("hiredis_close success")
 end
 
 --执行redis命令
@@ -56,7 +56,7 @@ function hiredis_command(...)
 		return
 	end
 	local nret = guRedisConn:command(...)
-	C_Info("hiredis_command success nret = ")
+	CLogInfo("hiredis_command success nret = ")
 	--print(nret)
 	return nret
 end

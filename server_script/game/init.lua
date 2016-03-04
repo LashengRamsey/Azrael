@@ -8,15 +8,6 @@ C_Bit = Bit						--位操作
 
 C_Connection = Connection 		--连接
 --C++层类函数
-C_TableToStr = TableToStr 		--表转换成字符串
-C_Log = Log 					--日志
-C_Info = Info 					--日志
-C_Error = Error 				--日志
-C_GetServerID = GetServerID 	--服务器ID
-C_GetConfig = GetConfig 		--日志
-C_GetMTime = GetMTime 			--时间
-C_StopServer = StopServer 		--进程停止
-C_GetHashCode = GetHashCode 	--hash值
 
 
 --启动服务器C层入口
@@ -50,9 +41,9 @@ function init()
 	print("======init===============")
 	G_ServerId = C_GetServerID()
 	print("G_ServerId = " .. G_ServerId)
-
+	CLogInfo("CLogInfo:CLogInfo CLogInfo CLogInfo = %d sadfsa %d sdfs %s sdf %d", 1, 1 , "1231",4)
 	--timer.CallLater(Net.TestSendPacket, 1000)
-	Connect_test()
+	--Connect_test()
 end
 
 
