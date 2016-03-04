@@ -13,15 +13,15 @@ LUA_IMPLE(LuaGlobal, LuaGlobal);
 LUA_METD(LuaGlobal)
 LUA_METD_END
 LUA_FUNC(LuaGlobal)
-L_METHOD(LuaGlobal, TableToStr)
-L_METHOD(LuaGlobal, Log)
-L_METHOD(LuaGlobal, Info)
-L_METHOD(LuaGlobal, Error)
-L_METHOD(LuaGlobal, GetServerID)
-L_METHOD(LuaGlobal, GetConfig)
-L_METHOD(LuaGlobal, GetMTime)
-L_METHOD(LuaGlobal, StopServer)
-L_METHOD(LuaGlobal, GetHashCode)
+L_METHOD(LuaGlobal, C_TableToStr)
+L_METHOD(LuaGlobal, C_Log)
+L_METHOD(LuaGlobal, C_Info)
+L_METHOD(LuaGlobal, C_Error)
+L_METHOD(LuaGlobal, C_GetServerID)
+L_METHOD(LuaGlobal, C_GetConfig)
+L_METHOD(LuaGlobal, C_GetMTime)
+L_METHOD(LuaGlobal, C_StopServer)
+L_METHOD(LuaGlobal, C_GetHashCode)
 LUA_FUNC_END
 
 
@@ -266,40 +266,40 @@ static int DJBHash(std::string str)
 }
 
 
-int LuaGlobal::Log(lua_State* L)
+int LuaGlobal::C_Log(lua_State* L)
 {
 	const char *str = lua_tostring(L, 1);
 	LOG("%s", str);
 	return 0;
 }
 
-int LuaGlobal::Info(lua_State* L)
+int LuaGlobal::C_Info(lua_State* L)
 {
 	const char *str = lua_tostring(L, 1);
 	INFO("%s", str);
 	return 0;
 }
 
-int LuaGlobal::Error(lua_State* L)
+int LuaGlobal::C_Error(lua_State* L)
 {
 	const char *str = lua_tostring(L, 1);
 	ERROR("%s", str);
 	return 0;
 }
 
-int LuaGlobal::GetServerID(lua_State* L)
+int LuaGlobal::C_GetServerID(lua_State* L)
 {
 	return Lua::returnValue(L, "i", ServerApp::get()->getServerID());
 }
 
-int LuaGlobal::GetConfig(lua_State* L)
+int LuaGlobal::C_GetConfig(lua_State* L)
 {
 	char *key;
 	Lua::argParse(L, "s", &key);
 	return Lua::returnValue(L, "s", Config::GetValue(key));
 }
 
-int LuaGlobal::TableToStr(lua_State* L)
+int LuaGlobal::C_TableToStr(lua_State* L)
 {
 	int n = lua_gettop(L);
 	if (!n || n>2)
@@ -326,19 +326,19 @@ int LuaGlobal::TableToStr(lua_State* L)
 	return 1;
 }
 
-int LuaGlobal::GetMTime(lua_State* L)
+int LuaGlobal::C_GetMTime(lua_State* L)
 {
 	lua_pushnumber(L, timer_get_time());
 	return 1;
 }
 
-int LuaGlobal::StopServer(lua_State* L)
+int LuaGlobal::C_StopServer(lua_State* L)
 {
 	ServerApp::get()->stop();
 	return 0;
 }
 
-int LuaGlobal::GetHashCode(lua_State* L)
+int LuaGlobal::C_GetHashCode(lua_State* L)
 {
 	int code = 0;
 	if (lua_type(L, 1) == LUA_TSTRING)

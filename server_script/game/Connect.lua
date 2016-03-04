@@ -20,19 +20,19 @@ end
 function Connect:Connect(ip, port, notify, timeout, raw)
 	self.guConn = self:newConn()
 	giConnFd = self.guConn:c_connect(ip, port, notify, timeout, raw)
-	C_Info("Connect:Connect success giConnFd = %d", giConnFd)
+	CLogInfo("Connect:Connect success giConnFd = %d", giConnFd)
 
 end
 
 --底层调用
 function Connect:onConnect(Conn)
-	C_Info("===Connect:onConnect=====")
+	CLogInfo("===Connect:onConnect=====")
 	guConn = Conn
 	print(guConn)
 end
 
 function onConnect(Conn)
-	C_Info("===onConnect=====")
+	CLogInfo("===onConnect=====")
 	guConn = Conn
 	print(guConn)
 end
