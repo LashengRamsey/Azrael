@@ -10,6 +10,9 @@ function Connect:new(o)
 	o = o or {}
 	setmetatable(o, self)
 	self.__index = self
+
+	self.iConnFd = 0
+	self.uConn = nil
 	return o
 end
 
@@ -18,49 +21,80 @@ function Connect:newConn()
 end
 
 function Connect:Connect(ip, port, notify, timeout, raw)
-	self.guConn = self:newConn()
-	giConnFd = self.guConn:c_connect(ip, port, notify, timeout, raw)
-	CLogInfo("Connect:Connect success giConnFd = %d", giConnFd)
+	self.uConn = self:newConn()
+	self.iConnFd = self.uConn:c_Connect(ip, port, notify, timeout, raw)
+	print(" Connect:Connect self.iConnFd = " .. self.iConnFd)
+	CLogInfo("Connect:Connect success self.iConnFd = %d", self.iConnFd)
 
 end
 
---底层调用
-function Connect:onConnect(Conn)
-	CLogInfo("===Connect:onConnect=====")
-	guConn = Conn
-	print(guConn)
+--连接上，底层调用
+function Connect:onLuaConnect()
+	-- for i = 1, select('#', ...) do
+	-- 	print("==Connect====onConnect============")
+ --        local arg = select(i, ...)
+ --       	print("arg", arg)
+ --    end  
+	 CLogInfo("===Connect:onConnect=====")
+	-- print(self.uConn)
+	--print(" Connect:onLuaConnect self.iConnFd = " .. self.iConnFd)
 end
 
-function onConnect(Conn)
-	CLogInfo("===onConnect=====")
-	guConn = Conn
-	print(guConn)
-end
-
-function Write()
-
-end
-
-function Close()
+function Connect:Write()
 
 end
 
-function IsConnect()
-
+function Connect:Close()
+	if self.uConn then
+		self.uConn:c_Close()
+	end
 end
 
-function RawWrirte()
-
+function Connect:onLuaClose(conn)
+	print(conn)
+	--self.iConnFd = 0
+	--self.uConn = nil
+	--print(" Connect:onLuaClose self.iConnFd = " .. self.iConnFd)
 end
 
+
+function Connect:IsConnect()
+	if not self.uConn then
+		return
+	end
+	return self.uConn:c_IsConnect()
+end
+
+function Connect:RawWrirte(str)
+	if not self.uConn then
+		return false
+	end
+
+	self.uConn:c_RawWrirte(str)
+end
+
+
+function Connect:onLuaMsg(fid, data, startPos, endPos)
+	print("=========Connect:onLuaMsg=========")
+end
+
+function Connect:onLuaRawMsg(fid, data, startPos, endPos)
+	print("=======onnect:onLuaRawMsg======")
+end
 
 local testConn = nil
 function Connect_test()
 	print_r(C_Connection)
-	--print(C_Connection.c_connect)
 	testConn = Connect:new()
 	if G_ServerId == 1 then
-		testConn:Connect("127.0.0.1", 7801, {Connect}, 0, false)
+		local notify = 
+		{
+			onLuaConnect = Connect.onLuaConnect,
+			onLuaClose = Connect.onLuaClose,
+			onLuaMsg = Connect.onLuaMsg,
+			onLuaRawMsg = Connect.onLuaRawMsg
+		}
+		testConn:Connect("127.0.0.1", 7801, notify, 100, false)
 	end
 end
 

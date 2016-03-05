@@ -9,19 +9,19 @@ public:
 	LUA_EXPORT(Bit)
 
 	//export function
-	static int bnot(lua_State* L);
-	static int band(lua_State* L);
-	static int band64(lua_State* L);
-	static int bor(lua_State* L);
-	static int bor64(lua_State* L);
-	static int bxor(lua_State* L);
-	static int blsh(lua_State* L);
-	static int blsh64(lua_State* L);
-	static int brsh(lua_State* L);
-	static int brsh64(lua_State* L);
-	static int onBit(lua_State* L);
-	static int offBit(lua_State* L);
-	static int isBitOn(lua_State* L);
+	static int c_bnot(lua_State* L);
+	static int c_band(lua_State* L);
+	static int c_band64(lua_State* L);
+	static int c_bor(lua_State* L);
+	static int c_bor64(lua_State* L);
+	static int c_bxor(lua_State* L);
+	static int c_blsh(lua_State* L);
+	static int c_blsh64(lua_State* L);
+	static int c_brsh(lua_State* L);
+	static int c_brsh64(lua_State* L);
+	static int c_onBit(lua_State* L);
+	static int c_offBit(lua_State* L);
+	static int c_isBitOn(lua_State* L);
 };
 
 

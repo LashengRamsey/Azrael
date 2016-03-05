@@ -49,8 +49,8 @@ namespace Lua
 				break;
 			case 'l':
 				{
-					//LUA_INTEGER* i = va_arg(va, LUA_INTEGER*);
-					int64* i = va_arg(va, int64*);
+					LUA_INTEGER* i = va_arg(va, LUA_INTEGER*);
+					//int64* i = va_arg(va, int64*);
 					luaL_checktype(L, lp, LUA_TNUMBER);
 					*i = lua_tointeger(L, lp++);
 				}

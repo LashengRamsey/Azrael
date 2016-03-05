@@ -14,11 +14,11 @@ class Connection : public BevStream
 {
 public:
 	LUA_EXPORT(Connection)
-	int c_connect( lua_State* L);
-	int c_write( lua_State* L);
-	int c_close( lua_State* L);
-	int c_isConnect( lua_State* L);
-	int c_rawWrirte( lua_State* L);
+	int c_Connect( lua_State* L);
+	int c_Write( lua_State* L);
+	int c_Close( lua_State* L);
+	int c_IsConnect( lua_State* L);
+	int c_RawWrirte( lua_State* L);
 
 protected:
 	void onLuaConnect();

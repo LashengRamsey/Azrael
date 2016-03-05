@@ -20,11 +20,11 @@ static unsigned char ender = PACKET_END;
 
 LUA_IMPLE(Connection, Connection);
 LUA_METD(Connection)
-L_METHOD(Connection, c_connect)
-L_METHOD(Connection, c_write)
-L_METHOD(Connection, c_close)
-L_METHOD(Connection, c_isConnect)
-L_METHOD(Connection, c_rawWrirte)
+L_METHOD(Connection, c_Connect)
+L_METHOD(Connection, c_Write)
+L_METHOD(Connection, c_Close)
+L_METHOD(Connection, c_IsConnect)
+L_METHOD(Connection, c_RawWrirte)
 LUA_METD_END
 LUA_FUNC(Connection)
 LUA_FUNC_END
@@ -91,7 +91,7 @@ Connection::~Connection()
 	LOG("LuaConnection be freed %s", userData_.c_str());
 }
 
-int Connection::c_isConnect( lua_State* L)
+int Connection::c_IsConnect( lua_State* L)
 {
 	lua_pushboolean(L, isConnected());
 	return 1;
@@ -232,7 +232,7 @@ void Connection::sendTo(int fid, int64 eid, int key, Buf& buf)
 		<< conv_num(eid) << buf << ender;
 }
 
-int Connection::c_write( lua_State* L)
+int Connection::c_Write( lua_State* L)
 {
 	if(!bev_)
 	{
@@ -259,7 +259,7 @@ int Connection::c_write( lua_State* L)
 	return 0;
 }
 
-int Connection::c_rawWrirte( lua_State* L)
+int Connection::c_RawWrirte( lua_State* L)
 {
 	if(!bev_)
 	{
@@ -276,19 +276,21 @@ int Connection::c_rawWrirte( lua_State* L)
 	return 0;
 }
 
-int Connection::c_close( lua_State* L)
+int Connection::c_Close( lua_State* L)
 {
 	close();
 	return 0;
 }
 
-int Connection::c_connect( lua_State* L)
+int Connection::c_Connect( lua_State* L)
 {
 	char *ip;
 	int port, notify, timeout = 30;
 	Lua::argParse(L, "sit|ib", &ip, &port, &notify, &timeout, &raw_);
+	//lua_pushvalue(L,n)是取得原来栈中的第notify个元素，压到栈顶
+	//把堆栈上给定有效处索引处的元素作一个拷贝压栈
 	lua_pushvalue(L, notify);
-
+	//int i = lua_type(L, -1);
 	ref_ = luaL_ref(L, LUA_REGISTRYINDEX);
 	int ret = connect(ip, port, timeout);
 	if (ret != 0)
@@ -308,7 +310,11 @@ void Connection::onLuaConnect()
 
 	int top = lua_gettop(L);
 	lua_getref(L, ref_);
-	lua_getfield(L, -1, "onConnect");
+	int i = lua_type(L, -1);
+	//把 t[k] 值压入堆栈，这里的 t 是指有效索引 index 指向的值
+	lua_getfield(L, -1, "onLuaConnect");
+	//lua_getfield(L, -1, "xx");
+	//int i2 = lua_type(L, -1);
 	if (!lua_isfunction(L, -1))
 	{
 		lua_pop(L, 2);
@@ -329,7 +335,7 @@ void Connection::onLuaClose()
 
 	int top = lua_gettop(L);
 	lua_getref(L, ref_);
-	lua_getfield(L, -1, "onClose");
+	lua_getfield(L, -1, "onLuaClose");
 	if (!lua_isfunction(L, -1))
 	{
 		lua_pop(L, 2);
@@ -352,7 +358,7 @@ void Connection::onLuaMsg(Buf* buf)
 
 	int top = lua_gettop(L);
 	lua_getref(L, ref_);
-	lua_getfield(L, -1, "onMessage");
+	lua_getfield(L, -1, "onLuaMsg");
 	if (!lua_isfunction(L, -1))
 	{
 		lua_pop(L, 2);
@@ -376,7 +382,7 @@ void Connection::onLuaRawMsg(Buf* buf)
 
 	int top = lua_gettop(L);
 	lua_getref(L, ref_);
-	lua_getfield(L, -1, "onTextMessage");
+	lua_getfield(L, -1, "onLuaRawMsg");
 	if (!lua_isfunction(L, -1))
 	{
 		lua_pop(L, 2);
