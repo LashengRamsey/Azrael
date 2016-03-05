@@ -23,6 +23,7 @@ end
 function Connect:Connect(ip, port, notify, timeout, raw)
 	self.uConn = self:newConn()
 	self.iConnFd = self.uConn:c_Connect(ip, port, notify, timeout, raw)
+	print(self.uConn)
 	print(" Connect:Connect self.iConnFd = " .. self.iConnFd)
 	CLogInfo("Connect:Connect success self.iConnFd = %d", self.iConnFd)
 
@@ -38,6 +39,11 @@ function Connect:onLuaConnect()
 	 CLogInfo("===Connect:onConnect=====")
 	-- print(self.uConn)
 	--print(" Connect:onLuaConnect self.iConnFd = " .. self.iConnFd)
+end
+
+function onLuaConnect1(conn)
+ 	print(conn)
+	CLogInfo("===onLuaConnect1=====")
 end
 
 function Connect:Write()
@@ -89,7 +95,7 @@ function Connect_test()
 	if G_ServerId == 1 then
 		local notify = 
 		{
-			onLuaConnect = Connect.onLuaConnect,
+			onLuaConnect = onLuaConnect1,
 			onLuaClose = Connect.onLuaClose,
 			onLuaMsg = Connect.onLuaMsg,
 			onLuaRawMsg = Connect.onLuaRawMsg
