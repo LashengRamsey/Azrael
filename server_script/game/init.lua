@@ -43,7 +43,7 @@ function init()
 	print("G_ServerId = " .. G_ServerId)
 	CLogInfo("CLogInfo:CLogInfo CLogInfo CLogInfo = %d sadfsa %d sdfs %s sdf %d", 1, 1 , "1231",4)
 	--timer.CallLater(Net.TestSendPacket, 1000)
-	Connect_test()
+	Connect.Connect_test()
 end
 
 

@@ -1,9 +1,33 @@
---module("Connect", package.seeall)
+module("Connect", package.seeall)
 
 C_Connection = Connection 		--连接
 
-local giConnFd = nil
-local guConn = nil
+
+local gtConnMap = {}
+local giConnId = 0
+
+--连接上，底层调用
+function onLuaConnect(conn)
+	local oConn = gtConnMap[conn]
+	oConn:onConnect()
+end
+
+function onLuaClose(conn)
+	local oConn = gtConnMap[conn]
+	oConn:onClose()
+end
+
+function onLuaMsg(conn, fid, data, startPos, endPos)
+	local oConn = gtConnMap[conn]
+	oConn:onMsg(fid, data, startPos, endPos)
+end
+
+function onLuaRawMsg(conn, fid, data, startPos, endPos)
+	local oConn = gtConnMap[conn]
+	oConn:onRawMsg(fid, data, startPos, endPos)
+end
+
+
 
 Connect = {}
 function Connect:new(o)
@@ -16,34 +40,22 @@ function Connect:new(o)
 	return o
 end
 
-function Connect:newConn()
-	return C_Connection:new(self)
+function newConnection()
+	return C_Connection:new()
 end
 
 function Connect:Connect(ip, port, notify, timeout, raw)
-	self.uConn = self:newConn()
+	self.uConn = newConnection()
 	self.iConnFd = self.uConn:c_Connect(ip, port, notify, timeout, raw)
 	print(self.uConn)
-	print(" Connect:Connect self.iConnFd = " .. self.iConnFd)
+	print(self)
+	gtConnMap[self.uConn] = self
+
 	CLogInfo("Connect:Connect success self.iConnFd = %d", self.iConnFd)
-
 end
 
---连接上，底层调用
-function Connect:onLuaConnect()
-	-- for i = 1, select('#', ...) do
-	-- 	print("==Connect====onConnect============")
- --        local arg = select(i, ...)
- --       	print("arg", arg)
- --    end  
-	 CLogInfo("===Connect:onConnect=====")
-	-- print(self.uConn)
-	--print(" Connect:onLuaConnect self.iConnFd = " .. self.iConnFd)
-end
-
-function onLuaConnect1(conn)
- 	print(conn)
-	CLogInfo("===onLuaConnect1=====")
+function Connect:onConnect()
+	CLogInfo("=======Connect:onConnect=========")
 end
 
 function Connect:Write()
@@ -56,13 +68,10 @@ function Connect:Close()
 	end
 end
 
-function Connect:onLuaClose(conn)
-	print(conn)
-	--self.iConnFd = 0
-	--self.uConn = nil
-	--print(" Connect:onLuaClose self.iConnFd = " .. self.iConnFd)
+function Connect:onClose()
+	CLogInfo("=======Connect:onClose=========")
+	gtConnMap[self.uConn] = nil
 end
-
 
 function Connect:IsConnect()
 	if not self.uConn then
@@ -79,14 +88,14 @@ function Connect:RawWrirte(str)
 	self.uConn:c_RawWrirte(str)
 end
 
-
-function Connect:onLuaMsg(fid, data, startPos, endPos)
-	print("=========Connect:onLuaMsg=========")
+function Connect:onMsg(fid, data, startPos, endPos)
+	CLogInfo("=======Connect:onMsg=========")
 end
 
-function Connect:onLuaRawMsg(fid, data, startPos, endPos)
-	print("=======onnect:onLuaRawMsg======")
+function Connect:onRawMsg(fid, data, startPos, endPos)
+	CLogInfo("=======Connect:onRawMsg=========")
 end
+
 
 local testConn = nil
 function Connect_test()
@@ -95,12 +104,12 @@ function Connect_test()
 	if G_ServerId == 1 then
 		local notify = 
 		{
-			onLuaConnect = onLuaConnect1,
-			onLuaClose = Connect.onLuaClose,
-			onLuaMsg = Connect.onLuaMsg,
-			onLuaRawMsg = Connect.onLuaRawMsg
+			onLuaConnect = onLuaConnect,
+			onLuaClose = onLuaClose,
+			onLuaMsg = onLuaMsg,
+			onLuaRawMsg = onLuaRawMsg
 		}
-		testConn:Connect("127.0.0.1", 7801, notify, 100, false)
+		testConn:Connect("127.0.0.1", 7801, notify, 10, false)
 	end
 end
 
