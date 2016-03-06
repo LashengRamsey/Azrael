@@ -7,28 +7,30 @@ C_LuaNetWork = LuaNetwork		--网络
 C_Bit = Bit						--位操作
 
 C_Connection = Connection 		--连接
-
+--C++层类函数
 
 
 --启动服务器C层入口
 function c_main()
 	print("\n\n\n\n\n\n")
-	print("=====dbb=c_main=====1111==========")
+	print("======c_main=====1111==========")
 
 	--require "test"
-	require "db.loadRequire"
+
+	require "game.loadRequire" 
 	
+
 	print(C_Bit)
 	print(C_Bit.bnot)
 	print(C_LuaNetWork)
-	print(C_Connection)
+	
 
 	init()
 end
 
 --定时器，C层调用
 function CHandlerTimer(id)
-	print("====db =CHandlerTimer============")
+	print("=====CHandlerTimer============")
 	return timer.DoTimer(id)
 end
 
@@ -36,14 +38,12 @@ end
 G_ServerId = 0
 
 function init()
-	print("====db==init===============")
+	print("======init===============")
 	G_ServerId = C_GetServerID()
 	print("G_ServerId = " .. G_ServerId)
-
+	CLogInfo("CLogInfo:CLogInfo CLogInfo CLogInfo = %d sadfsa %d sdfs %s sdf %d", 1, 1 , "1231",4)
 	--timer.CallLater(Net.TestSendPacket, 1000)
-
-	mysql.mysql_init()
-	hiredis.hiredis_init()
+	Connect.Connect_test()
 end
 
 
@@ -52,18 +52,17 @@ function CHandlerMsg(target, sn, eid, fid, data, startPos, size)
 end
 
 
-function CHandlerConnect(sn)
-	print("=======db =CHandlerConnect=============")
-	print("sn = " .. sn)
+function CHandlerConnect()
+	print("========CHandlerConnect=============")
 end
 
 function CHandlerDisticonnect()
-	print("======db =CHandlerDisticonnect==============")	
+	print("=======CHandlerDisticonnect==============")	
 end
 
 --错误信息
 function CHandlerError(err)
-	print("======db ==CHandlerError=============")
+	print("========CHandlerError=============")
 	--print(err)
 end
 

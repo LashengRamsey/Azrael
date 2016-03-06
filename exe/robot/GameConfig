@@ -1,8 +1,8 @@
 #服务器ID
-ServerID=20
+ServerID=1
 
 #监听端口
-BindPort=7800
+BindPort=10000
 
 #与router服通信的地址
 SocketPath=tcp://127.0.0.1
@@ -13,7 +13,7 @@ Daemon=0
 #脚本启动目录,相对于执行文件目录
 ScriptDir=G:\Azrael\server_script
 #脚本启动文件
-MainScript=db/init.lua
+MainScript=game/init.lua
 #函数名
 InitFunc=c_main
 
@@ -33,14 +33,3 @@ LogPath=127.0.0.1:7840
 #进程pid写入文件
 PidFile=pid
 
-
-#mysql
-mysql_ip=127.0.0.1
-mysql_port=3306
-mysql_name=game
-mysql_user=root
-mysql_passwd=123456
-
-#redis
-redis_ip=127.0.0.1
-redis_port=6379
