@@ -318,7 +318,7 @@ void Connection::onLuaConnect()
 	if (!lua_isfunction(L, -1))
 	{
 		lua_pop(L, 2);
-		printf("Connection onLuaConnect error: not onConnect function");
+		printf("Connection onLuaConnect error: not onConnect function\n");
 		return;
 	}
 

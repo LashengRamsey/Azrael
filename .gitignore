@@ -24,7 +24,6 @@
 /exe/router/*.exe
 /exe/router/*.ilk
 /exe/router/*.pdb
-/exe/*.bat
 /game/Debug/*.tlog
 /game/Debug/*.lastbuildstate
 /game/Debug/*.log

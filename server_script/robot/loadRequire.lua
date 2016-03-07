@@ -1,2 +1,4 @@
 require "commRequire"
-require "robot.Connect"
+require "robot.robot"
+require "robot.robotMng"
+
