@@ -47,7 +47,7 @@ public:
 		}
 	}
 
-	void doNetMsg(int sn, Buf *buf)
+	/*void doNetMsg(int sn, Buf *buf)
 	{
 		if (buf == NULL)
 		{
@@ -60,12 +60,12 @@ public:
 			ERROR("doNetMsg method len less then 2 error");
 			return;
 		}
-		uint16 fid;
+		uint16 fid = 0;
 		*buf >> fid;
 		std::string data;
 		buf->readText(data);
-		LuaSvr::call("doNetMsg", "iiSii", sn, fid, &data, 0, data.size());
-	}
+		LuaSvr::call("CHandlerNetMsg", "iiSii", sn, fid, &data, 0, data.size());
+	}*/
 
 };
 

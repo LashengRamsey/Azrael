@@ -40,44 +40,31 @@ function init()
 	G_ServerId = C_GetServerID()
 	print("G_ServerId = " .. G_ServerId)
 
-	--timer.CallLater(Net.TestSendPacket, 1000)
-
 	mysql.mysql_init()
 	hiredis.hiredis_init()
 end
-
 
 function CHandlerMsg(target, sn, eid, fid, data, startPos, size)
 	Net.doHandlerMsg(target, sn, eid, fid, data, startPos, size)
 end
 
-
 function CHandlerConnect(sn)
-	print("=======db =CHandlerConnect=============")
+	print("========CHandlerConnect=============")
 	print("sn = " .. sn)
 end
 
-function CHandlerDisticonnect()
-	print("======db =CHandlerDisticonnect==============")	
+function CHandlerDisconnect(sn)
+	print("=======CHandlerDisconnect==============")	
 end
 
 --错误信息
 function CHandlerError(err)
-	print("======db ==CHandlerError=============")
+	print("========CHandlerError=============")
 	--print(err)
 end
 
-
-
-
-
-
-
-
-
-
-
-
-
-
+function CHandlerNetMsg(sn, fid, data, startPos, size)
+	print("========CHandlerNetMsg=============")
+	Net.doHandlerMsg(0, sn, 0, fid, data, startPos, size)
+end
 

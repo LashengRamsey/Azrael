@@ -39,3 +39,6 @@
 /libCore/Debug/*.pdb
 /libCore/*.opensdf
 /libCore/*.sdf
+/bin/win32/libCore.lib
+/exe/log
+/libCore/*.suo

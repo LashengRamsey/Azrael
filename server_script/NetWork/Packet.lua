@@ -39,13 +39,6 @@ function G_SetMsgPacket(str, startPos, size)
 	sMsgPacket = str
 	sMsgStarPos = startPos
 	sMsgSize = size
-	--print("sMsgPacket len = " .. string.len(sMsgPacket))
-	--print("sMsgStarPos len = " .. sMsgStarPos)
-	--print("sMsgSize len = " .. sMsgSize)
-	--for i=1, sMsgSize, 1 do
-		--print(string.byte(sMsgPacket, i))
-		--print(string.format("%s", string.byte(sMsgPacket, i)))
-	--end
 end
 
 function G_UnPacketI(byte)
@@ -53,33 +46,71 @@ function G_UnPacketI(byte)
 		C_Error("ERROR G_UnPacketI byte not in {1,2,4,8}, byte %d", byte)
 		return
 	end
-	--local temp = string.reverse(string.sub(sMsgPacket, sMsgStarPos+1, sMsgStarPos+byte))
-	--print("sMsgStarPos len = " .. sMsgStarPos)
+	
 	local temp = string.sub(sMsgPacket, sMsgStarPos+1, sMsgStarPos+byte)
 	sMsgStarPos = sMsgStarPos + byte
 	local len = string.len(temp)
 	local hex = "0x"
 	for i=len, 1, -1 do
-	--for i=1, len do
-		--print(string.byte(temp, i))
-		--print(string.format("%x", string.byte(temp, i)))
 		hex = hex .. string.format("%x", string.byte(temp, i))
 	end
-	print(hex)
-	local value = tonumber(hex)
-	print("value = " .. value)
+	
+	local value = C_ToNumber(hex)
 	return value or 0
 end
 
 function G_UnPacketS()
-	--print("========G_UnPacketS=======")
-
 	local len = G_UnPacketI(2)
-	--print("len = " .. len)
-	--print("sMsgStarPos len = " .. sMsgStarPos)
 	local str = string.sub(sMsgPacket, sMsgStarPos+1, sMsgStarPos+len)
 	sMsgStarPos = sMsgStarPos + len
-
-	--print("str = " .. str)
 	return str
 end
+
+
+--==============================================
+--网络包测试
+function GetTestSendPacket(sessionObj)
+	print("=========start=====")
+	--local protocol = G_UnPacketI(4)
+	local i1 = G_UnPacketI(1)
+	local i2 = G_UnPacketI(2)
+	local i4 = G_UnPacketI(4)
+	local i8 = G_UnPacketI(8)
+	local s = G_UnPacketS()
+	--print("protocol = " .. protocol)
+	print("i1 = " .. i1)
+	print("i2 = " .. i2)
+	print("i4 = " .. i4)
+	print("i8 = " .. i8)
+	print("s = " .. s)
+	local i1 = G_UnPacketI(1)
+	local i2 = G_UnPacketI(2)
+	local i4 = G_UnPacketI(4)
+	local i8 = G_UnPacketI(8)
+	print("i1 = " .. i1)
+	print("i2 = " .. i2)
+	print("i4 = " .. i4)
+	print("i8 = " .. i8)
+	print("=========end=====")
+end
+
+function TestSendPacket()
+	--print("========TestSendPacket=============")
+	print("G_ServerId = " .. G_ServerId)
+	if G_ServerId == 1 then
+		--for i=1,100 do
+		G_PacketPrepare(G2CProtocol.G2G_Test)
+		G_PacketAddI(127, 1)
+		G_PacketAddI(32767, 2)
+		G_PacketAddI(2147483647, 4)
+		G_PacketAddI(214748364789, 8)
+		G_PacketAddS("TestSend Packet")
+		G_PacketAddI(126, 1)
+		G_PacketAddI(32766, 2)
+		G_PacketAddI(2147483646, 4)
+		G_PacketAddI(214748364786, 8)
+		Net.sendToServer(1, 0, 0, 0)
+		--end
+	end
+end
+

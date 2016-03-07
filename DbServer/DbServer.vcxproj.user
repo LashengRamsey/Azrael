@@ -4,8 +4,8 @@
     <ShowAllFiles>true</ShowAllFiles>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <LocalDebuggerCommandArguments>db\DBConfig</LocalDebuggerCommandArguments>
+    <LocalDebuggerCommandArguments>DBConfig</LocalDebuggerCommandArguments>
     <DebuggerFlavor>WindowsLocalDebugger</DebuggerFlavor>
-    <LocalDebuggerWorkingDirectory>../exe</LocalDebuggerWorkingDirectory>
+    <LocalDebuggerWorkingDirectory>../exe/db</LocalDebuggerWorkingDirectory>
   </PropertyGroup>
 </Project>

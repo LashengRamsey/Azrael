@@ -216,9 +216,11 @@ void Connection::sendTo(int fid, int64 eid, Buf& buf)
 {
 	if (!isConnected())
 		return;
-	int len =conv_num(buf.getLength()+10);
+	//int len =conv_num(buf.getLength()+10);
+	int len =conv_num(buf.getLength());
 	Buf bufout;
-	bufout << header << len << conv_num(eid) << conv_num((int16)fid) << buf << ender;
+	//bufout << header << len << conv_num(eid) << conv_num((int16)fid) << buf << ender;
+	bufout << header << len << buf << ender;
 	write(bufout);
 }
 

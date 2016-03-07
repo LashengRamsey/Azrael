@@ -28,13 +28,15 @@ function CHandlerMsg(target, sn, eid, fid, data, startPos, size)
 	Net.doHandlerMsg(target, sn, eid, fid, data, startPos, size)
 end
 
-
-function CHandlerConnect()
+function CHandlerConnect(sn)
 	print("========CHandlerConnect=============")
+	print("sn = " .. sn)
+	Session.newSession(sn)
 end
 
-function CHandlerDisticonnect()
-	print("=======CHandlerDisticonnect==============")	
+function CHandlerDisconnect(sn)
+	print("=======CHandlerDisconnect==============")
+	Session.delSession(sn)	
 end
 
 --错误信息
@@ -43,17 +45,9 @@ function CHandlerError(err)
 	--print(err)
 end
 
-
-
-
-
-
-
-
-
-
-
-
-
+function CHandlerNetMsg(sn, data, startPos, size)
+	print("========CHandlerNetMsg=============")
+	Net.doHandlerMsg(0, sn, 0, 0, data, startPos, size)
+end
 
 

@@ -4,8 +4,8 @@
     <ShowAllFiles>true</ShowAllFiles>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <LocalDebuggerCommandArguments>router\RouterConfig</LocalDebuggerCommandArguments>
-    <LocalDebuggerWorkingDirectory>..\exe</LocalDebuggerWorkingDirectory>
+    <LocalDebuggerCommandArguments>RouterConfig</LocalDebuggerCommandArguments>
+    <LocalDebuggerWorkingDirectory>../exe/router</LocalDebuggerWorkingDirectory>
     <DebuggerFlavor>WindowsLocalDebugger</DebuggerFlavor>
   </PropertyGroup>
 </Project>

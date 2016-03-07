@@ -197,13 +197,14 @@ bool ServerApp::init(int argc, char* argv[])
 {
 	if (argc<2)
 	{
-		printf("argc = %d,not Config", argc);
+		INFO("argc = %d,not Config", argc);
 		return false;
 	}
-	printf("Config path:		%s",argv[1]);
+
 	//配置文件路径
 	Config::SetConfigName(argv[1]);
-
+	INFO("Config path:		%s",argv[1]);
+	
 	myName_ = Config::GetValue("ServerID");
 	sockPath_ = Config::GetValue("SocketPath");
 
@@ -230,9 +231,9 @@ bool ServerApp::init(int argc, char* argv[])
 		ERROR("get config dir error");
 		return false;
 	}
-	LOG("load config %s ok!", pidFile);
+	INFO("load config %s ok!", pidFile);
 	write_pid(pidFile);
-	LOG("Load config %s", pidFile);
+	INFO("Load config %s", pidFile);
 	//randomized seed by time
 	srand((unsigned int)time(NULL));
 	//tick_timer();
@@ -268,7 +269,9 @@ void ServerApp::stop()
 {
 	appResume_ = 0;
 	if (mqnet_)
+	{
 		mqnet_->disconnect();
+	}
 }
 
 void ServerApp::run()
@@ -379,11 +382,25 @@ void ServerApp::doMqMsg(int target, int fid, Buf *buf)
 }
 
 //收到客户端连接网络消息
-void ServerApp::doNetMsg(int sn, Buf* buf)
+void ServerApp::doNetMsg(int sn, Buf *buf)
 {
+	if (buf == NULL)
+	{
+		ERROR("doNetMsg method buf is NULL error");
+		return;
+	}
+	int len = buf->getLength();
+	if (len < 2)
+	{
+		ERROR("doNetMsg method len less then 2 error");
+		return;
+	}
+	//uint16 fid = 0;
+	//*buf >> fid;
 	std::string data;
 	buf->readText(data);
-	LuaSvr::call("doNetMsg", "iSii", sn, &data, 0, data.size());
+	//LuaSvr::call("CHandlerNetMsg", "iiSii", sn, fid, &data, 0, data.size());
+	LuaSvr::call("CHandlerNetMsg", "iSii", sn, &data, 0, data.size());
 }
 
 //轮询

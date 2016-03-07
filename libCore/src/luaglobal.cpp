@@ -22,6 +22,7 @@ L_METHOD(LuaGlobal, C_GetConfig)
 L_METHOD(LuaGlobal, C_GetMTime)
 L_METHOD(LuaGlobal, C_StopServer)
 L_METHOD(LuaGlobal, C_GetHashCode)
+L_METHOD(LuaGlobal, C_ToNumber)
 LUA_FUNC_END
 
 
@@ -354,13 +355,13 @@ int LuaGlobal::C_GetHashCode(lua_State* L)
 	return 1;
 }
 
-
-
-
-
-
-
-
-
+int LuaGlobal::C_ToNumber(lua_State* L)
+{
+	std::string sValue = lua_tostring(L, -1);
+	int64 iValue = 0;
+	sscanf(sValue.c_str(), "%I64x", &iValue);
+	lua_pushnumber(L, iValue);
+	return 1;
+}
 
 

@@ -518,7 +518,7 @@ void Net::closeConnect(Session *session)
 		if ( it != sessionMap_.end())
 		{
 			ServerApp::get()->doNetDisconnect(session->sn());
-			LuaSvr::call("doDisconnect", "i", session->sn());
+			LuaSvr::call("CHandlerDisconnect", "i", session->sn());
 			freeSessions_.push_back(session);
 			sessionMap_.erase(it);
 		}

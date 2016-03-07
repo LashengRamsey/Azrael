@@ -40,13 +40,22 @@ end
 
 --机器人对象
 robot = {}
+local giRobotId = 0
 function robot:new(o)
 	o = o or {}
 	setmetatable(o, self)
 	self.__index = self
-
+	self.SessionObj = nil
 	self.uConn = nil
+
+
+	giRobotId = giRobotId + 1
+	self.iRobotId = giRobotId
 	return o
+end
+
+function robot:setSession(sessionObj)
+	self.SessionObj = sessionObj
 end
 
 function robot:connect()
@@ -67,6 +76,7 @@ end
 
 function robot:onConnect()
 	CLogInfo("=======robot:onConnect=========")
+	self:sendLogin()
 end
 
 function robot:Write()
@@ -81,6 +91,8 @@ end
 
 function robot:onClose()
 	CLogInfo("=======robot:onClose=========")
+	self.uConn = nil
+	self.bIsConn = false
 end
 
 function robot:IsConnect()
@@ -111,5 +123,21 @@ function robot:update()
 	if not self.bIsConn then
 		self:connect()
 	end
+end
+
+function robot:sendLogin()
+	CLogInfo("=======robot:sendLogin=========")
+	G_PacketPrepare(C2GProtocol.C2G_Login)
+	G_PacketAddS("robot" .. self.iRobotId)
+	G_PacketAddI(127, 1)
+	G_PacketAddI(32767, 2)
+	G_PacketAddI(2147483647, 4)
+	G_PacketAddI(214748364789, 8)
+	G_PacketAddS("sendLogin Packet")
+	G_PacketAddI(126, 1)
+	G_PacketAddI(32766, 2)
+	G_PacketAddI(2147483646, 4)
+	G_PacketAddI(214748364786, 8)
+	self.uConn:c_Write(0, 0, G_NetPacket())
 end
 

@@ -7,3 +7,8 @@ module("G2CProtocol", package.seeall)
 
 
 
+G2G_Test = 10000	--测试
+
+
+
+
