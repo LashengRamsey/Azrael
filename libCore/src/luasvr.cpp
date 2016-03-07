@@ -161,12 +161,12 @@ void LuaSvr::initRef()
 	}
 	ref(L_, "CHandlerConnect", REF_CONNECT);
 
-	lua_getglobal(L_, "CHandlerDisticonnect");
+	lua_getglobal(L_, "CHandlerDisconnect");
 	if (lua_isnil(L_, -1))
 	{
-		FATAL("[LUA FATAL] lua script no CHandlerDisticonnect function****");
+		FATAL("[LUA FATAL] lua script no CHandlerDisconnect function****");
 	}
-	ref(L_, "CHandlerDisticonnect", REF_DISCONNECT);
+	ref(L_, "CHandlerDisconnect", REF_DISCONNECT);
 
 	lua_getglobal(L_, "CHandlerError");
 	if (lua_isnil(L_, -1))
@@ -174,6 +174,13 @@ void LuaSvr::initRef()
 		FATAL("[LUA FATAL] lua script no CHandlerError function****");
 	}
 	ref(L_, "CHandlerError", REF_ERROR);
+
+	lua_getglobal(L_, "CHandlerNetMsg");
+	if (lua_isnil(L_, -1))
+	{
+		FATAL("[LUA FATAL] lua script no CHandlerNetMsg function****");
+	}
+	ref(L_, "CHandlerNetMsg", REF_ERROR);
 }
 
 int LuaSvr::getRef( int ref)

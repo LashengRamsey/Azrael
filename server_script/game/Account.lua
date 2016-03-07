@@ -6,6 +6,7 @@ function Account:new(o)
 	setmetatable(o, self)
 	self.__index = self
 
+	self.SessionObj = nil
 	
 	return o
 end

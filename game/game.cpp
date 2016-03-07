@@ -64,7 +64,7 @@ public:
 		*buf >> fid;
 		std::string data;
 		buf->readText(data);
-		LuaSvr::call("doNetMsg", "iiSii", sn, fid, &data, 0, data.size());
+		LuaSvr::call("CHandlerNetMsg", "iiSii", sn, fid, &data, 0, data.size());
 	}
 
 };

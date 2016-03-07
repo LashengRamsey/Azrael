@@ -39,13 +39,6 @@ function G_SetMsgPacket(str, startPos, size)
 	sMsgPacket = str
 	sMsgStarPos = startPos
 	sMsgSize = size
-	--print("sMsgPacket len = " .. string.len(sMsgPacket))
-	--print("sMsgStarPos len = " .. sMsgStarPos)
-	--print("sMsgSize len = " .. sMsgSize)
-	--for i=1, sMsgSize, 1 do
-		--print(string.byte(sMsgPacket, i))
-		--print(string.format("%s", string.byte(sMsgPacket, i)))
-	--end
 end
 
 function G_UnPacketI(byte)
@@ -65,21 +58,15 @@ function G_UnPacketI(byte)
 		--print(string.format("%x", string.byte(temp, i)))
 		hex = hex .. string.format("%x", string.byte(temp, i))
 	end
-	print(hex)
+	--print(hex)
 	local value = tonumber(hex)
 	print("value = " .. value)
 	return value or 0
 end
 
 function G_UnPacketS()
-	--print("========G_UnPacketS=======")
-
 	local len = G_UnPacketI(2)
-	--print("len = " .. len)
-	--print("sMsgStarPos len = " .. sMsgStarPos)
 	local str = string.sub(sMsgPacket, sMsgStarPos+1, sMsgStarPos+len)
 	sMsgStarPos = sMsgStarPos + len
-
-	--print("str = " .. str)
 	return str
 end

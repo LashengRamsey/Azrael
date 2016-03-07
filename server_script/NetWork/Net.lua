@@ -17,7 +17,11 @@ function doHandlerMsg(target, sn, eid, fid, data, startPos, size)
 	--print_r("data = " .. data)
 	--print(string.len(data))
 	G_SetMsgPacket(data, startPos, size)
-	GetTestSendPacket()
+	--GetTestSendPacket()
+
+	local protocol = G_UnPacketI(4)
+	CLogInfo("******doHandlerMsg protocol = " .. protocol)
+
 end
 
 
@@ -27,6 +31,13 @@ function sendToServer(target, fid, sn, uid)
 	C_SendToGameServer(target, fid, sn, uid, G_NetPacket())
 end
 
+function SendPacket(sn)
+	C_SendPacket(-1, 0, sn, 0, G_NetPacket())
+end
+
+
+--==============================================
+--网络包测试
 function GetTestSendPacket()
 	local protocol = G_UnPacketI(4)
 	local i1 = G_UnPacketI(1)

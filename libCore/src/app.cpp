@@ -383,7 +383,7 @@ void ServerApp::doNetMsg(int sn, Buf* buf)
 {
 	std::string data;
 	buf->readText(data);
-	LuaSvr::call("doNetMsg", "iSii", sn, &data, 0, data.size());
+	LuaSvr::call("CHandlerNetMsg", "iSii", sn, &data, 0, data.size());
 }
 
 //ÂÖÑ¯
