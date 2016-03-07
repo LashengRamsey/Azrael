@@ -3,7 +3,7 @@ module("robotMng", package.seeall)
 --管理机器人
 
 local gtRobotMap = {}	--机器人
-local giRobotCnt = 10 	--机器人数量
+local giRobotCnt = 1 	--机器人数量
 local gbStartFlag = false --
 
 function startRobot()
