@@ -219,7 +219,7 @@ int MQNet::methodToDB(int channel, int target, int fid, int sn, int64 eid, const
 		return -1;
 
 	void *sock = dbsockets_[channel];
-	MsgChannel ch(socket_, args.getLength()+8);
+	MsgChannel ch(sock, args.getLength()+8);
 	ch << target << fid << args;
 	ch.send();
 	return 0;

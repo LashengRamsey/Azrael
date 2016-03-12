@@ -1,8 +1,9 @@
 require "commRequire"
-require "db.Struct"
-require "db.mysql"
+require "db.dbStruct"
+require "db.mysqlClient"
 require "db.hiredis"
-
+require "db.dbClient"
+require "db.dbServer"
 
 
 

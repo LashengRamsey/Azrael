@@ -1,4 +1,4 @@
-module("mysql", package.seeall)
+module("mysqlClient", package.seeall)
 
 local mysql_ip = nil
 local mysql_port = nil

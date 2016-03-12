@@ -40,7 +40,7 @@ function init()
 	G_ServerId = C_GetServerID()
 	print("G_ServerId = " .. G_ServerId)
 
-	mysql.mysql_init()
+	mysqlClient.mysql_init()
 	hiredis.hiredis_init()
 end
 
@@ -51,10 +51,12 @@ end
 function CHandlerConnect(sn)
 	print("========CHandlerConnect=============")
 	print("sn = " .. sn)
+	Session.newSession(sn)
 end
 
 function CHandlerDisconnect(sn)
-	print("=======CHandlerDisconnect==============")	
+	print("=======CHandlerDisconnect==============")
+	Session.delSession(sn)	
 end
 
 --错误信息
@@ -63,8 +65,8 @@ function CHandlerError(err)
 	--print(err)
 end
 
-function CHandlerNetMsg(sn, fid, data, startPos, size)
+function CHandlerNetMsg(sn, data, startPos, size)
 	print("========CHandlerNetMsg=============")
-	Net.doHandlerMsg(0, sn, 0, fid, data, startPos, size)
+	Net.doHandlerMsg(0, sn, 0, 0, data, startPos, size)
 end
 
