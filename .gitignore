@@ -42,3 +42,4 @@
 /bin/win32/libCore.lib
 /exe/log
 /libCore/*.suo
+/exe/redis/Redis-win/dump.rdb

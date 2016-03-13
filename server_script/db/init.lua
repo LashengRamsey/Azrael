@@ -33,12 +33,12 @@ function CHandlerTimer(id)
 end
 
 
-G_ServerId = 0
+G_ServerNo = 0
 
 function init()
 	print("====db==init===============")
-	G_ServerId = C_GetServerID()
-	print("G_ServerId = " .. G_ServerId)
+	G_ServerNo = C_GetServerID()
+	print("G_ServerNo = " .. G_ServerNo)
 
 	mysqlClient.mysql_init()
 	hiredis.hiredis_init()

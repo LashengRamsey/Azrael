@@ -30,6 +30,37 @@ function G_PrintPacket()
 	print_r(tNetPacket)
 end
 
+local STR = "Str"
+local gtIntBytes = {
+	Char = 1,
+	Short = 2,
+	Int = 4,
+	Long = 8,
+}
+
+function G_AddPacket(protocol, packet)
+	--print_r(packet)
+	local struct = PacketStruct[protocol]
+	if not struct then
+		CLogError("======G_AddPacket ERROR:not struct protocol=%d", protocol)
+		return false
+	end
+	--print_r(struct)
+	G_PacketPrepare(protocol)
+	for k, v in pairs(struct) do
+		if v == STR then
+			G_PacketAddS(packet[k])
+		else
+			local byte = gtIntBytes[v]
+			if not byte then
+				CLogError("======G_AddPacket ERROR:byte error protocol=%d", protocol)
+			end
+			G_PacketAddI(packet[k], byte)
+		end
+	end
+end
+
+
 --收到的网络包
 local sMsgPacket = ""
 local sMsgStarPos = 0
@@ -66,6 +97,32 @@ function G_UnPacketS()
 	return str
 end
 
+function G_UnPacketTable(protocol)
+	--print("========G_UnPacketTable=============")
+	local tmp = {}
+	local struct = PacketStruct[protocol]
+	if not struct then
+		CLogError("======G_UnPacketTable ERROR:not struct protocol=%d", protocol)
+		return nil
+	end
+	for k, v in pairs(struct) do
+		local value = nil
+		if v == STR then
+			value = G_UnPacketS()
+		else
+			local byte = gtIntBytes[v]
+			if not byte then
+				CLogError("======G_UnPacketTable ERROR:byte error protocol=%d", protocol)
+			end
+			value = G_UnPacketI(byte)
+		end
+		tmp[k] = value
+	end
+
+	--print_r(tmp)
+	return tmp
+end
+
 
 --==============================================
 --网络包测试
@@ -96,10 +153,10 @@ end
 
 function TestSendPacket()
 	--print("========TestSendPacket=============")
-	print("G_ServerId = " .. G_ServerId)
-	if G_ServerId == 1 then
+	print("G_ServerNo = " .. G_ServerNo)
+	if G_ServerNo == 1 then
 		--for i=1,100 do
-		G_PacketPrepare(G2CProtocol.G2G_Test)
+		G_PacketPrepare(Protocol.G2G_Test)
 		G_PacketAddI(127, 1)
 		G_PacketAddI(32767, 2)
 		G_PacketAddI(2147483647, 4)
@@ -114,3 +171,31 @@ function TestSendPacket()
 	end
 end
 
+
+function GetTestSendPacket2(sessionObj, packet)
+	print("=========GetTestSendPacket2=====")
+	print_r(packet)
+end
+
+function TestSendPacket2()
+	print("========TestSendPacket=============")
+	print("G_ServerNo = " .. G_ServerNo)
+	if G_ServerNo == 1 then
+		--for i=1,100 do
+		local t = 
+		{
+			int1 = 127,
+			int2 = 32767,
+			int4 = 2147483647,
+			int8 = 214748364789,
+			str = "TestSend Packet",
+			int21 = 126,
+			int22 = 32766,
+			int24 = 2147483646,
+			int28 = 214748364786
+
+		}
+		Net.sendToServer2(1, 0, 0, 0, Protocol.G2G_Test2, t)
+		--end
+	end
+end

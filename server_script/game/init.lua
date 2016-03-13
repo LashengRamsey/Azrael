@@ -1,11 +1,12 @@
 
-G_ServerId = 0
+
+G_ServerNo = 0
 
 --启动服务器C层入口
 function c_main()
 	print("======c_main=====1111==========")
-	G_ServerId = C_GetServerID()
-	print("G_ServerId = " .. G_ServerId)
+	G_ServerNo = C_GetServerID()
+	print("G_ServerNo = " .. G_ServerNo)
 	require "game.loadRequire"
 	require "NetWork.PacketHandler"
 	init()
@@ -21,7 +22,7 @@ end
 function init()
 	print("======init===============")
 	PacketHandler.initGamePacketHandler()
-	timer.CallLater(TestSendPacket, 1000)
+	timer.CallLater(TestSendPacket2, 1000)
 end
 
 function CHandlerMsg(target, sn, eid, fid, data, startPos, size)

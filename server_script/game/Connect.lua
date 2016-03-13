@@ -101,7 +101,7 @@ local testConn = nil
 function Connect_test()
 	print_r(C_Connection)
 	testConn = Connect:new()
-	if G_ServerId == 1 then
+	if G_ServerNo == 1 then
 		local notify = 
 		{
 			onLuaConnect = onLuaConnect,

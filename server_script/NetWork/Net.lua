@@ -26,8 +26,10 @@ function doHandlerMsg(target, sn, eid, fid, data, startPos, size)
 		CLogInfo("******doHandlerMsg error not func*******")
 	end
 	local sessionObj = Session.getSession(sn)
-	--print(session)
-	func(sessionObj)
+	
+	local packet = G_UnPacketTable(protocol)
+
+	func(sessionObj, packet)
 end
 
 
@@ -45,6 +47,11 @@ function SendPacket(sn)
 end
 
 
+function sendToServer2(target, fid, sn, uid, protocol, packet)
+	
+	G_AddPacket(protocol, packet)
 
+	C_SendToGameServer(target, fid, sn, uid, G_NetPacket())
+end
 
 

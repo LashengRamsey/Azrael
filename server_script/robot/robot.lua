@@ -127,7 +127,7 @@ end
 
 function robot:sendLogin()
 	CLogInfo("=======robot:sendLogin=========")
-	G_PacketPrepare(C2GProtocol.C2G_Login)
+	G_PacketPrepare(Protocol.C2G_Login)
 	G_PacketAddS("robot" .. self.iRobotId)
 	G_PacketAddI(127, 1)
 	G_PacketAddI(32767, 2)

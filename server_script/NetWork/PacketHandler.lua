@@ -7,10 +7,11 @@ function getGamePacketHandler(protocol)
 end
 
 function initGamePacketHandler()
-	gtPacketHandler[C2GProtocol.C2G_Login] = login.login
+	gtPacketHandler[Protocol.C2G_Login] = login.login
 
 
-	gtPacketHandler[G2CProtocol.G2G_Test] = GetTestSendPacket
+	gtPacketHandler[Protocol.G2G_Test] = GetTestSendPacket
+	gtPacketHandler[Protocol.G2G_Test2] = GetTestSendPacket2
 end
 
 

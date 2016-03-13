@@ -15,11 +15,11 @@ function CHandlerTimer(id)
 end
 
 
-G_ServerId = 0
+G_ServerNo = 0
 
 function init()
 	print("=====robot=init===============")
-	G_ServerId = C_GetServerID()
+	G_ServerNo = C_GetServerID()
 	robotMng.startRobot()
 end
 
