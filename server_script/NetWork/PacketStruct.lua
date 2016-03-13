@@ -1,18 +1,20 @@
 --module("PackMsg", package.seeall)
 
-PacketStruct = {}
+G_PacketStruct = {}
 
-PacketStruct[Protocol.G2G_Test2] = 
+G_PacketStruct[Protocol.G2G_Test] = 
 {
-	int1 = "Char",
-	int2 = "Short",
-	int4 = "Int",
-	int8 = "Long",
-	str = "Str",
-	int21 = "Char",
-	int22 = "Short",
-	int24 = "Int",
-	int28 = "Long"
+	int11 = {"Char"},
+	int12 = {"Short"},
+	int14 = {"Int"},
+	int18 = {"Long"},
+	str1 = {"Str"},
+	int111 = {"Char"},
+	int112 = {"Short"},
+	int114 = {"Int"},
+	int118 = {"Long"},
+
+	array1 = {"Array", "Test"},
 }
 
 

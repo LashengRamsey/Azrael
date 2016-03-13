@@ -11,7 +11,6 @@ function initGamePacketHandler()
 
 
 	gtPacketHandler[Protocol.G2G_Test] = GetTestSendPacket
-	gtPacketHandler[Protocol.G2G_Test2] = GetTestSendPacket2
 end
 
 

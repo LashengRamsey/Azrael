@@ -38,19 +38,13 @@ function sendToDB(channel, target, fid, sn, uid)
 	C_SendToDB(target, fid, sn, uid, G_NetPacket())
 end
 
-function sendToServer(target, fid, sn, uid)
-	C_SendToGameServer(target, fid, sn, uid, G_NetPacket())
-end
-
 function SendPacket(sn)
 	C_SendPacket(-1, 0, sn, 0, G_NetPacket())
 end
 
 
-function sendToServer2(target, fid, sn, uid, protocol, packet)
-	
+function sendToServer(target, fid, sn, uid, protocol, packet)
 	G_AddPacket(protocol, packet)
-
 	C_SendToGameServer(target, fid, sn, uid, G_NetPacket())
 end
 
