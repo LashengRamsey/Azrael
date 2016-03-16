@@ -171,22 +171,59 @@ function TestSendPacket()
 			int112 = 32766,
 			int114 = 2147483646,
 			int118 = 214748364786,
-
-			array1 = {
-				int21 = 100,
-				int22 = 10000,
-				int24 = 100000,
-				int28 = 10000000,
-				str2 = "TestSend array 2 Packet",
-				array2 = {
-					int31 = 200,
-					int32 = 20000,
-					int34 = 200000,
-					int38 = 20000000,
-					str3 = "TestSend array 3 Packet",
-				}
-			}
 		}
+
+		t.array1 = {
+				{
+					int21 = 111,
+					int22 = 112,
+					int24 = 114,
+					int28 = 118,
+					str2 = "TestSend array 11 Packet",
+				},
+				{
+					int21 = 121,
+					int22 = 122,
+					int24 = 124,
+					int28 = 128,
+					str2 = "TestSend array 12 Packet",
+				},
+		}
+
+		t.array1[1].array2 = {
+					{	int31 = 211,
+						int32 = 212,
+						int34 = 214,
+						int38 = 218,
+						str3 = "TestSend array 21 Packet",
+					},
+					{
+						int31 = 221,
+						int32 = 222,
+						int34 = 224,
+						int38 = 228,
+						str3 = "TestSend array 22 Packet",
+					}
+		}
+			
+		t.array1[2].array2 = {
+					{	int31 = 231,
+						int32 = 232,
+						int34 = 234,
+						int38 = 238,
+						str3 = "TestSend array 23 Packet",
+					},
+					{
+						int31 = 241,
+						int32 = 242,
+						int34 = 244,
+						int38 = 248,
+						str3 = "TestSend array 24 Packet",
+					}
+		}
+
+
+
 		Net.sendToServer(1, 0, 0, 0, Protocol.G2G_Test, t)
 		--end
 	end
