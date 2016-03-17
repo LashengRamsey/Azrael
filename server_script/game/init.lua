@@ -43,7 +43,7 @@ end
 --错误信息
 function CHandlerError(err)
 	print("========CHandlerError=============")
-	--print(err)
+	print(err)
 end
 
 function CHandlerNetMsg(sn, data, startPos, size)

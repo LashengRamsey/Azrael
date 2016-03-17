@@ -3,6 +3,14 @@
 
 --表操作
 
+--获取表中值
+function table.get(t, k, default)
+    if not k then
+        return default
+    end
+    return t[k] or default
+end
+
 --返回指定表格中的所有键
 -- 用法示例：
 -- local t = {a = 1, b = 2, c = 3}
