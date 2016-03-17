@@ -82,6 +82,11 @@
   <ItemGroup>
     <ClCompile Include="Router.cpp" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\libCore\libCore.vcxproj">
+      <Project>{1f9c9df7-199b-4fd9-8900-970f475cd091}</Project>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>
