@@ -15,6 +15,13 @@ G_PacketStruct[Protocol.G2G_Test] =
 	int118 = {"Long"},
 
 	array1 = {"Array", "Test"},
+
+	arrayChar = {"ArrayChar"},
+	arrayShort = {"ArrayShort"},
+	arrayInt = {"ArrayInt"},
+	arrayLong = {"ArrayLong"},
+	arrayStr = {"ArrayStr"},
+
 }
 
 

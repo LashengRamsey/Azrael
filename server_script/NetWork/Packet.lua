@@ -38,11 +38,20 @@ end
 local STR = "Str"
 local ARRAY = "Array"
 local gtIntBytes = {
-	Char = 1,
-	Short = 2,
-	Int = 4,
-	Long = 8,
+	["Char"] = 1,
+	["Short"] = 2,
+	["Int"] = 4,
+	["Long"] = 8,
 }
+local ARRAY_BASE = {
+	["ArrayChar"] = gtIntBytes.Char,
+	["ArrayShort"] = gtIntBytes.Short,
+	["ArrayInt"] = gtIntBytes.Int,
+	["ArrayLong"] = gtIntBytes.Long,
+	["ArrayStr"] = -1,
+}
+
+
 
 function G_AddPacket(protocol, packet)
 	local struct = G_PacketStruct[protocol]
@@ -58,6 +67,7 @@ function G_AddPacket(protocol, packet)
 			local uValue = tValue[k]
 			if uType == STR then
 				G_PacketAddS(uValue)
+
 			elseif uType == ARRAY then
 				local _args = G_PacketStructExe[v[2]]
 				local _len = table.count(uValue)
@@ -65,6 +75,21 @@ function G_AddPacket(protocol, packet)
 				for _, _v in pairs(uValue) do
 					_addPacket(_args, _v)
 				end
+
+			elseif table.has_key(ARRAY_BASE, uType) then
+				local _bytes = ARRAY_BASE[uType]
+				local _len = table.count(uValue)
+				G_PacketAddI(_len, ARRAY_LEN)
+				if _bytes == -1 then
+					for _i = 1, _len do
+						G_PacketAddS(uValue[_i])
+					end
+				else
+					for _i = 1, _len do
+						G_PacketAddI(uValue[_i], _bytes)
+					end
+				end
+
 			else
 				local byte = gtIntBytes[uType]
 				if not byte then
@@ -136,6 +161,21 @@ function G_UnPacketTable(protocol)
 					_result[k][_i] = {}
 					_unPacket(_args, _result[k][_i])
 				end
+
+			elseif table.has_key(ARRAY_BASE, uType) then
+				local _bytes = ARRAY_BASE[uType]
+				local _len = G_UnPacketI(ARRAY_LEN)
+				_result[k] = {}
+				if _bytes == -1 then
+					for _i = 1, _len do
+						table.insert(_result[k], G_UnPacketS())
+					end
+				else
+					for _i = 1, _len do
+						table.insert(_result[k], G_UnPacketI(_bytes))
+					end
+				end
+
 			else
 				local byte = gtIntBytes[uType]
 				if not byte then
@@ -226,6 +266,12 @@ function TestSendPacket()
 					}
 		}
 
+
+		t.arrayChar = {1,2,3}
+		t.arrayShort = {4,5,6}
+		t.arrayInt = {7,8,9}
+		t.arrayLong = {10,11,12}
+		t.arrayStr = {"arrayStr1", "arrayStr2", "arrayStr3"}
 
 
 		Net.sendToServer(1, 0, 0, 0, Protocol.G2G_Test, t)

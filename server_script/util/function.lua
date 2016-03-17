@@ -49,7 +49,7 @@ end
 
 
 --table t是否存在key
-function table.containKey( t, key )
+function table.has_key( t, key )
     for k, v in pairs(t) do
         if key == k then
             return true

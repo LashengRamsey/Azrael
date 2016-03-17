@@ -19,8 +19,25 @@ G_PacketStructExe["Test2"] = {
 	str3 = {"Str"},
 }
 
+G_PacketStructExe["ArrayChar"] = {
+	char = {"Char"}
+}
 
+G_PacketStructExe["ArrayShort"] = {
+	Short = {"Short"}
+}
 
+G_PacketStructExe["ArrayInt"] = {
+	char = {"Int"}
+}
+
+G_PacketStructExe["ArrayLong"] = {
+	char = {"Long"}
+}
+
+G_PacketStructExe["ArrayStr"] = {
+	char = {"Str"}
+}
 
 
 
