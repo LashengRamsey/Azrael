@@ -22,7 +22,7 @@ end
 function init()
 	print("======init===============")
 	PacketHandler.initGamePacketHandler()
-	--timer.CallLater(TestSendPacket, 1000)
+	timer.CallLater(TestSendPacket, 1000)
 end
 
 function CHandlerMsg(target, sn, eid, fid, data, startPos, size)

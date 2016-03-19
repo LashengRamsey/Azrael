@@ -38,8 +38,7 @@ function sendToDB(protocol, packet)
 	print("=====sendToDB==========")
 	--print_r(packet)
 	G_AddPacket(protocol, packet)
-	--C_SendToDB(0, 20, 0, 0, 0, G_NetPacket())
-	C_SendToDB(0, 0, 0, 0, 0, G_NetPacket())
+	C_SendToDB(0, 20, 0, 0, 0, G_NetPacket())
 end
 
 function SendPacket(sn)
