@@ -4,11 +4,10 @@ gdStructMap = {}
 
 gdStructMap.account = 
 {
-	AcntId = "Int",
-	Account = "String",
+	AccountStr = "String",
 
 
-	key = Account,
+	key = AccountStr,
 }
 
 

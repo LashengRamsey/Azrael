@@ -132,6 +132,7 @@ int LuaNetwork::SendToDB(lua_State* L)
 	MQNet *mqnet = ServerApp::get()->getMQNet();
 	if(mqnet)
 	{
+		INFO("[lua proto]SendToDB sned msg, target:%d, fid:%d, sn:%d, eid:%lld, data size:%d", target, fid, sn, uid, buf.getLength());
 		mqnet->methodToDB(channel, target, fid, sn, uid, buf);
 	}
 	return 0;
@@ -185,18 +186,8 @@ int LuaNetwork::SendToGameServer(lua_State* L)
 		resolvePacketTableItem(L, &buf);
 		lua_pop(L, 1);			//µ¯³öÕ»
 	}
-	//buf.dump();
-	//ServerApp::get()->SendToGameServer(target, fid, sn, uid, buf);
+	
 	ServerApp::get()->SendPacket(target, fid, sn, uid, buf);
-
-	//int i1 = buf.readInt();
-	//int i11 = buf.readByte();
-	//int i2 = buf.readShort();
-	//int i4 = buf.readInt();
-	//int64 i8 = buf.readInt64();
-	//std::string s;
-	//buf.readString(s);
-
 	return 0;
 }
 

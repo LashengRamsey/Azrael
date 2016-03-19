@@ -12,16 +12,10 @@ C_Connection = Connection 		--连接
 
 --启动服务器C层入口
 function c_main()
-	print("\n\n\n\n\n\n")
 	print("=====dbb=c_main=====1111==========")
-
 	--require "test"
 	require "db.loadRequire"
-	
-	print(C_Bit)
-	print(C_Bit.bnot)
-	print(C_LuaNetWork)
-	print(C_Connection)
+	require "NetWork.PacketHandler"
 
 	init()
 end
@@ -40,8 +34,11 @@ function init()
 	G_ServerNo = C_GetServerID()
 	print("G_ServerNo = " .. G_ServerNo)
 
+	PacketHandler.initDbPacketHandler()
+
 	mysqlClient.mysql_init()
 	hiredis.hiredis_init()
+	--timer.CallLater(TestSendPacket, 1000)
 end
 
 function CHandlerMsg(target, sn, eid, fid, data, startPos, size)

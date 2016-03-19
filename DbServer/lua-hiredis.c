@@ -437,8 +437,8 @@ static int lhiredis_connect(lua_State * L)
   luahiredis_Connection * pResult = NULL;
   redisContext * pContext = NULL;
 
-  const char * host_or_socket = luaL_checkstring(L, 1);
-  const int port = luaL_checkint(L, 2);
+  //const char * host_or_socket = luaL_checkstring(L, 1);
+  //const int port = luaL_checkint(L, 2);
   /* TODO: Support Timeout and UnixTimeout flavors */
  // if (lua_isnoneornil(L, 2))
  // {
@@ -450,10 +450,16 @@ static int lhiredis_connect(lua_State * L)
 	//const int port = luaL_checkint(L, 2);
  //   pContext = redisConnect(host_or_socket, port);
  // }
-  if (lua_gettop(L) == 2)
+  if (lua_gettop(L) >= 2)
   {
-	  pContext = redisConnect((char*)host_or_socket, port);
-	  //pContext = redisConnect((char*)"127.0.0.1", 6379);
+	  //pContext = redisConnect((char*)host_or_socket, port);
+	  const char * host_or_socket = luaL_checkstring(L, 1);
+	  const int port = luaL_checkint(L, 2);
+	  //int timeout = luaL_checkint(L,3);
+	  struct timeval tv;
+	  tv.tv_sec = 0;
+	  tv.tv_usec = 0;
+	  pContext = redisConnectWithTimeout((char*)host_or_socket, port, tv);
   }
   else
   {

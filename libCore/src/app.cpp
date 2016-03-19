@@ -535,7 +535,7 @@ int ServerApp::SendPacket(int target, int fid, int sn, int64 uid, const Buf &buf
 		MQNet *mqnet = getMQNet();
 		if (mqnet)
 		{
-			INFO("[lua proto] sned msg, target:%d, fid:%d, sn:%d, eid:%lld, data size:%d", target, fid, sn, uid, buf.getLength());
+			INFO("[lua proto]SendPacket sned msg, target:%d, fid:%d, sn:%d, eid:%lld, data size:%d", target, fid, sn, uid, buf.getLength());
 			mqnet->methodTo(target, fid, sn, uid, buf);
 		}
 	}

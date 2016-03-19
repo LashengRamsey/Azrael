@@ -22,7 +22,7 @@ end
 function init()
 	print("======init===============")
 	PacketHandler.initGamePacketHandler()
-	timer.CallLater(TestSendPacket, 1000)
+	--timer.CallLater(TestSendPacket, 1000)
 end
 
 function CHandlerMsg(target, sn, eid, fid, data, startPos, size)
@@ -43,7 +43,7 @@ end
 --错误信息
 function CHandlerError(err)
 	print("========CHandlerError=============")
-	print(err)
+	--print(err)
 end
 
 function CHandlerNetMsg(sn, data, startPos, size)

@@ -66,10 +66,11 @@ function G_AddPacket(protocol, packet)
 			local uType = v[1]
 			local uValue = tValue[k]
 			if uType == STR then
-				G_PacketAddS(uValue)
+				G_PacketAddS(uValue or "")
 
 			elseif uType == ARRAY then
 				local _args = G_PacketStructExe[v[2]]
+				uValue = uValue or {}
 				local _len = table.count(uValue)
 				G_PacketAddI(_len, ARRAY_LEN)
 				for _, _v in pairs(uValue) do
@@ -78,6 +79,7 @@ function G_AddPacket(protocol, packet)
 
 			elseif table.has_key(ARRAY_BASE, uType) then
 				local _bytes = ARRAY_BASE[uType]
+				uValue = uValue or {}
 				local _len = table.count(uValue)
 				G_PacketAddI(_len, ARRAY_LEN)
 				if _bytes == -1 then
@@ -95,6 +97,7 @@ function G_AddPacket(protocol, packet)
 				if not byte then
 					CLogError("======G_AddPacket ERROR:byte error protocol=%d", protocol)
 				end
+				uValue = uValue or 0
 				G_PacketAddI(uValue, byte)
 			end
 		end
@@ -206,9 +209,9 @@ function TestSendPacket()
 		--for i=1,100 do
 		local t = 
 		{
-			int11 = 127,--
-			int12 = 32767,--
-			int14 = 2147483647,--
+			int11 = -1,--
+			int12 = -1,--
+			int14 = -1,--
 			int18 = 214748364789,--
 			str1 = "TestSend Packet",--
 			int111 = 126,--
@@ -273,8 +276,9 @@ function TestSendPacket()
 		t.arrayLong = {10,11,12}
 		t.arrayStr = {"arrayStr1", "arrayStr2", "arrayStr3"}
 
-
-		Net.sendToServer(1, 0, 0, 0, Protocol.G2G_Test, t)
+		
+		--Net.sendToServer(1, 0, 0, 0, Protocol.G2G_Test, t)
+		Net.sendToDB(20, 0, 0, 0, Protocol.G2G_Test, t)
 		--end
 	end
 end

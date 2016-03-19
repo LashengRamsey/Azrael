@@ -2,13 +2,11 @@ module("login", package.seeall)
 
 function login(sessionObj, packet)
 	print("======login==========")
-	--local accountName = G_UnPacketS()
-	--print(accountName)
-	--local i = G_UnPacketI(1)
-	--print(i)
+	print_r(packet)
 
+	
 
-	--dbClient.select(dbStruct.gdStructMap.account, accountName, loginCallBack, nil)
+	dbClient.select(dbStruct.gdStructMap.account, packet, loginCallBack, nil)
 end
 
 function loginCallBack(result)

@@ -7,7 +7,7 @@ C_SendToDB = C_LuaNetWork.sendToDB
 C_SendToGameServer = C_LuaNetWork.sendToGameServer
 
 function doHandlerMsg(target, sn, eid, fid, data, startPos, size)
-	-- print("========doHandlerMsg=============")
+	print("========doHandlerMsg=============")
 	-- print("target = " .. target)
 	-- print("sn = " .. sn)
 	-- print("eid = " .. eid)
@@ -20,7 +20,7 @@ function doHandlerMsg(target, sn, eid, fid, data, startPos, size)
 	
 	local protocol = G_UnPacketI(4)
 	CLogInfo("******doHandlerMsg protocol = " .. protocol)
-	local func = PacketHandler.getGamePacketHandler(protocol)
+	local func = PacketHandler.getPacketHandler(protocol)
 	--print(func)
 	if not func then
 		CLogInfo("******doHandlerMsg error not func*******")
@@ -34,8 +34,12 @@ end
 
 
 
-function sendToDB(channel, target, fid, sn, uid)
-	C_SendToDB(target, fid, sn, uid, G_NetPacket())
+function sendToDB(protocol, packet)
+	print("=====sendToDB==========")
+	--print_r(packet)
+	G_AddPacket(protocol, packet)
+	--C_SendToDB(0, 20, 0, 0, 0, G_NetPacket())
+	C_SendToDB(0, 0, 0, 0, 0, G_NetPacket())
 end
 
 function SendPacket(sn)

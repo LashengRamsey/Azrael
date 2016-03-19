@@ -24,7 +24,15 @@ G_PacketStruct[Protocol.G2G_Test] =
 
 }
 
+G_PacketStruct[Protocol.C2G_Login] = 
+{
+	AccountStr = {"Str"}
+}
 
+G_PacketStruct[Protocol.G2D_COMMAND] = 
+{
+	AccountStr = {"Str"}
+}
 
 
 

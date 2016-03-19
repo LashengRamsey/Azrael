@@ -21,21 +21,23 @@ function hiredis_connect()
 		C_Error("hiredis_connect error: gsRedisIp or giRedisPort is nil")
 		return
 	end
-
-	local conn = c_hiredis.connect(gsRedisIp, giRedisPort)
+	
+	local conn = c_hiredis.connect(gsRedisIp, giRedisPort, 0)
 	--print(type(conn))
 	if not conn then
-		C_Error("==========hiredis_connect failed================")
+		C_Error("hiredis_connect failed")
+		timer.CallLater(hiredis_connect, 10000)
 	elseif type(conn) == "string" then
-		C_Error("==========hiredis_connect failed:%s", conn)
+		C_Error("hiredis_connect failed:%s", conn)
+		timer.CallLater(hiredis_connect, 10000)
 	elseif type(conn) == "userdata" then
 		--print_r(conn)
-		CLogInfo("==========hiredis_connect success================")
+		CLogInfo("hiredis_connect success")
 		guRedisConn = conn
 		--hiredis_close()
 		print(hiredis_command("PING"))
-		print(hiredis_command("SET", "fuck", "you"))
-		print(hiredis_command("GET", "fuck"))
+		--print(hiredis_command("SET", "fuck", "you"))
+		--print(hiredis_command("GET", "fuck"))
 	end
 end
 

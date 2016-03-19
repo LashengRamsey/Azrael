@@ -216,9 +216,18 @@ int MQNet::methodTo(int target, int fid, int sn, int64 eid, const Buf& args)
 int MQNet::methodToDB(int channel, int target, int fid, int sn, int64 eid, const Buf& args)
 {
 	if (channel >= (int)dbsockets_.size())
+	{
 		return -1;
-
-	void *sock = dbsockets_[channel];
+	}
+	void *sock = NULL;
+	if (channel == -1)
+	{
+		sock = socket_;
+	}
+	else
+	{
+		sock = dbsockets_[channel];
+	}
 	MsgChannel ch(sock, args.getLength()+8);
 	ch << target << fid << args;
 	ch.send();
