@@ -23,12 +23,11 @@ function doHandlerMsg(target, sn, eid, fid, data, startPos, size)
 	local func = PacketHandler.getPacketHandler(protocol)
 	--print(func)
 	if not func then
-		CLogInfo("******doHandlerMsg error not func*******")
+		CLogInfo("******doHandlerMsg error not func******* protocol = %d", protocol)
+		return
 	end
 	local sessionObj = Session.getSession(sn)
-	
 	local packet = G_UnPacketTable(protocol)
-
 	func(sessionObj, packet)
 end
 
@@ -36,7 +35,8 @@ end
 
 function sendToDB(protocol, packet)
 	print("=====sendToDB==========")
-	--print_r(packet)
+	print_r(packet)
+	print(protocol)
 	G_AddPacket(protocol, packet)
 	C_SendToDB(0, 20, 0, 0, 0, G_NetPacket())
 end

@@ -199,7 +199,7 @@ end
 --网络包测试
 function GetTestSendPacket(sessionObj, packet)
 	print("=========GetTestSendPacket=====")
-	print_r(packet)
+	--print_r(packet)
 end
 
 function TestSendPacket()

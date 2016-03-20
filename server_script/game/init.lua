@@ -25,6 +25,12 @@ function init()
 	timer.CallLater(TestSendPacket, 1000)
 end
 
+--target:发来服务器编号
+--fid：消息类型
+--sn:连接id
+--data：数据
+--startPos：数据开始下标
+--size：数据大小
 function CHandlerMsg(target, sn, eid, fid, data, startPos, size)
 	Net.doHandlerMsg(target, sn, eid, fid, data, startPos, size)
 end

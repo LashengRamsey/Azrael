@@ -11,9 +11,9 @@
 #include "arch.h"
 #include "log.h"
 
-#define PT_SERVER_START 100050
-#define PT_SERVER_OFFLINE 100051
-#define PT_SERVER_STOP 100052
+#define PT_SERVER_START 100050	//连接router
+#define PT_SERVER_OFFLINE 100051//
+#define PT_SERVER_STOP 100052	//
 
 
 static int MaxPackHandle = 1000;
@@ -177,7 +177,7 @@ void MQNet::disconnect()
 
 //发送数据
 //target:目标服务器ID
-//fid:消息类型
+//fid:消息类型 脚本发送消息都为0
 //data:数据
 //size:数据大小
 int MQNet::sendTo(int target, int fid, void* data, int size)
@@ -228,7 +228,7 @@ int MQNet::methodToDB(int channel, int target, int fid, int sn, int64 eid, const
 	{
 		sock = dbsockets_[channel];
 	}
-	MsgChannel ch(sock, args.getLength()+8);
+	MsgChannel ch(socket_, args.getLength()+8);
 	ch << target << fid << args;
 	ch.send();
 	return 0;
@@ -292,7 +292,7 @@ void MQNet::readFromRouter()
 		//just set prt to read,not copy
 		buf.refWrite((char*)zmq_msg_data(msg), len, freemsg, msg);
 
-		int src, fid;
+		int src, fid;	//src：发来的服务器编号 fid：消息类型
 		buf >> src >> fid;
 		INFO("readFromRouter src = %d,fid = %d,len = %d\n", src, fid, len);
 		if (src == myid_ && fid == PT_SERVER_START)

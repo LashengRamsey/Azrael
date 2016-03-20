@@ -367,14 +367,6 @@ void ServerApp::doMqMsg(int target, int fid, Buf *buf)
 		}
 	}
 
-	//int i1 = buf->readInt();
-	//int i11 = buf->readByte();
-	//int i2 = buf->readShort();
-	//int i4 = buf->readInt();
-	//int64 i8 = buf->readInt64();
-	//std::string s;
-	//buf->readString(s);
-
 	std::string data;
 	buf->readText(data);
 
