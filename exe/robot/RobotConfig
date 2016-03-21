@@ -18,7 +18,7 @@ MainScript=robot/init.lua
 InitFunc=c_main
 
 #Router服端口：7820,7821
-RouterPort=127.0.0.1:7820
+RouterPort=127.0.0.1:7900
 
 #日志等级
 LogLevel=1

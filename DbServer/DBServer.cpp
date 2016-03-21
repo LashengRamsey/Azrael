@@ -68,14 +68,23 @@ void DBServer::onInited()
 
 	int rc = 0;
 	char path[100] = {0};
-	snprintf(path, sizeof(path), "tcp://*:%s", myName_);
+	std::string sockpath = Config::GetValue("SocketPath");
+	std::string port = Config::GetValue("BindPort");
+	if (strcmp(sockpath.c_str(), "tcp://") >= 0)
+	{
+		snprintf(path, MAX_PATH, "%s:%s", sockpath.c_str(), port.c_str());
+	}
+	else
+	{
+		snprintf(path, MAX_PATH, "%s/router_%s", sockpath.c_str(), port.c_str());
+	}
 
 	if ((rc = zmq_bind(socket_, path)) != 0)
 	{
 		ERROR("dbserver bind %s failed %d!\n", path, rc);
 		return;
 	}
-	LOG("bind to path %s ok!", path);
+	INFO("bind to path %s ok!", path);
 }
 
 void DBServer::readMqMsg()

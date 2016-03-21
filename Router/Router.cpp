@@ -75,6 +75,9 @@ int main(int argc, char *argv[])
 
 	//============================================
 	void *context = zmq_init(1);
+
+	//ZMQ_ROUTER socket收到消息时会在消息栈上加一层包含消息来源地址的消息；
+	//发送消息时，会将这一层消息取出，将其作为发送的目的地
 	void *router = zmq_socket(context, ZMQ_ROUTER);
 
 	int rc = 0;
@@ -131,6 +134,7 @@ int main(int argc, char *argv[])
 		}
 		else
 		{
+			//指明正在被发送的消息是个多帧消息，并且后面还有更多的消息会进行发送
 			zmq_send(router, &target, 4, ZMQ_SNDMORE);
 
 			zmq_msg_t data;
@@ -138,6 +142,10 @@ int main(int argc, char *argv[])
 
 			memcpy(zmq_msg_data(&data), &source, 4);
 			memcpy((char*)zmq_msg_data(&data)+4, (char*)zmq_msg_data(&message)+4, len-4);
+
+			//指明本次操作使用非阻塞方式执行。
+			//如果这个消息不能被添加到哦消息队列里面，zmq_msg_send()函数会执行失败，
+			//并设置errno的值为EAGAIN.。
 
 			zmq_sendmsg(router, &data, ZMQ_DONTWAIT);
 			zmq_msg_close(&data);

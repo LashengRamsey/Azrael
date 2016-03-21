@@ -11,21 +11,21 @@ SocketPath=tcp://127.0.0.1
 Daemon=0
 
 #脚本启动目录,相对于执行文件目录
-ScriptDir=G:\Azrael\server_script
+ScriptDir=G:/Azrael/server_script
 #脚本启动文件
 MainScript=game/init.lua
 #函数名
 InitFunc=c_main
 
 #Router服端口：7820,7821
-RouterPort=127.0.0.1:7820
+RouterPort=127.0.0.1:7900
 
 #日志等级
 LogLevel=1
 LogPath=log
 
 #DB服端口
-DBId=127.0.0.1:7830
+DBId=127.0.0.1:7820
 
 #日志服地址
 LogPath=127.0.0.1:7840

@@ -2,7 +2,7 @@
 ServerID=100
 
 #监听端口
-BindPort=7820
+BindPort=7900
 
 SocketPath=tcp://127.0.0.1
 

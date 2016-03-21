@@ -129,7 +129,10 @@ void MQNet::connect(int myid, const char* addr)
 
 	if (!socket_)
 	{
+		//给连接的对端RR地分发消息，对收到的消息公平排队
 		socket_ = zmq_socket(ctx_, ZMQ_DEALER);
+
+		//ZMQ_IDENTITY选项会设置socket的身份ID。socket的身份ID只会能在请求/回复模式中使用
 		zmq_setsockopt(socket_, ZMQ_IDENTITY, &myid_, sizeof(myid_));
 		first = true;
 	}
@@ -146,13 +149,16 @@ void MQNet::connect(int myid, const char* addr)
 
 void MQNet::connectDB(const char *addr)
 {
-	NOTICE("Connect db server %s", addr);
+	NOTICE("*************Connect db server %s", addr);
 	void *sock = zmq_socket(ctx_, ZMQ_DEALER);
 	zmq_setsockopt(sock, ZMQ_IDENTITY, &myid_, sizeof(myid_));
 
 	//设置发送缓冲区大小，测试功能
 	int sendBuf = 10000;
 	size_t len = sizeof(sendBuf);
+
+	//ZMQ_SNDHWM属性将会设置socket参数指定的socket对外发送的消息的高水位。
+	//高水位是一个硬限制，它会限制每一个与此socket相连的在内存中排队的未处理的消息数目的最大值。0值代表着没有限制。
 	zmq_getsockopt(sock, ZMQ_SNDHWM, &sendBuf, &len);
 	if (sendBuf < 10000)
 	{
@@ -162,7 +168,7 @@ void MQNet::connectDB(const char *addr)
 	zmq_getsockopt(sock, ZMQ_SNDHWM, &sendBuf, &len);
 	INFO("set game to db send buffer size:%d", sendBuf);
 
-	zmq_connect(sock, addr);
+	int ret = zmq_connect(sock, addr);
 	dbsockets_.push_back(sock);
 }
 
@@ -197,6 +203,7 @@ int MQNet::sendTo(int target, int fid, const Buf& args)
 	return 0;
 }
 
+//发送到游戏器
 int MQNet::methodTo(int target, int fid, int sn, int64 eid, void* data, int size)
 {
 	MsgChannel ch(socket_, size+20);
@@ -205,6 +212,7 @@ int MQNet::methodTo(int target, int fid, int sn, int64 eid, void* data, int size
 	return 0;
 }
 
+//发送到游戏器
 int MQNet::methodTo(int target, int fid, int sn, int64 eid, const Buf& args)
 {
 	MsgChannel ch(socket_, args.getLength()+20);
@@ -213,6 +221,7 @@ int MQNet::methodTo(int target, int fid, int sn, int64 eid, const Buf& args)
 	return 0;
 }
 
+//发送到DB服务器
 int MQNet::methodToDB(int channel, int target, int fid, int sn, int64 eid, const Buf& args)
 {
 	if (channel >= (int)dbsockets_.size())
@@ -228,7 +237,7 @@ int MQNet::methodToDB(int channel, int target, int fid, int sn, int64 eid, const
 	{
 		sock = dbsockets_[channel];
 	}
-	MsgChannel ch(socket_, args.getLength()+8);
+	MsgChannel ch(sock, args.getLength()+8);
 	ch << target << fid << args;
 	ch.send();
 	return 0;
