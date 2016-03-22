@@ -8,6 +8,22 @@
 #include "zmq.h"
 #include <time.h>
 
+#ifdef WIN32
+#include <io.h>
+#include <direct.h>
+#else
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <unistd.h>
+#endif
+
+#ifdef WIN32
+#define ACCESS _access
+#define MKDIR(a) _mkdir((a))
+#else
+#define ACCESS access
+#define MKDIR(a) mkdir((a),0755)
+#endif
 
 static int id = 40001;
 #define MAX_PATH_LEN 256
@@ -33,20 +49,57 @@ struct DayFile{
 	int day;
 };
 
-
 DayFile stddf;
 DayFile errdf;
 
+std::string logDir = "log";
 std::string logpath_ = "log/";
 std::string logName_ = "game";
 
 int oldday = 5;
+
+
+static int createDir(const char *_pszDir)
+{
+	DEBUG_TRY;
+	char pszDir[512];
+	strcpy(pszDir,_pszDir);
+	unsigned int i = 0;
+	unsigned int iRet;
+	unsigned int iLen = strlen(pszDir);
+	if (pszDir[iLen - 1] != '\\' && pszDir[iLen - 1] != '/')
+	{
+		pszDir[iLen] = '/';
+		pszDir[iLen + 1] = '\0';
+	}
+	for (i = 0;i < iLen;i ++)
+	{
+		if (pszDir[i] == '\\' || pszDir[i] == '/')
+		{ 
+			pszDir[i] = '\0';
+			iRet = ACCESS(pszDir,0);
+			if (iRet != 0)
+			{
+				iRet = MKDIR(pszDir);
+				if (iRet != 0)
+				{
+					//return -1;
+				} 
+			}
+			pszDir[i] = '/';
+		} 
+	}
+	return 0;
+	DEBUG_CATCH;
+}
 
 void add_log(int source, int priority, const char* pMsg, int msgisze);
 void init_log()
 {
 	if (inited)
 		return;
+
+	createDir(logpath_.c_str());
 
 	assert(zmqContext == NULL);
 	assert(logSocket == NULL);
@@ -241,15 +294,21 @@ FILE* open_log_file(DayFile* dayfile, const char* log_path, const char* log_name
 		strcat(log_filepath, date_buf);
 		
 		dayfile->file = fopen(log_filepath, "a");
+		if (dayfile->file == NULL)
+		{
+			printf("log fopen error errno = %d, code = %s", errno, strerror(errno));
+			return NULL;
+		}
+
 		dayfile->day = dayInteger(now);
 		return dayfile->file;
 	}
-
+	
 	fclose(dayfile->file);
 	dayfile->file = NULL;
 	dayfile->day = dayInteger(now);
 
-	remove_old_log(log_path, log_name);
+	//remove_old_log(log_path, log_name);
 
 	t = time(NULL);
 	now = localtime(&t);

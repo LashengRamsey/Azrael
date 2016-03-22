@@ -4,8 +4,8 @@
     <ShowAllFiles>true</ShowAllFiles>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <LocalDebuggerCommandArguments>GameConfig</LocalDebuggerCommandArguments>
-    <LocalDebuggerWorkingDirectory>../exe/game</LocalDebuggerWorkingDirectory>
+    <LocalDebuggerCommandArguments>game/GameConfig</LocalDebuggerCommandArguments>
+    <LocalDebuggerWorkingDirectory>../exe</LocalDebuggerWorkingDirectory>
     <DebuggerFlavor>WindowsLocalDebugger</DebuggerFlavor>
   </PropertyGroup>
 </Project>
