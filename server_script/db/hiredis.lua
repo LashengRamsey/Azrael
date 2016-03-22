@@ -60,6 +60,7 @@ function hiredis_command(...)
 	local nret = guRedisConn:command(...)
 	CLogInfo("hiredis_command success nret = ")
 	--print(nret)
+	--print(type(nret))
 	return nret
 end
 

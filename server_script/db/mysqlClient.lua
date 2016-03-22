@@ -52,9 +52,8 @@ function mysql_query(sql)
 		C_Error("msyql mysql_query error:mysql_context is nil")
 		return
 	end
+	CLogInfo("mysql mysql_query sql:%s", sql)
 	local result,tFields  = c_mysql_query(mysql_context, sql)
-
-	CLogInfo("mysql mysql_insert")
 	if result == -1 then
 		C_Error("msyql mysql_query error: result = -1, parameter num error")
 	elseif result == -2 then
@@ -63,7 +62,7 @@ function mysql_query(sql)
 		C_Error("msyql mysql_query error: result = -3,mysql_query error sql = " .. sql)
 	elseif result == 0 then
 		CLogInfo("mysql mysql_query success sql = " .. sql)
-		print_r(tFields)
+		--print_r(tFields)
 	end
 	
 	return tFields

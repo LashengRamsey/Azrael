@@ -2,12 +2,12 @@ module("dbStruct", package.seeall)
 
 gdStructMap = {}
 
-gdStructMap.account = 
+gdStructMap["account"] = 
 {
 	AccountStr = "String",
 
 
-	key = AccountStr,
+	db_key = AccountStr,
 }
 
 

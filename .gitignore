@@ -43,3 +43,4 @@
 /exe/log
 /libCore/*.suo
 /exe/redis/Redis-win/dump.rdb
+/exe/game/log

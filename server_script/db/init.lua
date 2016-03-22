@@ -42,6 +42,8 @@ function init()
 end
 
 function CHandlerMsg(target, sn, eid, fid, data, startPos, size)
+	print("========CHandlerMsg=============")
+	print("sn = " .. sn)
 	Net.doHandlerMsg(target, sn, eid, fid, data, startPos, size)
 end
 
