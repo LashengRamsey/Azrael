@@ -31,7 +31,9 @@ G_PacketStruct[Protocol.C2G_Login] =
 
 G_PacketStruct[Protocol.G2D_COMMAND] = 
 {
-	AccountStr = {"Str"}
+	db_name = {"Str"},
+	key = {"Str"},
+	id = {"Str"},
 }
 
 

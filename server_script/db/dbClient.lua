@@ -11,7 +11,7 @@ local function getExecuteId()
 	return giExecuteId
 end
 
-function select(table, args, callback, cbargs)
+function select(args, callback, cbargs)
 	
 	local iCbId = getExecuteId
 
@@ -21,12 +21,8 @@ function select(table, args, callback, cbargs)
 		iCbId = giExecuteId,	--回调id
 
 	}
-
-	local send = {
-		AccountStr = "robot1"
-	}
-
-	Net.sendToDB(Protocol.G2D_COMMAND, send)
+	
+	Net.sendToDB(Protocol.G2D_COMMAND, args)
 end
 
 
