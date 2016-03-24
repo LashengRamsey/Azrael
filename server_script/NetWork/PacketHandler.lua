@@ -14,6 +14,8 @@ function initGamePacketHandler()
 	initComPacketHandler()
 
 	gtPacketHandler[Protocol.C2G_Login] = login.login
+	gtPacketHandler[Protocol.D2G_COMMAND_RESULT] = dbClient.CommandCallBack
+	
 end
 
 function getDbPacketHandler(protocol)

@@ -36,7 +36,11 @@ G_PacketStruct[Protocol.G2D_COMMAND] =
 	id = {"Str"},
 }
 
-
+G_PacketStruct[Protocol.D2G_COMMAND_RESULT] = 
+{
+	result = {"Char"},
+	sResult = {"Str"}
+}
 
 
 

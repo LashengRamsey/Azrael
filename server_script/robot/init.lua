@@ -24,8 +24,8 @@ function init()
 end
 
 
-function CHandlerMsg(target, sn, eid, fid, data, startPos, size)
-	Net.doHandlerMsg(target, sn, eid, fid, data, startPos, size)
+function CHandlerMsg(src, sn, eid, fid, data, startPos, size)
+	Net.doHandlerMsg(src, sn, eid, fid, data, startPos, size)
 end
 
 function CHandlerConnect(sn)

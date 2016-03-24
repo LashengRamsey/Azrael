@@ -13,7 +13,7 @@ public:
 	static int GetSessionIP(lua_State* L);
 	static int SetSessionUserData(lua_State* L);
 	static int CloseSession(lua_State* L);
-	static int SendPacket(lua_State* L);
+	static int SendToServer(lua_State* L);
 	static int SendToNet(lua_State* L);
 	static int SendToDB(lua_State* L);
 	static int SendToGameServer(lua_State* L);

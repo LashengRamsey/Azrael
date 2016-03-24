@@ -25,6 +25,11 @@ function select(args, callback, cbargs)
 	Net.sendToDB(Protocol.G2D_COMMAND, args)
 end
 
+function CommandCallBack(fn, packet)
+	print("==========CommandCallBack==============")
+	print_r(packet)
+end
+
 
 
 

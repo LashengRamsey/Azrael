@@ -18,7 +18,7 @@ L_METHOD(LuaNetwork, ConnectDB)
 L_METHOD(LuaNetwork, GetSessionIP)
 L_METHOD(LuaNetwork, SetSessionUserData)
 L_METHOD(LuaNetwork, CloseSession)
-L_METHOD(LuaNetwork, SendPacket)
+L_METHOD(LuaNetwork, SendToServer)
 L_METHOD(LuaNetwork, SendToNet)
 L_METHOD(LuaNetwork, SendToDB)
 L_METHOD(LuaNetwork, SendToGameServer)
@@ -52,9 +52,14 @@ int LuaNetwork::SetSessionUserData(lua_State* L)
 	}
 	Session *s = pNet->getSession(sn);
 	if (s)
+	{
 		s->setUserData(ud);
+	}
 	else
+	{
 		luaL_error(L, "Can't find session %d", sn);
+	}
+		
 	return 0;
 }
 
@@ -86,28 +91,6 @@ int LuaNetwork::ConnectRouter(lua_State* L)
 int LuaNetwork::ConnectDB(lua_State* L)
 {
 	ServerApp::get()->connectDB();
-	return 0;
-}
-
-int LuaNetwork::SendPacket(lua_State* L)
-{
-	int target, sn, fid, t;
-	int64 uid;
-
-	Lua::argParse(L, "iiilt", &target, &fid, &sn, &uid, &t);
-	Buf buf;
-	int len = lua_objlen(L, t);
-	for (int i = 1;i <= len; ++i)
-	{
-		lua_rawgeti(L, t, i);
-		if(!lua_istable(L,-1))
-		{
-			luaL_error(L, "except table at index:%d", i);
-		}
-		resolvePacketTableItem(L, &buf);
-		lua_pop(L, 1);
-	}
-	ServerApp::get()->SendPacket(target, fid, sn, uid, buf);
 	return 0;
 }
 
@@ -164,6 +147,28 @@ int LuaNetwork::SendToNet(lua_State* L)
 	return 0;
 }
 
+int LuaNetwork::SendToServer(lua_State* L)
+{
+	int target, sn, fid, t;
+	int64 uid;
+
+	Lua::argParse(L, "iiilt", &target, &fid, &sn, &uid, &t);
+	Buf buf;
+	int len = lua_objlen(L, t);
+	for (int i = 1;i <= len; ++i)
+	{
+		lua_rawgeti(L, t, i);
+		if(!lua_istable(L,-1))
+		{
+			luaL_error(L, "except table at index:%d", i);
+		}
+		resolvePacketTableItem(L, &buf);
+		lua_pop(L, 1);
+	}
+	ServerApp::get()->SendPacket(target, fid, sn, uid, buf);
+	return 0;
+}
+
 int LuaNetwork::SendToGameServer(lua_State* L)
 {
 	int target, sn, fid, t;
@@ -186,8 +191,8 @@ int LuaNetwork::SendToGameServer(lua_State* L)
 		resolvePacketTableItem(L, &buf);
 		lua_pop(L, 1);			//µ¯³öÕ»
 	}
-	
-	ServerApp::get()->SendPacket(target, fid, sn, uid, buf);
+	ServerApp::get()->SendToGameServer(target, fid, sn, uid, buf);
+	//ServerApp::get()->SendPacket(target, fid, sn, uid, buf);
 	return 0;
 }
 

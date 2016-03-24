@@ -152,7 +152,7 @@ int DBServer::SendToGameServer(int target, int fid, int sn, int64 uid, const Buf
 	memcpy(((char*)zmq_msg_data(&data)) + sizeof(int)*3, &uid, sizeof(int64));
 	memcpy((char*)zmq_msg_data(&data) + sizeof(int)*3  + sizeof(int64), str.c_str(), str.size());
 	
-	zmq_sendmsg(socket_, &data, ZMQ_NOBLOCK);
+	zmq_sendmsg(socket_, &data, ZMQ_DONTWAIT);
 	zmq_msg_close(&data);
 	return 0;
 }

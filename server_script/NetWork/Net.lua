@@ -1,14 +1,14 @@
 module("Net", package.seeall)
 
 C_LuaNetWork = LuaNetwork		--网络
-C_SendPacket = C_LuaNetWork.sendPacket
+C_SendToServer = C_LuaNetWork.sendToServer
 C_SendToNet = C_LuaNetWork.sendToNet
 C_SendToDB = C_LuaNetWork.sendToDB
 C_SendToGameServer = C_LuaNetWork.sendToGameServer
 
-function doHandlerMsg(target, sn, eid, fid, data, startPos, size)
+function doHandlerMsg(src, sn, eid, fid, data, startPos, size)
 	print("========doHandlerMsg=============")
-	-- print("target = " .. target)
+	-- print("src = " .. src)
 	-- print("sn = " .. sn)
 	-- print("eid = " .. eid)
 	-- print("fid = " .. fid)
@@ -28,27 +28,35 @@ function doHandlerMsg(target, sn, eid, fid, data, startPos, size)
 	end
 	local sessionObj = Session.getSession(sn)
 	local packet = G_UnPacketTable(protocol)
-	func(sessionObj, packet)
+
+	if sessionObj then
+		func(sessionObj, packet)
+	else
+		func(src, packet)
+	end
+
 end
 
 
+--发送网络包到客户端
+function SendPacket(sn)
+	C_SendToNet(0, sn, G_NetPacket())
+end
 
+--游戏服发到游戏服
+function sendToServer(src, fid, sn, uid, protocol, packet)
+	G_AddPacket(protocol, packet)
+	C_SendToServer(src, fid, sn, uid, G_NetPacket())
+end
+
+--游戏服发到DB服
 function sendToDB(protocol, packet)
-	print("=====sendToDB==========")
-	print_r(packet)
-	print(protocol)
 	G_AddPacket(protocol, packet)
 	C_SendToDB(0, 20, 0, 0, 0, G_NetPacket())
 end
 
-function SendPacket(sn)
-	C_SendPacket(-1, 0, sn, 0, G_NetPacket())
-end
-
-
-function sendToServer(target, fid, sn, uid, protocol, packet)
+--DB服发到游戏服
+function sendToGame(iServerNo, protocol, packet)
 	G_AddPacket(protocol, packet)
-	C_SendToGameServer(target, fid, sn, uid, G_NetPacket())
+	C_SendToGameServer(iServerNo, 0, 0, 0, G_NetPacket())
 end
-
-

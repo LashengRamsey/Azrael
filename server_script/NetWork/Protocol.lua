@@ -11,7 +11,7 @@ C2G_Login = 1	--登录
 
 --下行:服务端-->>客户端
 
-G2C_Account_Info = 2000	--帐号信息
+G2C_Account_Info = 2000		--帐号信息
 
 
 
@@ -20,14 +20,15 @@ G2C_Account_Info = 2000	--帐号信息
 
 
 --下行:服务器-->>服务器
-G2G_Test = 10000	--测试
+G2G_Test = 10000			--测试
 
 
 
 
 
 --游戏服务器-->>DB服务器
-G2D_COMMAND = 20000	--执行命令
+G2D_COMMAND = 20000			--执行命令
+D2G_COMMAND_RESULT = 20001	--结果
 
 
 
