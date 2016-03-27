@@ -21,7 +21,7 @@ public:
 	void run();
 	void onInited();
 	void onUpdate(unsigned int dtime);
-	int SendToGameServer(int target, int fid, int sn, int64 uid, const Buf& buf);
+	int SendToGameServer(int target, int fid, int sn, const Buf& buf);
 
 protected:
 	void createContext();

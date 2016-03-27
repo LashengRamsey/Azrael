@@ -139,8 +139,7 @@ public:
 
 	void SendString(int sn, const char* str, uint size);
 	void sendPacket(int sn, const Buf& buf);
-	void sendPacket(int sn, int fid, int64 eid, const char* msg, uint msglen);
-	void sendPacket(int sn, int fid, int64 eid, const Buf& data);
+	void sendPacket(int sn, int fid, const char* msg, uint msglen);
 	void sendPacket(int sn, int fid, const Buf& data);
 	void sendPacket(Session* session, const Buf& data);
 	void sendPacketAll(Buf& buf);

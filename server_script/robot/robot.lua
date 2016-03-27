@@ -131,6 +131,6 @@ function robot:sendLogin()
 	packet.AccountStr = "robot" .. self.iRobotId
 
 	G_AddPacket(Protocol.C2G_Login, packet)
-	self.uConn:c_Write(0, 0, G_NetPacket())
+	self.uConn:c_Write(0, G_NetPacket())
 end
 

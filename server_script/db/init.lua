@@ -41,11 +41,11 @@ function init()
 	--timer.CallLater(TestSendPacket, 1000)
 end
 
-function CHandlerMsg(src, sn, eid, fid, data, startPos, size)
+function CHandlerMsg(src, sn, fid, data, startPos, size)
 	print("========CHandlerMsg=============")
 	print("src = " .. src)
 	print("sn = " .. sn)
-	Net.doHandlerMsg(src, sn, eid, fid, data, startPos, size)
+	Net.doHandlerMsg(src, sn, fid, data, startPos, size)
 end
 
 function CHandlerConnect(sn)
@@ -67,6 +67,6 @@ end
 
 function CHandlerNetMsg(sn, data, startPos, size)
 	print("========CHandlerNetMsg=============")
-	Net.doHandlerMsg(0, sn, 0, 0, data, startPos, size)
+	Net.doHandlerMsg(0, sn, 0, data, startPos, size)
 end
 

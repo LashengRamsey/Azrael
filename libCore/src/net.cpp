@@ -581,27 +581,13 @@ void Net::sendPacket(int sn, const Buf& buf)
 	sendPacket(session, buf);
 }
 
-void Net::sendPacket(int sn, int fid, int64 eid, const char* msg, uint msglen)
+void Net::sendPacket(int sn, int fid, const char* msg, uint msglen)
 {
 	Buf bufout;
 	bufout << (int8)PACKET_HEAD
-		<< msglen + 9
-		<< eid
+		<< msglen + 1
 		<< fid
 		<< BufData(msg, msglen)
-		<< (int8)PACKET_END;
-
-	this->sendPacket(sn, bufout);
-}
-
-void Net::sendPacket(int sn, int fid, int64 eid, const Buf& data)
-{
-	Buf bufout;
-	bufout << (int8)PACKET_HEAD
-		<< data.getLength() + 9
-		<< eid
-		<< fid
-		<< data
 		<< (int8)PACKET_END;
 
 	this->sendPacket(sn, bufout);

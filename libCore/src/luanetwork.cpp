@@ -96,10 +96,9 @@ int LuaNetwork::ConnectDB(lua_State* L)
 
 int LuaNetwork::SendToDB(lua_State* L)
 {
-	int channel, target, sn, fid, t;
-	int64 uid;
+	int channel, target, fid, t;
 
-	Lua::argParse(L, "iiiilt", &channel, &target, &fid, &sn, &uid, &t);
+	Lua::argParse(L, "iiit", &channel, &target, &fid, &t);
 	Buf buf;
 	int len = lua_objlen(L, t);
 	for (int i = 1;i <= len; ++i)
@@ -115,8 +114,8 @@ int LuaNetwork::SendToDB(lua_State* L)
 	MQNet *mqnet = ServerApp::get()->getMQNet();
 	if(mqnet)
 	{
-		INFO("[lua proto]SendToDB sned msg, target:%d, fid:%d, sn:%d, eid:%lld, data size:%d", target, fid, sn, uid, buf.getLength());
-		mqnet->methodToDB(channel, target, fid, sn, uid, buf);
+		INFO("[lua proto]SendToDB sned msg, target:%d, fid:%d, data size:%d", target, fid, buf.getLength());
+		mqnet->methodToDB(channel, target, fid, buf);
 	}
 	return 0;
 
@@ -150,9 +149,8 @@ int LuaNetwork::SendToNet(lua_State* L)
 int LuaNetwork::SendToServer(lua_State* L)
 {
 	int target, sn, fid, t;
-	int64 uid;
 
-	Lua::argParse(L, "iiilt", &target, &fid, &sn, &uid, &t);
+	Lua::argParse(L, "iiit", &target, &fid, &sn, &t);
 	Buf buf;
 	int len = lua_objlen(L, t);
 	for (int i = 1;i <= len; ++i)
@@ -165,16 +163,15 @@ int LuaNetwork::SendToServer(lua_State* L)
 		resolvePacketTableItem(L, &buf);
 		lua_pop(L, 1);
 	}
-	ServerApp::get()->SendPacket(target, fid, sn, uid, buf);
+	ServerApp::get()->SendPacket(target, fid, sn, buf);
 	return 0;
 }
 
 int LuaNetwork::SendToGameServer(lua_State* L)
 {
 	int target, sn, fid, t;
-	int64 uid;
 	
-	Lua::argParse(L, "iiilt", &target, &fid, &sn, &uid, &t);
+	Lua::argParse(L, "iiit", &target, &fid, &sn, &t);
 	
 	Buf buf;
 	//返回指定的索引处的值的长度。对于 string ，那就是字符串的长度；对于 table ，
@@ -191,8 +188,7 @@ int LuaNetwork::SendToGameServer(lua_State* L)
 		resolvePacketTableItem(L, &buf);
 		lua_pop(L, 1);			//弹出栈
 	}
-	ServerApp::get()->SendToGameServer(target, fid, sn, uid, buf);
-	//ServerApp::get()->SendPacket(target, fid, sn, uid, buf);
+	ServerApp::get()->SendToGameServer(target, fid, sn, buf);
 	return 0;
 }
 

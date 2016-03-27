@@ -31,10 +31,10 @@ end
 --data：数据
 --startPos：数据开始下标
 --size：数据大小
-function CHandlerMsg(src, sn, eid, fid, data, startPos, size)
+function CHandlerMsg(src, sn, fid, data, startPos, size)
 	print("src = " .. src)
 	print("sn = " .. sn)
-	Net.doHandlerMsg(src, sn, eid, fid, data, startPos, size)
+	Net.doHandlerMsg(src, sn, fid, data, startPos, size)
 end
 
 function CHandlerConnect(sn)
@@ -56,5 +56,5 @@ end
 
 function CHandlerNetMsg(sn, data, startPos, size)
 	print("========CHandlerNetMsg=============")
-	Net.doHandlerMsg(0, sn, 0, 0, data, startPos, size)
+	Net.doHandlerMsg(0, sn, 0, data, startPos, size)
 end

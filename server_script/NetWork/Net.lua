@@ -6,11 +6,10 @@ C_SendToNet = C_LuaNetWork.sendToNet
 C_SendToDB = C_LuaNetWork.sendToDB
 C_SendToGameServer = C_LuaNetWork.sendToGameServer
 
-function doHandlerMsg(src, sn, eid, fid, data, startPos, size)
+function doHandlerMsg(src, sn, fid, data, startPos, size)
 	print("========doHandlerMsg=============")
 	-- print("src = " .. src)
 	-- print("sn = " .. sn)
-	-- print("eid = " .. eid)
 	-- print("fid = " .. fid)
 	-- print("startPos = " .. startPos)
 	-- print("size = " .. size)
@@ -44,19 +43,19 @@ function SendPacket(sn)
 end
 
 --游戏服发到游戏服
-function sendToServer(src, fid, sn, uid, protocol, packet)
+function sendToServer(src, sn, protocol, packet)
 	G_AddPacket(protocol, packet)
-	C_SendToServer(src, fid, sn, uid, G_NetPacket())
+	C_SendToServer(src, 0, sn, G_NetPacket())
 end
 
 --游戏服发到DB服
 function sendToDB(protocol, packet)
 	G_AddPacket(protocol, packet)
-	C_SendToDB(0, 20, 0, 0, 0, G_NetPacket())
+	C_SendToDB(0, 20, 0, G_NetPacket())
 end
 
 --DB服发到游戏服
 function sendToGame(iServerNo, protocol, packet)
 	G_AddPacket(protocol, packet)
-	C_SendToGameServer(iServerNo, 0, 0, 0, G_NetPacket())
+	C_SendToGameServer(iServerNo, 0, 0, G_NetPacket())
 end

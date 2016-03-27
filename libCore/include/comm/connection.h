@@ -34,8 +34,8 @@ public:
 	bool isConnected();
 	void close();
 
-	void sendTo(int fid, int64 eid, Buf& buf);
-	void sendTo(int fid, int64 uid, int key, Buf& buf);
+	void sendTo(int fid, Buf& buf);
+	void sendTo(int fid, int key, Buf& buf);
 	virtual void doMsg(Buf* buf=NULL);
 	void setData(void* data) {data_ = data; }
 	void* getData() {return data_; }

@@ -55,7 +55,7 @@ end
 function hiredis_command(...)
 	if not guRedisConn then 
 		C_Error("hiredis_command error:redis server not connect")
-		return
+		return c_hiredis.NIL
 	end
 	local nret = guRedisConn:command(...)
 	CLogInfo("hiredis_command success nret = ")

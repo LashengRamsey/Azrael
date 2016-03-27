@@ -86,10 +86,10 @@ public:
 	//size:数据大小
 	virtual int sendTo(int target, int fid, const Buf& args);
 	virtual int sendTo(int target, int fid, void* data=NULL, int size=0);
-	virtual int methodTo(int target, int fid, int sn, int64 eid, void* data=NULL, int size=0);
-	virtual int methodTo(int target, int fid, int sn, int64 eid, const Buf& args);
-	virtual int methodToDB(int channel, int target, int fid, int sn, int64 eid, const Buf& args);
-	virtual int methodTo(int target, int fid, const std::vector<int>& sns, int64 eid, const Buf& args);
+	virtual int methodTo(int target, int fid, int sn, void* data=NULL, int size=0);
+	virtual int methodTo(int target, int fid, int sn, const Buf& args);
+	virtual int methodToDB(int channel, int target, int fid, const Buf& args);
+	virtual int methodTo(int target, int fid, const std::vector<int>& sns, const Buf& args);
 
 	virtual void doMsg(int target, int fid, Buf* buf);
 

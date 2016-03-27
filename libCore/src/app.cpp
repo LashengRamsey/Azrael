@@ -350,27 +350,26 @@ void ServerApp::update()
 void ServerApp::doMqMsg(int target, int fid, Buf *buf)
 {
 	uint sn = 0;
-	int64 eid;
 	
-	*buf >> sn >> eid;
+	*buf >> sn;
 
 	if(PT_CLIENT_OFFLINE == fid)
 	{
-		LuaSvr::call("doDisconnect", "iil", target, sn, eid);
+		LuaSvr::call("doDisconnect", "ii", target, sn);
 	}
 	else if(PT_NETTEST_MSG == fid)
 	{
 		*buf << timer_get_time();
 		if(mqnet_)
 		{
-			mqnet_->methodTo(target, fid, sn, eid, *buf);
+			mqnet_->methodTo(target, fid, sn, *buf);
 		}
 	}
 
 	std::string data;
 	buf->readText(data);
 
-	LuaSvr::call("CHandlerMsg", "iiliSii", target, sn, eid, fid, &data, 0, data.size());
+	LuaSvr::call("CHandlerMsg", "iiiSii", target, sn, fid, &data, 0, data.size());
 }
 
 //收到客户端连接网络消息
@@ -512,7 +511,7 @@ unsigned int ServerApp::getServerID()
 	return atoi(myName_);
 }
 
-int ServerApp::SendPacket(int target, int fid, int sn, int64 uid, const Buf &buf)
+int ServerApp::SendPacket(int target, int fid, int sn, const Buf &buf)
 {
 	if (target == -1)
 	{
@@ -527,8 +526,8 @@ int ServerApp::SendPacket(int target, int fid, int sn, int64 uid, const Buf &buf
 		MQNet *mqnet = getMQNet();
 		if (mqnet)
 		{
-			INFO("[lua proto]SendPacket sned msg, target:%d, fid:%d, sn:%d, eid:%lld, data size:%d", target, fid, sn, uid, buf.getLength());
-			mqnet->methodTo(target, fid, sn, uid, buf);
+			INFO("[lua proto]SendPacket sned msg, target:%d, fid:%d, sn:%d, data size:%d", target, fid, sn, buf.getLength());
+			mqnet->methodTo(target, fid, sn, buf);
 		}
 	}
 	return 0;

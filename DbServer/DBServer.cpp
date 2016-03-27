@@ -124,8 +124,7 @@ void DBServer::readMqMsg()
 		data.append((char*)zmq_msg_data(&message)+8, len-8);
 		zmq_msg_close(&message);
 		uint sn = 0;
-		int64 eid = 0;
-		LuaSvr::call("CHandlerMsg", "iiliSii", source, sn, eid, fid, &data, 0, data.size());
+		LuaSvr::call("CHandlerMsg", "iiiSii", source, sn, fid, &data, 0, data.size());
 	}
 }
 
@@ -135,7 +134,7 @@ void DBServer::onUpdate(unsigned int dtime)
 	readMqMsg();
 }
 
-int DBServer::SendToGameServer(int target, int fid, int sn, int64 uid, const Buf& buf)
+int DBServer::SendToGameServer(int target, int fid, int sn, const Buf& buf)
 {
 	int source  = 0;
 	std::string str;
@@ -144,13 +143,13 @@ int DBServer::SendToGameServer(int target, int fid, int sn, int64 uid, const Buf
 
 	zmq_send(socket_, &target, 4, ZMQ_SNDMORE);
 	zmq_msg_t data;
-	zmq_msg_init_size(&data, str.size() + sizeof(int) *3 + sizeof(int64));
+	zmq_msg_init_size(&data, str.size() + sizeof(int) *3);// + sizeof(int64));
 
 	memcpy(zmq_msg_data(&data), &source, 4);
 	memcpy(((char*)zmq_msg_data(&data)) + sizeof(int), &fid, sizeof(int));
 	memcpy(((char*)zmq_msg_data(&data)) + sizeof(int)*2, &sn, sizeof(int));
-	memcpy(((char*)zmq_msg_data(&data)) + sizeof(int)*3, &uid, sizeof(int64));
-	memcpy((char*)zmq_msg_data(&data) + sizeof(int)*3  + sizeof(int64), str.c_str(), str.size());
+	//memcpy(((char*)zmq_msg_data(&data)) + sizeof(int)*3, &uid, sizeof(int64));
+	memcpy((char*)zmq_msg_data(&data) + sizeof(int)*3, str.c_str(), str.size());
 	
 	zmq_sendmsg(socket_, &data, ZMQ_DONTWAIT);
 	zmq_msg_close(&data);

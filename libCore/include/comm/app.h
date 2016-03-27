@@ -36,8 +36,8 @@ public:
 	void connectRouter();
 	void connectDB();
 
-	virtual int SendPacket(int target, int fid, int sn, int64 uid, const Buf& buf);
-	virtual int SendToGameServer(int target, int fid, int sn, int64 uid, const Buf& buf)
+	virtual int SendPacket(int target, int fid, int sn, const Buf& buf);
+	virtual int SendToGameServer(int target, int fid, int sn, const Buf& buf)
 	{
 		return 0;
 	}

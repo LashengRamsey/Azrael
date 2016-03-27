@@ -277,7 +277,7 @@ function TestSendPacket()
 		t.arrayStr = {"arrayStr1", "arrayStr2", "arrayStr3"}
 
 		
-		Net.sendToServer(1, 0, 0, 0, Protocol.G2G_Test, t)
+		Net.sendToServer(1, 0, Protocol.G2G_Test, t)
 		--Net.sendToDB(1, 0, 0, 0, Protocol.G2G_Test, t)
 		--end
 

@@ -204,25 +204,25 @@ int MQNet::sendTo(int target, int fid, const Buf& args)
 }
 
 //发送到游戏器
-int MQNet::methodTo(int target, int fid, int sn, int64 eid, void* data, int size)
+int MQNet::methodTo(int target, int fid, int sn, void* data, int size)
 {
-	MsgChannel ch(socket_, size+20);
-	ch << target << fid << sn << eid << MsgData(data, size);
+	MsgChannel ch(socket_, size+12);
+	ch << target << fid << sn << MsgData(data, size);
 	ch.send();
 	return 0;
 }
 
 //发送到游戏器
-int MQNet::methodTo(int target, int fid, int sn, int64 eid, const Buf& args)
+int MQNet::methodTo(int target, int fid, int sn, const Buf& args)
 {
-	MsgChannel ch(socket_, args.getLength()+20);
-	ch << target << fid << sn << eid << args;
+	MsgChannel ch(socket_, args.getLength()+12);
+	ch << target << fid << sn << args;
 	ch.send();
 	return 0;
 }
 
 //发送到DB服务器
-int MQNet::methodToDB(int channel, int target, int fid, int sn, int64 eid, const Buf& args)
+int MQNet::methodToDB(int channel, int target, int fid, const Buf& args)
 {
 	if (channel >= (int)dbsockets_.size())
 	{
@@ -243,12 +243,10 @@ int MQNet::methodToDB(int channel, int target, int fid, int sn, int64 eid, const
 	return 0;
 }
 
-int MQNet::methodTo(int target, int fid, const std::vector<int>& sns, int64 eid, const Buf& args)
+int MQNet::methodTo(int target, int fid, const std::vector<int>& sns, const Buf& args)
 {
-	MsgChannel ch(socket_, args.getLength()+16+4*sns.size());
-	ch << target << fid << sns.size()
-		<< sns
-		<< eid << args;
+	MsgChannel ch(socket_, args.getLength()+8+4*sns.size());
+	ch << target << fid << sns.size() << sns << args;
 
 	ch.send();
 	return 0;

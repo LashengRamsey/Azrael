@@ -212,7 +212,7 @@ void Connection::doMsg(Buf* buf)
 	onLuaMsg(buf);
 }
 
-void Connection::sendTo(int fid, int64 eid, Buf& buf)
+void Connection::sendTo(int fid, Buf& buf)
 {
 	if (!isConnected())
 		return;
@@ -224,14 +224,13 @@ void Connection::sendTo(int fid, int64 eid, Buf& buf)
 	write(bufout);
 }
 
-void Connection::sendTo(int fid, int64 eid, int key, Buf& buf)
+void Connection::sendTo(int fid, int key, Buf& buf)
 {
 	if (!isConnected())
 		return ;
-	int len = conv_num(buf.getLength() + 14);
+	int len = conv_num(buf.getLength() + 6);
 	Buf bufout;
-	bufout << header << len << conv_num(eid) << conv_num((uint16)fid) 
-		<< conv_num(eid) << buf << ender;
+	bufout << header << len << conv_num((uint16)fid) << buf << ender;
 }
 
 int Connection::c_Write( lua_State* L)
@@ -242,8 +241,7 @@ int Connection::c_Write( lua_State* L)
 		return 0;
 	}
 	int fid, t;
-	int64 uid;
-	Lua::argParse(L, "ilt", &fid, &uid, &t);
+	Lua::argParse(L, "it", &fid, &t);
 
 	Buf buf;
 	int len = lua_objlen(L, t);
@@ -257,7 +255,7 @@ int Connection::c_Write( lua_State* L)
 		LuaNetwork::resolvePacketTableItem(L, &buf);
 		lua_pop(L, 1);
 	}
-	sendTo(fid, uid, buf);
+	sendTo(fid, buf);
 	return 0;
 }
 

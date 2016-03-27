@@ -47,7 +47,6 @@ void BevStream::decode()
 	size_t readable_len = evbuffer_get_length(input);
 
 	unsigned char header[5] = {0};
-	int64 uid = 0;
 	uint8 fid = 0;
 	while( readable_len >= kHeaderLen + packLen_ + kTailLen)
 	{
