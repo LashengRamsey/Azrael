@@ -9,7 +9,7 @@ function G2D_Common(iServerNo, packet)
 	--redis有数据
 	if sResult == c_hiredis.NIL then
 		--没有数据去数据库查询
-		local tDbTable = dbStruct.gdStructMap[packet.db_name]
+		local tDbTable = dbStruct.gDbTableKey[packet.db_name]
 		local sql = ""
 		if tDbTable[2] ==  dbStruct.giKeyInt then
 			sql = string.format([[select * from %s where %s=%s]], packet.db_name, tDbTable[1], packet.id)
@@ -38,8 +38,14 @@ function G2D_Common(iServerNo, packet)
 end
 
 
+function G2DUpdate(iServerNo, packet)
+	local redisKey = "" .. packet.db_name .. packet.id	--表名字+id
+	hiredis.hiredis_command("SET", redisKey, sResult)
+	
+end
 
-
-
+function insert( ... )
+	local sql = [[INSERT test SET tid=3,NAME = "33333"]]
+end
 
 

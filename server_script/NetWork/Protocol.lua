@@ -30,6 +30,8 @@ G2G_Test = 10000			--测试
 G2D_COMMAND = 20000			--执行命令
 D2G_COMMAND_RESULT = 20001	--结果
 
+G2D_INSERT = 20002	--插入
+
 
 
 
