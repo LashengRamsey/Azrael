@@ -29,15 +29,16 @@ G_PacketStruct[Protocol.C2G_Login] =
 	AccountStr = {"Str"}
 }
 
-G_PacketStruct[Protocol.G2D_COMMAND] = 
+G_PacketStruct[Protocol.G2D_COMMAND] =
 {
+	iCbId = {"Int"},
 	db_name = {"Str"},
-	key = {"Str"},
 	id = {"Str"},
 }
 
 G_PacketStruct[Protocol.D2G_COMMAND_RESULT] = 
 {
+	iCbId = {"Int"}, 
 	result = {"Char"},
 	sResult = {"Str"}
 }

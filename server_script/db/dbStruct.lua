@@ -1,16 +1,16 @@
 module("dbStruct", package.seeall)
 
 
-gdStructMap = {}
+giKeyInt = 1
+giKeyChar = 2
 
-
-
-gdStructMap["account"] = 
-{
-	account = "String",
-	
-	db_key = account,
+gdStructMap = {
+	--表名 = ｛键名，键类型｝
+	account = {"Account", giKeyInt},	
+	test = 	{"tid", giKeyChar},
 }
+
+
 
 
 

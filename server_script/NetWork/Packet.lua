@@ -282,5 +282,6 @@ function TestSendPacket()
 		--end
 
 		login.login(nil, {AccountStr = "123"})
+		dbClient.testQuery()
 	end
 end

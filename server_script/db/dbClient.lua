@@ -11,30 +11,60 @@ local function getExecuteId()
 	return giExecuteId
 end
 
-function select(args, callback, cbargs)
-	
-	local iCbId = getExecuteId
-
-	gtExecuteMap[giExecuteId] = {callback, cbargs}
-	local t = {
-		iServerNo = G_ServerNo,	--服务器编号
-		iCbId = giExecuteId,	--回调id
-
+function query(args, callback, ...)
+	local iCbId = getExecuteId()
+	gtExecuteMap[iCbId] = {cb = callback, args = {...}}
+	--print_r(gtExecuteMap)
+	local send = {
+		iCbId = iCbId,	--回调id
+		db_name = args.db_name,
+		id = args.id,
 	}
 	
-	Net.sendToDB(Protocol.G2D_COMMAND, args)
+	Net.sendToDB(Protocol.G2D_COMMAND, send)
 end
 
 function CommandCallBack(fn, packet)
 	print("==========CommandCallBack==============")
-	print_r(packet)
+	--print_r(packet)
+	local iCbId = packet.iCbId
+	if not iCbId then
+		CLogError("dbClient.CommandCallBack error not iCbId")
+		return
+	end
+
+	local tCb = gtExecuteMap[iCbId]
+	gtExecuteMap[iCbId] = nil
+	local func = tCb.cb
+	if not tCb or not func then
+		CLogError("dbClient.CommandCallBack error not tCb : iCbId = %d func = %s", iCbId, func)
+		return
+	end
+
+	packet.result = strToTable(packet.sResult)
+	packet.sResult = nil
+	func(packet, tCb.args)
 end
 
 
 
+--=========================================
+--test dbclient
+function testQuery()
+	local send = {
+		db_name = "test",
+		id = "1",
+	}
+	
 
+	dbClient.query(send, testQueryCallBack, 1, 2)
+end
 
-
+function testQueryCallBack(packet, args)
+	--print("======testQueryCallBack=======")
+	--print_r(args)
+	--print_r(packet)
+end
 
 
 
