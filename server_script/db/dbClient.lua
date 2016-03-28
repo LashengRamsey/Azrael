@@ -11,9 +11,9 @@ local function getExecuteId()
 	return giExecuteId
 end
 
-function query(args, callback, ...)
+function query(args, callback, cbargs)
 	local iCbId = getExecuteId()
-	gtExecuteMap[iCbId] = {cb = callback, args = {...}}
+	gtExecuteMap[iCbId] = {cb = callback, args = cbargs}
 	--print_r(gtExecuteMap)
 	local send = {
 		iCbId = iCbId,	--回调id
@@ -41,7 +41,7 @@ function CommandCallBack(fn, packet)
 		return
 	end
 
-	packet.result = strToTable(packet.sResult)
+	packet.tResult = strToTable(packet.sResult)
 	packet.sResult = nil
 	func(packet, tCb.args)
 end
@@ -57,7 +57,7 @@ function testQuery()
 	}
 	
 
-	dbClient.query(send, testQueryCallBack, 1, 2)
+	dbClient.query(send, testQueryCallBack, {1,2,3})
 end
 
 function testQueryCallBack(packet, args)

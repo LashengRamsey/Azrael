@@ -43,8 +43,12 @@ G_PacketStruct[Protocol.D2G_COMMAND_RESULT] =
 	sResult = {"Str"}
 }
 
-
-
+G_PacketStruct[Protocol.G2D_INSERT] =
+{
+	iCbId = {"Int"},
+	db_name = {"Str"},
+	id = {"Str"},
+}
 
 
 
