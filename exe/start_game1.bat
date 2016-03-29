@@ -1,3 +1,2 @@
-cd game
-start game GameConfig
-::start game GameConfig_2
+start game/game game/GameConfig
+

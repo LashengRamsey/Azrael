@@ -1,5 +1,9 @@
 module("dbClient", package.seeall)
 
+giCommandQuery = 1
+giCommandUpdate = 2
+giCommandInsert = 3
+
 local giExecuteId = 0
 local gtExecuteMap = {}
 
@@ -11,14 +15,16 @@ local function getExecuteId()
 	return giExecuteId
 end
 
-function query(args, callback, cbargs)
+function command(type, args, callback, cbargs)
 	local iCbId = getExecuteId()
 	gtExecuteMap[iCbId] = {cb = callback, args = cbargs}
 	--print_r(gtExecuteMap)
 	local send = {
 		iCbId = iCbId,	--回调id
-		db_name = args.db_name,
-		id = args.id,
+		iType = type,
+		sValue = tableToStr(args),
+		-- db_name = args.db_name,
+		-- id = args.id,
 	}
 	
 	Net.sendToDB(Protocol.G2D_COMMAND, send)
@@ -57,7 +63,7 @@ function testQuery()
 	}
 	
 
-	dbClient.query(send, testQueryCallBack, {1,2,3})
+	dbClient.command(dbClient.giCommandQuery, send, testQueryCallBack, {1,2,3})
 end
 
 function testQueryCallBack(packet, args)

@@ -32,8 +32,8 @@ G_PacketStruct[Protocol.C2G_Login] =
 G_PacketStruct[Protocol.G2D_COMMAND] =
 {
 	iCbId = {"Int"},
-	db_name = {"Str"},
-	id = {"Str"},
+	iType = {"Char"},
+	sValue = {"Str"},
 }
 
 G_PacketStruct[Protocol.D2G_COMMAND_RESULT] = 
@@ -41,13 +41,6 @@ G_PacketStruct[Protocol.D2G_COMMAND_RESULT] =
 	iCbId = {"Int"}, 
 	result = {"Char"},
 	sResult = {"Str"}
-}
-
-G_PacketStruct[Protocol.G2D_INSERT] =
-{
-	iCbId = {"Int"},
-	db_name = {"Str"},
-	id = {"Str"},
 }
 
 

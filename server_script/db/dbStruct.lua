@@ -2,12 +2,12 @@ module("dbStruct", package.seeall)
 
 
 giKeyInt = 1
-giKeyChar = 2
+giKeyStr = 2
 
 gDbTableKey = {
 	--表名 = ｛键名，键类型｝
 	account = {"Account", giKeyInt},	
-	test = 	{"tid", giKeyChar},
+	test = 	{"tid", giKeyStr},
 }
 
 gDbTableInfo = {}
@@ -15,11 +15,19 @@ gDbTableInfo = {}
 gDbTableInfo["test"] = 
 {
 	tid = giKeyInt,
-	name = giKeyChar,
+	name = giKeyStr,
 }
 gDbTableInfo["account"] = 
 {
-	Account = giKeyChar,
+	["Account"] = giKeyStr,
+	["Lv"] = giKeyInt,
+	["Exp"] = giKeyInt,
+	["Gold"] = giKeyInt,
+	["VipLv"] = giKeyInt,
+	["VipExp"] = giKeyInt,
+	["LastLoginTime"] = giKeyInt,
+	["CreateTime"] = giKeyInt,
+	["DATA"] = giKeyStr,
 }
 
 

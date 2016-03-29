@@ -1,3 +1,2 @@
-cd robot
-start game RobotConfig
+start game/game robot/RobotConfig
 

@@ -1,3 +1,2 @@
-cd db
-start DbServer DBConfig
+start db/DbServer db/DBConfig
 

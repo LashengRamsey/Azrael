@@ -24,7 +24,7 @@ end
 
 function initDbPacketHandler()
 	initComPacketHandler()
-	gtPacketHandler[Protocol.G2D_COMMAND] = dbServer.G2D_Common
+	gtPacketHandler[Protocol.G2D_COMMAND] = dbServer.G2DExeCommand
 
 end
 

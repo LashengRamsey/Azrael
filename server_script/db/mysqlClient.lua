@@ -74,7 +74,7 @@ end
 function mysql_insert(sql)
 	if not mysql_context then
 		C_Error("msyql insert error:mysql_context is nil")
-		return
+		return -1
 	end
 	local result,inset_id = c_mysql_insert(mysql_context, sql)
 
