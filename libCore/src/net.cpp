@@ -355,7 +355,7 @@ Net::Net(int mode)
 	//log函数设置
 	event_set_log_callback(write_to_file_cb);
 	event_set_fatal_callback(write_to_fatal_cb);
-	event_enable_debug_mode();	//调试模式
+	//event_enable_debug_mode();	//调试模式
 	evbase_ = get_default_evbase();
 	listener_ = NULL;
 }

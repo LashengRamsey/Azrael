@@ -6,6 +6,7 @@ G_ServerNo = 0
 function c_main()
 	print("======c_main=====1111==========")
 	G_ServerNo = C_GetServerID()
+
 	print("G_ServerNo = " .. G_ServerNo)
 	require "game.loadRequire"
 	require "NetWork.PacketHandler"
@@ -21,8 +22,10 @@ end
 
 function init()
 	print("======init===============")
+	G_InitLog("game")
 	PacketHandler.initGamePacketHandler()
 	timer.CallLater(TestSendPacket, 1000)
+	timer.CallLater(G_TestLog, 1000)
 end
 
 --src:发来服务器编号

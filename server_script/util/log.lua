@@ -1,16 +1,32 @@
 
-function CLog(str, ...)
-	local s = string.format(str, ...)
-	C_Log(s)
+G_LOG_PATH = ""
+function G_InitLog(path)
+	G_LOG_PATH = string.format("%s.%s/", path, G_ServerNo)
 end
 
-function CLogInfo(str, ...)
-	local s = string.format(str, ...)
-	C_Info(s)
+function CLog(dir, str, ...)
+	dir = string.format("%s%s", G_LOG_PATH, dir)
+	str = string.format(str, ...)
+	C_Log(dir, str)
 end
 
-function CLogError(str, ...)
-	local s = string.format(str, ...)
-	C_Error(s)
+function CLogInfo(dir, str, ...)
+	dir = string.format("%s%s", G_LOG_PATH, dir)
+	str = string.format(str, ...)
+	C_Info(dir, str)
+end
+
+function CLogError(dir, str, ...)
+	dir = string.format("%s%s", G_LOG_PATH, dir)
+	str = string.format(str, ...)
+	C_Error(dir, str)
+end
+
+--测试log
+function G_TestLog()
+	print("============G_TestLog=========")
+	for i=1,10000 do
+		CLogInfo("TestLog/TestLog", "G_TestLog:%d", i)
+	end
 end
 

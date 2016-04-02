@@ -131,6 +131,29 @@ uint64 timeStamp();
 
 
 
+/*for logserver**/
+
+//const char* getLogRootCwd();
+bool StartLogServer();
+void ExitLogServer();
+void LogInfo(const char* logEvent,const char* file,bool format = true);
+void LogWar(const char* logEvent,const char* file,bool format = true);
+void LogError(const char* logEvent,const char* file,bool format = true);
+void LogDirect(const char* logEvent,const char* file,bool format = true);
+void addThreadLog(int level, const char* logEvent, int lenght, const char* file);
+
+
+#define TIME_YYMMDD_hhmmss	"%Y-%m-%d %H:%M:%S"
+#define TIME_YYMMDDHH$mmss	"%Y-%m-%d-%H$%M-%S"
+#define TIME_YYMMDDHH		"%Y-%m-%d-%H"
+#define TIME_YYMMDD			"%Y-%m-%d"
+#define TIME_HH				"%H"
+
+#define MAX_LOG_STRING_SIZE 512
+#define MAX_LOG_FILE_SIZE 1024*128
+
+
+
 //----------------------------------
 #define DEBUG_TRY			\
 try 						\

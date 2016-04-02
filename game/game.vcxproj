@@ -12,11 +12,15 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="game.cpp" />
+    <ClCompile Include="main.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\libCore\libCore.vcxproj">
       <Project>{1f9c9df7-199b-4fd9-8900-970f475cd091}</Project>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="game.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{39137730-DB7D-4398-8426-A982618B9300}</ProjectGuid>
@@ -61,13 +65,13 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>../libcore/include/comm;../libcore/include/event/include;../libcore/include/event/include/event2;../libcore/include/hiredis/include/;../libcore/include/lua/include;../libcore/include/;../libcore/include/zmq/include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>../libcore/include/comm;../libcore/include/event/include;../libcore/include/event/include/event2;../libcore/include/hiredis/include/;../libcore/include/lua/include;../libcore/include/;../libcore/include/zmq/include;../libcore/include/pthread/include</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalLibraryDirectories>../bin/win32;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>libcore.lib;lua5.1.lib;libevent_extras.lib;libevent_core.lib;libzmq.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>libcore.lib;lua5.1.lib;libevent_extras.lib;libevent_core.lib;libzmq.lib;pthreadVC2.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <IgnoreSpecificDefaultLibraries>LIBCMT;%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
     </Link>
     <PostBuildEvent>

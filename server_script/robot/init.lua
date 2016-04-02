@@ -20,6 +20,7 @@ G_ServerNo = 0
 function init()
 	print("=====robot=init===============")
 	G_ServerNo = C_GetServerID()
+	G_InitLog("robot")
 	robotMng.startRobot()
 end
 

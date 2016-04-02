@@ -269,22 +269,37 @@ static int DJBHash(std::string str)
 
 int LuaGlobal::C_Log(lua_State* L)
 {
-	const char *str = lua_tostring(L, 1);
-	LOG("%s", str);
+	//const char *str = lua_tostring(L, 1);
+	//LOG("%s", str);
+
+	char* path = "";
+	char* str = "";
+	Lua::argParse(L, "ss", &path, &str);
+	LogInfo(str, path);
 	return 0;
 }
 
 int LuaGlobal::C_Info(lua_State* L)
 {
-	const char *str = lua_tostring(L, 1);
-	INFO("%s", str);
+	//const char *str = lua_tostring(L, 1);
+	//INFO("%s", str);
+
+	char* path = "";
+	char* str = "";
+	Lua::argParse(L, "ss", &path, &str);
+	LogInfo(str, path);
 	return 0;
 }
 
 int LuaGlobal::C_Error(lua_State* L)
 {
-	const char *str = lua_tostring(L, 1);
-	ERROR("%s", str);
+	//const char *str = lua_tostring(L, 1);
+	//ERROR("%s", str);
+
+	char* path = "";
+	char* str = "";
+	Lua::argParse(L, "ss", &path, &str);
+	LogInfo(str, path);
 	return 0;
 }
 

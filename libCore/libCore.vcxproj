@@ -15,12 +15,14 @@
     <ClInclude Include="include\comm\arch.h" />
     <ClInclude Include="include\comm\bevstream.h" />
     <ClInclude Include="include\comm\buf.h" />
+    <ClInclude Include="include\comm\bufferstring.h" />
     <ClInclude Include="include\comm\celltype.h" />
     <ClInclude Include="include\comm\comm.h" />
     <ClInclude Include="include\comm\Config.h" />
     <ClInclude Include="include\comm\connection.h" />
     <ClInclude Include="include\comm\exception.h" />
     <ClInclude Include="include\comm\log.h" />
+    <ClInclude Include="include\comm\LogThread.h" />
     <ClInclude Include="include\comm\luasvr.h" />
     <ClInclude Include="include\comm\lunar.h" />
     <ClInclude Include="include\comm\mqnet.h" />
@@ -160,9 +162,11 @@
     <ClCompile Include="src\arch.cpp" />
     <ClCompile Include="src\bevstream.cpp" />
     <ClCompile Include="src\buf.cpp" />
+    <ClCompile Include="src\bufferstring.cpp" />
     <ClCompile Include="src\Config.cpp" />
     <ClCompile Include="src\connection.cpp" />
     <ClCompile Include="src\log.cpp" />
+    <ClCompile Include="src\LogThread.cpp" />
     <ClCompile Include="src\luabit.cpp" />
     <ClCompile Include="src\luaglobal.cpp" />
     <ClCompile Include="src\luanetwork.cpp" />
@@ -210,8 +214,8 @@
       </PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
-      <PreprocessorDefinitions>WIN32;_DEBUG;_LIB;_CRT_SECURE_NO_WARNINGS;DLL_EXPORT;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>./include/;./include/comm;./include/event/include;./include/event/include/event;./include/lua/include;./include/zmq/include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_LIB;_CRT_SECURE_NO_WARNINGS;DLL_EXPORT;LOG2FILE_WHTH_C;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>./include/;./include/comm;./include/event/include;./include/event/include/event;./include/lua/include;./include/zmq/include;./include/pthread/include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>

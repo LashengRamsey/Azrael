@@ -6,6 +6,7 @@
 #include "log.h"
 #include "arch.h"
 #include "zmq.h"
+#include "comm.h"
 #include <time.h>
 
 #ifdef WIN32
@@ -55,6 +56,13 @@ DayFile errdf;
 std::string logDir = "log";
 std::string logpath_ = "log/";
 std::string logName_ = "game";
+
+//char LOG_MSC_LOGSERVER_INIT[100];//	= "misc/logserver/init.log";
+//char LOG_MSC_LOGSERVER_INFO[100];//	= "misc/logserver/info.log";
+//char LOG_APP_DUMP[100];//			= "dump.log";
+//char LOG_LOGIC_THREAD[100];//		= "LogicThread";
+//char LOG_MAIN_THREAD[100];//			= "MainThread";
+//char LOG_GAMESERVER_INIT[100];//		= "init/init.log";
 
 int oldday = 5;
 
@@ -107,7 +115,10 @@ void init_log()
 	id = Config::GetIntValue("ServerID");
 	if (id)
 	{
-		logName_ += Config::GetValue("ServerID");;
+		logName_.append(".");
+		logName_ += Config::GetValue("ServerID");
+		logName_.append("/debug/debug");
+
 	}
 
 	logLevel = Config::GetIntValue("LogLevel");
@@ -160,7 +171,7 @@ void freebuffer(void* data, void* hint)
 #define LOGMAX 65535
 void PrintLog(int level, const char* fmt, ...)
 {
-	init_log();
+	//init_log();
 	if (logSocket && level > logLevel)
 	{
 		char *buffer = (char*)malloc(LOGMAX+1);
@@ -178,7 +189,8 @@ void PrintLog(int level, const char* fmt, ...)
 		n = n > LOGMAX ? LOGMAX : n;
 		if (logLocal)
 		{
-			add_log(id, level, buffer+1, n);
+			addThreadLog(level, buffer+1, n, logName_.c_str());
+			//add_log(id, level, buffer+1, n);
 		}
 
 		zmq_send(logSocket, buffer, n+1, ZMQ_NOBLOCK);

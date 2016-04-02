@@ -202,7 +202,7 @@ bool ServerApp::init(int argc, char* argv[])
 	}
 
 	//ÅäÖÃÎÄ¼şÂ·¾¶
-	Config::SetConfigName(argv[1]);
+	//Config::SetConfigName(argv[1]);
 	INFO("Config path:		%s",argv[1]);
 	
 	myName_ = Config::GetValue("ServerID");

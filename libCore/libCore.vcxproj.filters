@@ -144,6 +144,8 @@
     <ClInclude Include="src\luanetwork.h" />
     <ClInclude Include="include\comm\Config.h" />
     <ClInclude Include="include\comm\comm.h" />
+    <ClInclude Include="include\comm\LogThread.h" />
+    <ClInclude Include="include\comm\bufferstring.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\app.cpp" />
@@ -161,5 +163,7 @@
     <ClCompile Include="src\net.cpp" />
     <ClCompile Include="src\timer.cpp" />
     <ClCompile Include="src\Config.cpp" />
+    <ClCompile Include="src\LogThread.cpp" />
+    <ClCompile Include="src\bufferstring.cpp" />
   </ItemGroup>
 </Project>

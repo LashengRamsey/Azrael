@@ -33,7 +33,7 @@ function init()
 	print("====db==init===============")
 	G_ServerNo = C_GetServerID()
 	print("G_ServerNo = " .. G_ServerNo)
-
+	G_InitLog("db")
 	PacketHandler.initDbPacketHandler()
 
 	mysqlClient.mysql_init()
