@@ -9,22 +9,7 @@
 #include "comm.h"
 #include <time.h>
 
-#ifdef WIN32
-#include <io.h>
-#include <direct.h>
-#else
-#include <sys/types.h>
-#include <sys/stat.h>
-#include <unistd.h>
-#endif
 
-#ifdef WIN32
-#define ACCESS _access
-#define MKDIR(a) _mkdir((a))
-#else
-#define ACCESS access
-#define MKDIR(a) mkdir((a),0755)
-#endif
 
 static int id = 40001;
 #define MAX_PATH_LEN 256
@@ -55,7 +40,7 @@ DayFile errdf;
 
 std::string logDir = "log";
 std::string logpath_ = "log/";
-std::string logName_ = "game";
+std::string logName_ = "log/game";
 
 //char LOG_MSC_LOGSERVER_INIT[100];//	= "misc/logserver/init.log";
 //char LOG_MSC_LOGSERVER_INFO[100];//	= "misc/logserver/info.log";
@@ -67,7 +52,7 @@ std::string logName_ = "game";
 int oldday = 5;
 
 
-static int createDir(const char *_pszDir)
+int createDir(const char *_pszDir)
 {
 	DEBUG_TRY;
 	char pszDir[512];
@@ -101,13 +86,26 @@ static int createDir(const char *_pszDir)
 	DEBUG_CATCH;
 }
 
+char logRootCWd[MAX_LOG_ROOT_CWD_SIZE]={0};
+const char* getLogRootCwd()
+{
+	DEBUG_TRY;
+	if( strlen(logRootCWd) == 0 )
+	{
+		getcwd(logRootCWd, MAX_LOG_ROOT_CWD_SIZE);
+		strncat(logRootCWd,"/log", MAX_LOG_ROOT_CWD_SIZE - strlen(logRootCWd));
+	}
+	return logRootCWd;
+	DEBUG_CATCH;
+}
+
 void add_log(int source, int priority, const char* pMsg, int msgisze);
 void init_log()
 {
 	if (inited)
 		return;
 
-	createDir(logpath_.c_str());
+	//createDir(logpath_.c_str());
 
 	assert(zmqContext == NULL);
 	assert(logSocket == NULL);
@@ -115,12 +113,14 @@ void init_log()
 	id = Config::GetIntValue("ServerID");
 	if (id)
 	{
-		logName_.append(".");
+		logName_.clear();
+		logName_.append(getLogRootCwd()).append("/game.");
+		//logName_.append("game.");
 		logName_ += Config::GetValue("ServerID");
 		logName_.append("/debug/debug");
 
 	}
-
+	//createDir(logName_.c_str());
 	logLevel = Config::GetIntValue("LogLevel");
 
 	zmqContext = zmq_init(1);

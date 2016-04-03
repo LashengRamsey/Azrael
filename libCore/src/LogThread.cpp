@@ -3,41 +3,20 @@
 #include <time.h>
 #include "log.h"
 
-#ifdef WIN32
-#include <io.h>
-#include <direct.h>
-#else
-#include <sys/types.h>
-#include <sys/stat.h>
-#include <fcntl.h>
-#include "event.h"
-#include <unistd.h>
-#endif
-
-#ifdef WIN32
-#define ACCESS _access
-#define MKDIR(a) _mkdir((a))
-#else
-#define ACCESS access
-#define MKDIR(a) mkdir((a),0755)
-#endif
 
 
-#define MAX_LOG_ROOT_CWD_SIZE 256
-char logRootCWd[MAX_LOG_ROOT_CWD_SIZE]={0};
-const char* getLogRootCwd()
-{
-	DEBUG_TRY;
-	if( strlen(logRootCWd) == 0 )
-	{
-		getcwd(logRootCWd, MAX_LOG_ROOT_CWD_SIZE);
-		strncat(logRootCWd,"/log", MAX_LOG_ROOT_CWD_SIZE - strlen(logRootCWd));
-	}
-	return logRootCWd;
-	DEBUG_CATCH;
-}
-
-
+//char logRootCWd[MAX_LOG_ROOT_CWD_SIZE]={0};
+//const char* getLogRootCwd()
+//{
+//	DEBUG_TRY;
+//	if( strlen(logRootCWd) == 0 )
+//	{
+//		getcwd(logRootCWd, MAX_LOG_ROOT_CWD_SIZE);
+//		strncat(logRootCWd,"/log", MAX_LOG_ROOT_CWD_SIZE - strlen(logRootCWd));
+//	}
+//	return logRootCWd;
+//	DEBUG_CATCH;
+//}
 
 typedef struct LogServerInfo
 {
@@ -47,41 +26,6 @@ typedef struct LogServerInfo
 };
 
 LogServerInfo serverInfo;
-
-int createDir(const char *_pszDir)
-{
-	DEBUG_TRY;
-	char pszDir[512];
-	memset(pszDir,0,512);
-	strcpy(pszDir,_pszDir);
-	unsigned int i = 0;
-	unsigned int iRet;
-	unsigned int iLen = strlen(pszDir);
-	if (pszDir[iLen - 1] != '\\' && pszDir[iLen - 1] != '/')
-	{
-		pszDir[iLen] = '/';
-		pszDir[iLen + 1] = '\0';
-	}
-	for (i = 0;i < iLen;i ++)
-	{
-		if (pszDir[i] == '\\' || pszDir[i] == '/')
-		{ 
-			pszDir[i] = '\0';
-			iRet = ACCESS(pszDir,0);
-			if (iRet != 0)
-			{
-				iRet = MKDIR(pszDir);
-				if (iRet != 0)
-				{
-					//return -1;
-				} 
-			}
-			pszDir[i] = '/';
-		} 
-	}
-	return 0;
-	DEBUG_CATCH;
-}
 
 void getTCCTime(char* out,size_t size,const char* format)
 {
@@ -287,7 +231,10 @@ LOGFILE* local_openFile(const char* filename,logWriteType writeType,struct event
 	DEBUG_TRY;
 #ifdef LOG2FILE_WHTH_C
 	FILE* fd = fopen(filename,"a");
-	if(!fd) return 0;
+	if(!fd)
+	{
+		return 0;
+	}
 	LOGFILE* file = (LOGFILE*)malloc(sizeof(LOGFILE));
 	memset(file,0,sizeof(LOGFILE));
 	file->fd = fd;
@@ -299,7 +246,10 @@ LOGFILE* local_openFile(const char* filename,logWriteType writeType,struct event
 	return file;
 #else
 	int fd = open(filename,O_WRONLY|O_CREAT|O_APPEND|O_NONBLOCK,0755);
-	if(!fd) return 0;
+	if(!fd)
+	{
+		return 0;
+	}
 	LOGFILE* file = (LOGFILE*)malloc(sizeof(LOGFILE));
 	memset(file,0,sizeof(LOGFILE));
 	file->fd = fd;
@@ -432,7 +382,10 @@ void FlushFile(LOGFILE& file)
 	#ifdef	LOG2FILE_WHTH_C
 	if(file.type == LOG_FILE_C)
 	{
-		if(file.fd) fflush(file.fd);
+		if(file.fd)
+		{
+			fflush(file.fd);
+		}
 	}
 #else
 	if(file.type == LOG_FILE_LINUX)
@@ -503,7 +456,9 @@ bool StartLogServer()
 		logServer = LogThread::CreateLogThread();
 	}
 	if(!logServer)
+	{
 		return false;
+	}
 	return true;
 	DEBUG_CATCH;
 }
@@ -602,14 +557,20 @@ LogThread::~LogThread()
 	while(iter != iCachedFile.end())
 	{
 		if(iter->second)
+		{
 			CloseFile(iter->second);
+		}
 		iter++;
 	}
 	iCachedFile.clear();
 	if(iEventBase)
+	{
 		event_base_free(iEventBase);
+	}
 	if(iEventBaseConfig)
+	{
 		event_config_free(iEventBaseConfig);
+	}
 	DEBUG_CATCH;
 }
 
@@ -631,7 +592,7 @@ bool LogThread::setupThread()
 {
 	DEBUG_TRY;
 	iEventBaseConfig = event_config_new();
-	int error = event_config_avoid_method(iEventBaseConfig,"epoll");
+	int error = event_config_avoid_method(iEventBaseConfig, "epoll");
 	if(error != -1)
 	{
 		iEventBase = event_base_new_with_config(iEventBaseConfig);
@@ -732,14 +693,18 @@ void LogThread::writestring(log_t* log)
 			CloseFile(outFilePtr);
 			outFilePtr = openFile(file,TIME_YYMMDDHH,LOG_LOCAL_NONE,iEventBase);
 			if(outFilePtr)
+			{
 				iCachedFile[std::string(file)] = outFilePtr;
+			}
 		}
 	}
 	else
 	{
-		outFilePtr = openFile(file,TIME_YYMMDDHH,LOG_LOCAL_NONE,iEventBase);
+		outFilePtr = openFile(file, TIME_YYMMDDHH, LOG_LOCAL_NONE, iEventBase);
 		if(outFilePtr)
+		{
 			iCachedFile[std::string(file)] = outFilePtr;
+		}
 	}
 	if(!outFilePtr)
 	{
@@ -761,7 +726,9 @@ void LogThread::writestring(log_t* log)
 
 #ifndef  LOG2FILE_WHTH_C
 	if(iEventBase)
+	{
 		event_base_dispatch(iEventBase);
+	}
 #endif // _DEBUG
 	DEBUG_CATCH;
 }

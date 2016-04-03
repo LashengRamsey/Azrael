@@ -132,8 +132,6 @@ uint64 timeStamp();
 
 
 /*for logserver**/
-
-//const char* getLogRootCwd();
 bool StartLogServer();
 void ExitLogServer();
 void LogInfo(const char* logEvent,const char* file,bool format = true);

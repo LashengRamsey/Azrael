@@ -40,6 +40,27 @@ void DumpMemory(void* src, int len);
 #define ASSERT(cond) {if(!(cond)) {ERROR("ASSERT failed on: %s %s %d", __LINE__, __FUNCTION__, __FILE__);abort();}}
 
 
+#ifdef WIN32
+#include <io.h>
+#include <direct.h>
+#else
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <unistd.h>
+#endif
+
+#ifdef WIN32
+#define ACCESS _access
+#define MKDIR(a) _mkdir((a))
+#else
+#define ACCESS access
+#define MKDIR(a) mkdir((a),0755)
+#endif
+
+#define MAX_LOG_ROOT_CWD_SIZE 256
+
+int createDir(const char *_pszDir);
+const char* getLogRootCwd();
 
 #endif //LOG_H
 
