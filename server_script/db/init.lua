@@ -38,6 +38,7 @@ function init()
 
 	mysqlClient.mysql_init()
 	hiredis.hiredis_init()
+	timer.CallLater(G_TestLog, 1000)
 	--timer.CallLater(TestSendPacket, 1000)
 end
 
@@ -62,7 +63,7 @@ end
 --错误信息
 function CHandlerError(err)
 	print("========CHandlerError=============")
-	--print(err)
+	print(err)
 end
 
 function CHandlerNetMsg(sn, data, startPos, size)
