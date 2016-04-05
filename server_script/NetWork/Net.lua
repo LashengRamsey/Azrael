@@ -18,11 +18,11 @@ function doHandlerMsg(src, sn, fid, data, startPos, size)
 	G_SetMsgPacket(data, startPos, size)
 	
 	local protocol = G_UnPacketI(4)
-	CLogInfo("******doHandlerMsg protocol = " .. protocol)
+	CLogInfo("LogInfo", "******doHandlerMsg protocol = " .. protocol)
 	local func = PacketHandler.getPacketHandler(protocol)
 	--print(func)
 	if not func then
-		CLogInfo("******doHandlerMsg error not func******* protocol = %d", protocol)
+		CLogInfo("LogInfo", "******doHandlerMsg error not func******* protocol = %d", protocol)
 		return
 	end
 	local sessionObj = Session.getSession(sn)

@@ -77,7 +77,7 @@ function insert(iServerNo, packet)
 
 	sql = string.sub(sql, 1, string.len(sql)-1)
 	print(sql)
-	CLogInfo(sql)
+	CLogInfo("LogInfo", sql)
 	local result = mysqlClient.mysql_insert(sql)
 
 	--更新redis

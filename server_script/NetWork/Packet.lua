@@ -15,7 +15,7 @@ end
 function G_PacketAddI(value, byte)
 	value = value or 0
 	if not table.containValue({1,2,4,8}, byte) then
-		C_Error("ERROR G_PacketAddI byte not in {1,2,4,8}, byte %d", byte)
+		CLogError("error", "ERROR G_PacketAddI byte not in {1,2,4,8}, byte %d", byte)
 		return
 	end
 	table.insert(tNetPacket, {byte, value})
@@ -56,7 +56,7 @@ local ARRAY_BASE = {
 function G_AddPacket(protocol, packet)
 	local struct = G_PacketStruct[protocol]
 	if not struct then
-		CLogError("======G_AddPacket ERROR:not struct protocol=%d", protocol)
+		CLogError("error", "======G_AddPacket ERROR:not struct protocol=%d", protocol)
 		return false
 	end
 	G_PacketPrepare(protocol)
@@ -95,7 +95,7 @@ function G_AddPacket(protocol, packet)
 			else
 				local byte = gtIntBytes[uType]
 				if not byte then
-					CLogError("======G_AddPacket ERROR:byte error protocol=%d", protocol)
+					CLogError("error", "======G_AddPacket ERROR:byte error protocol=%d", protocol)
 				end
 				uValue = uValue or 0
 				G_PacketAddI(uValue, byte)
@@ -119,7 +119,7 @@ end
 
 function G_UnPacketI(byte)
 	if not table.containValue({1,2,4,8}, byte) then
-		C_Error("ERROR G_UnPacketI byte not in {1,2,4,8}, byte %d", byte)
+		CLogError("error", "ERROR G_UnPacketI byte not in {1,2,4,8}, byte %d", byte)
 		return
 	end
 	
@@ -147,7 +147,7 @@ function G_UnPacketTable(protocol)
 	local result = {}
 	local struct = G_PacketStruct[protocol]
 	if not struct then
-		CLogError("======G_UnPacketTable ERROR:not struct protocol=%d", protocol)
+		CLogError("error", "======G_UnPacketTable ERROR:not struct protocol=%d", protocol)
 		return nil
 	end
 
@@ -182,7 +182,7 @@ function G_UnPacketTable(protocol)
 			else
 				local byte = gtIntBytes[uType]
 				if not byte then
-					CLogError("======G_AddPacket ERROR:byte error protocol=%d", protocol)
+					CLogError("error", "======G_AddPacket ERROR:byte error protocol=%d", protocol)
 				end
 				_result[k] = G_UnPacketI(byte)
 			end

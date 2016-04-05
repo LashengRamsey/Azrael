@@ -75,7 +75,7 @@ function robot:connect()
 end
 
 function robot:onConnect()
-	CLogInfo("=======robot:onConnect=========")
+	CLogInfo("LogInfo", "=======robot:onConnect=========")
 	self:sendLogin()
 end
 
@@ -90,7 +90,7 @@ function robot:Close()
 end
 
 function robot:onClose()
-	CLogInfo("=======robot:onClose=========")
+	CLogInfo("LogInfo", "=======robot:onClose=========")
 	self.uConn = nil
 	self.bIsConn = false
 end
@@ -111,11 +111,11 @@ function robot:RawWrirte(str)
 end
 
 function robot:onMsg(fid, data, startPos, endPos)
-	CLogInfo("=======robot:onMsg=========")
+	CLogInfo("LogInfo", "=======robot:onMsg=========")
 end
 
 function robot:onRawMsg(fid, data, startPos, endPos)
-	CLogInfo("=======robot:onRawMsg=========")
+	CLogInfo("LogInfo", "=======robot:onRawMsg=========")
 end
 
 
@@ -126,7 +126,7 @@ function robot:update()
 end
 
 function robot:sendLogin()
-	CLogInfo("=======robot:sendLogin=========")
+	CLogInfo("LogInfo", "=======robot:sendLogin=========")
 	local packet = {}
 	packet.AccountStr = "robot" .. self.iRobotId
 

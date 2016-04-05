@@ -51,11 +51,11 @@ function Connect:Connect(ip, port, notify, timeout, raw)
 	print(self)
 	gtConnMap[self.uConn] = self
 
-	CLogInfo("Connect:Connect success self.iConnFd = %d", self.iConnFd)
+	CLogInfo("LogInfo", "Connect:Connect success self.iConnFd = %d", self.iConnFd)
 end
 
 function Connect:onConnect()
-	CLogInfo("=======Connect:onConnect=========")
+	CLogInfo("LogInfo", "=======Connect:onConnect=========")
 end
 
 function Connect:Write()
@@ -69,7 +69,7 @@ function Connect:Close()
 end
 
 function Connect:onClose()
-	CLogInfo("=======Connect:onClose=========")
+	CLogInfo("LogInfo", "=======Connect:onClose=========")
 	gtConnMap[self.uConn] = nil
 end
 
@@ -89,11 +89,11 @@ function Connect:RawWrirte(str)
 end
 
 function Connect:onMsg(fid, data, startPos, endPos)
-	CLogInfo("=======Connect:onMsg=========")
+	CLogInfo("LogInfo", "=======Connect:onMsg=========")
 end
 
 function Connect:onRawMsg(fid, data, startPos, endPos)
-	CLogInfo("=======Connect:onRawMsg=========")
+	CLogInfo("LogInfo", "=======Connect:onRawMsg=========")
 end
 
 
