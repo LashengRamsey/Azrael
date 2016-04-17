@@ -38,19 +38,8 @@ struct DayFile{
 DayFile stddf;
 DayFile errdf;
 
-std::string logDir = "log";
 std::string logpath_ = "log/";
 std::string logName_ = "log/game";
-
-//char LOG_MSC_LOGSERVER_INIT[100];//	= "misc/logserver/init.log";
-//char LOG_MSC_LOGSERVER_INFO[100];//	= "misc/logserver/info.log";
-//char LOG_APP_DUMP[100];//			= "dump.log";
-//char LOG_LOGIC_THREAD[100];//		= "LogicThread";
-//char LOG_MAIN_THREAD[100];//			= "MainThread";
-//char LOG_GAMESERVER_INIT[100];//		= "init/init.log";
-
-int oldday = 5;
-
 
 int createDir(const char *_pszDir)
 {
@@ -92,8 +81,8 @@ const char* getLogRootCwd()
 	DEBUG_TRY;
 	if( strlen(logRootCWd) == 0 )
 	{
-		getcwd(logRootCWd, MAX_LOG_ROOT_CWD_SIZE);
-		strncat(logRootCWd,"/log", MAX_LOG_ROOT_CWD_SIZE - strlen(logRootCWd));
+		//getcwd(logRootCWd, MAX_LOG_ROOT_CWD_SIZE);
+		strncat(logRootCWd,"../exe/log", MAX_LOG_ROOT_CWD_SIZE - strlen(logRootCWd));
 	}
 	return logRootCWd;
 	DEBUG_CATCH;
@@ -114,13 +103,12 @@ void init_log()
 	if (id)
 	{
 		logName_.clear();
-		logName_.append(getLogRootCwd()).append("/game.");
-		//logName_.append("game.");
+		logName_.append("game.");
 		logName_ += Config::GetValue("ServerID");
 		logName_.append("/debug/debug");
 
 	}
-	//createDir(logName_.c_str());
+	
 	logLevel = Config::GetIntValue("LogLevel");
 
 	zmqContext = zmq_init(1);
@@ -265,23 +253,6 @@ bool check_new_day(struct tm* now, int day)
 	return newday != day;
 }
 
-void remove_old_log(const char* log_path, const char* log_name)
-{
-	time_t now = time(NULL);
-	now -= (60*60*34*oldday);
-	
-	struct tm* oldday = localtime(&now);
-	char log_filepath[MAX_PATH_LEN] = "";
-
-	strcpy(log_filepath, log_path);
-	strcat(log_filepath, log_name);
-
-	char date_buf[30];
-	sprintf(date_buf, ".%d-%d-%d", oldday->tm_yday + 1900, oldday->tm_mon + 1, oldday->tm_mday);
-	strcat(log_filepath, date_buf);
-	remove(log_filepath);
-}
-
 
 FILE* open_log_file(DayFile* dayfile, const char* log_path, const char* log_name)
 {
@@ -319,8 +290,6 @@ FILE* open_log_file(DayFile* dayfile, const char* log_path, const char* log_name
 	fclose(dayfile->file);
 	dayfile->file = NULL;
 	dayfile->day = dayInteger(now);
-
-	//remove_old_log(log_path, log_name);
 
 	t = time(NULL);
 	now = localtime(&t);

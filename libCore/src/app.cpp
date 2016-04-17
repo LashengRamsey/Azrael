@@ -200,6 +200,12 @@ bool ServerApp::init(int argc, char* argv[])
 		INFO("argc = %d,not Config", argc);
 		return false;
 	}
+	const char* dir = Config::GetValue("ScriptDir");
+	if (dir && chdir(dir))
+	{
+		ERROR("Failed, no define ScirptDir");
+		return false;
+	}
 
 	//≈‰÷√Œƒº˛¬∑æ∂
 	//Config::SetConfigName(argv[1]);
@@ -228,7 +234,7 @@ bool ServerApp::init(int argc, char* argv[])
 	const char *pidFile = Config::GetValue("PidFile");
 	if (!pidFile)
 	{
-		ERROR("get config dir error");
+		ERROR("get config pidFile error");
 		return false;
 	}
 	INFO("load config %s ok!", pidFile);
@@ -239,13 +245,6 @@ bool ServerApp::init(int argc, char* argv[])
 	//tick_timer();
 
 	lastTickTime_  = timer_get_time();
-	const char* dir = Config::GetValue("ScriptDir");
-
-	if (dir && chdir(dir))
-	{
-		ERROR("Failed, no define ScirptDir");
-		return false;
-	}
 	
 	if (!Config::GetValue("RouterPort"))
 	{

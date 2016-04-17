@@ -134,9 +134,6 @@ void formatLogInfo(LogType type,BufferString& bufferStr,int outMaxLen,const char
 }
 
 
-
-
-
 LOGFILE* local_openFile(const char* filename,logWriteType writeType)
 {
 	DEBUG_TRY;
@@ -253,7 +250,7 @@ LOGFILE* openFile(const char* file,const char* format,logWriteType writeType)
 	BufferString bufferStr;
 	bufferStr.append(getLogRootCwd()).append("/").append(file).append(".").append(timeBuffer);
 	createDir(bufferStr.getContent());
-	LOGFILE* fd = local_openFile(bufferStr.getContent(),_writetype);
+	LOGFILE* fd = local_openFile(bufferStr.getContent(), _writetype);
 	return fd;
 	DEBUG_CATCH;
 }
