@@ -82,7 +82,7 @@ const char* getLogRootCwd()
 	if( strlen(logRootCWd) == 0 )
 	{
 		//getcwd(logRootCWd, MAX_LOG_ROOT_CWD_SIZE);
-		strncat(logRootCWd,"../exe/log", MAX_LOG_ROOT_CWD_SIZE - strlen(logRootCWd));
+		strncat(logRootCWd,"../bin/log", MAX_LOG_ROOT_CWD_SIZE - strlen(logRootCWd));
 	}
 	return logRootCWd;
 	DEBUG_CATCH;

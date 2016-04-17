@@ -46,3 +46,4 @@
 /exe/game/log
 /exe/db/log
 /Router/Debug/Router.vcxprojResolveAssemblyReference.cache
+/bin/log

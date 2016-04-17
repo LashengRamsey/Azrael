@@ -11,7 +11,7 @@ SocketPath=tcp://127.0.0.1
 Daemon=0
 
 #脚本启动目录,相对于执行文件目录
-ScriptDir=G:\Azrael\server_script
+ScriptDir=../../server_script
 #脚本启动文件
 MainScript=game/init.lua
 #函数名
