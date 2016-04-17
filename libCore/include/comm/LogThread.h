@@ -1,12 +1,5 @@
 #ifndef _LOGTHREAD_H
 #define _LOGTHREAD_H
-#include "event.h"
-#include "event2/bufferevent.h"
-#include "event2/bufferevent_compat.h"
-#include <event2/buffer.h>
-#include <event2/listener.h>
-#include <event2/util.h>
-#include <event2/event.h>
 #include "pthread.h"
 #include "queue"
 #include "map"
@@ -85,7 +78,5 @@ private:
 
 	typedef std::map<std::string,LOGFILE*> CachedFileMap;
 	CachedFileMap iCachedFile;
-	struct event_base* iEventBase;
-	struct event_config* iEventBaseConfig;
 };
 #endif
