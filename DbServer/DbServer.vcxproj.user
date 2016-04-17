@@ -6,6 +6,6 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LocalDebuggerCommandArguments>db/DBConfig</LocalDebuggerCommandArguments>
     <DebuggerFlavor>WindowsLocalDebugger</DebuggerFlavor>
-    <LocalDebuggerWorkingDirectory>../exe</LocalDebuggerWorkingDirectory>
+    <LocalDebuggerWorkingDirectory>../bin/win32</LocalDebuggerWorkingDirectory>
   </PropertyGroup>
 </Project>
