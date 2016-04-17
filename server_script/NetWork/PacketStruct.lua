@@ -33,6 +33,7 @@ G_PacketStruct[Protocol.G2D_COMMAND] =
 {
 	iCbId = {"Int"},
 	iType = {"Char"},
+	db_name = {"Str"},
 	sValue = {"Str"},
 }
 
@@ -40,7 +41,7 @@ G_PacketStruct[Protocol.D2G_COMMAND_RESULT] =
 {
 	iCbId = {"Int"}, 
 	result = {"Char"},
-	sResult = {"Str"}
+	tResult = {"ArrayStr"}
 }
 
 

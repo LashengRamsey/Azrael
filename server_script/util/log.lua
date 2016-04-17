@@ -25,7 +25,7 @@ end
 --测试log
 function G_TestLog()
 	print("============G_TestLog=========")
-	for i=1,10000 do
+	for i=1,100 do
 		CLogInfo("TestLog/TestLog", "G_TestLog:%d", i)
 	end
 end

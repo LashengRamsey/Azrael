@@ -6,7 +6,7 @@ giKeyStr = 2
 
 gDbTableKey = {
 	--表名 = ｛键名，键类型｝
-	account = {"Account", giKeyInt},	
+	account = {"Account", giKeyStr},	
 	test = 	{"tid", giKeyStr},
 }
 

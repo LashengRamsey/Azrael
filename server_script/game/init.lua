@@ -24,8 +24,9 @@ function init()
 	print("======init===============")
 	G_InitLog("game")
 	PacketHandler.initGamePacketHandler()
-	timer.CallLater(TestSendPacket, 1000)
-	timer.CallLater(G_TestLog, 1000)
+	--timer.CallLater(TestSendPacket, 1000)
+	--timer.CallLater(G_TestLog, 1000)
+	timer.CallLater(testDb, 1000)
 end
 
 --src:发来服务器编号
@@ -54,7 +55,7 @@ end
 --错误信息
 function CHandlerError(err)
 	print("========CHandlerError=============")
-	--print(err)
+	print(err)
 end
 
 function CHandlerNetMsg(sn, data, startPos, size)

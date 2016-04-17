@@ -280,8 +280,10 @@ function TestSendPacket()
 		Net.sendToServer(1, 0, Protocol.G2G_Test, t)
 		--Net.sendToDB(1, 0, 0, 0, Protocol.G2G_Test, t)
 		--end
-
-		login.login(nil, {AccountStr = "robot3"})
-		dbClient.testQuery()
 	end
+end
+
+function testDb()
+	login.login(nil, {AccountStr = "robot1"})
+	--dbClient.testQuery()
 end

@@ -5,8 +5,7 @@ function login(sessionObj, packet)
 	--print_r(packet)
 
 	local send = {
-		db_name = "account",
-		id = packet.AccountStr,
+		Account = packet.AccountStr,
 	}
 	
 	local account = AccountMng:newAccount(sessionObj, packet.AccountStr)
@@ -20,24 +19,26 @@ function login(sessionObj, packet)
 		account:setLoading(true)
 	end
 
-	dbClient.command(dbClient.giCommandQuery, send, loginCallBack, account)
+	dbClient.command(dbClient.giCommandQuery, "account", send, loginCallBack, account)
 end
 
 function loginCallBack(packet, account)
 	print("======loginCallBack==========")
-	print_r(packet)
+	--print_r(packet)
 	--print(account)
 	if not account then
 		return
 	end
 
-	if #packet.tResult <= 0 then--没有数据
-		insert_account(account)
-	else
+	if packet.result == 0 then
 		local info = packet.tResult[1]
 		--print_r(info)
 		account:updateInfo(info)
-
+		update_account(account)
+	elseif packet.result == -1 then --没有数据
+		insert_account(account)
+	else
+		
 	end
 end
 
@@ -46,9 +47,6 @@ end
 function insert_account(account)
 	print("======insert_account==========")
 	local value = {
-		db_name = "account",
-		id = account:AccountStr(),
-
 		Account = account:AccountStr(),
 		Lv = 1,
 		Exp = 0,
@@ -60,11 +58,30 @@ function insert_account(account)
 		DATA = "",
 	}
 
-	dbClient.command(dbClient.giCommandInsert, value, insert_account_cb, account)
+	dbClient.command(dbClient.giCommandInsert, "account", value, insert_account_cb, account)
 end
 
 function insert_account_cb(packet, account)
 	print("======insert_account_cb==========")
+	update_account(account)
 end
 
+function update_account(account)
+	print("======update_account==========")
+	local value = {
+		Account = account:AccountStr(),
+		Lv = 1,
+		Exp = 0,
+		Gold = 100,
+		VipLv = 1,
+		VipExp = 0,
+		LastLoginTime = G_GetSecond(),
+		CreateTime = G_GetSecond(),
+		DATA = "",
+	}
+	dbClient.command(dbClient.giCommandUpdate, "account", value, update_account_cb, account)
+end
 
+function update_account_cb(packet, account)
+	print("======update_account_cb==========")
+end

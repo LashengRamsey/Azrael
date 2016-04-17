@@ -15,16 +15,17 @@ local function getExecuteId()
 	return giExecuteId
 end
 
-function command(type, args, callback, cbargs)
-	local iCbId = getExecuteId()
-	gtExecuteMap[iCbId] = {cb = callback, args = cbargs}
-	--print_r(gtExecuteMap)
+function command(type, dbName, args, callback, cbargs)
+	local iCbId = 0
+	if callback then
+		iCbId = getExecuteId()
+		gtExecuteMap[iCbId] = {cb = callback, args = cbargs}
+	end
 	local send = {
 		iCbId = iCbId,	--回调id
 		iType = type,
+		db_name = dbName,
 		sValue = tableToStr(args),
-		-- db_name = args.db_name,
-		-- id = args.id,
 	}
 	
 	Net.sendToDB(Protocol.G2D_COMMAND, send)
@@ -47,8 +48,13 @@ function CommandCallBack(fn, packet)
 		return
 	end
 
-	packet.tResult = strToTable(packet.sResult)
-	packet.sResult = nil
+	if packet.tResult then
+		for k,v in ipairs(packet.tResult) do
+			packet.tResult[k] = strToTable(v)
+		end
+	end
+	--packet.tResult = strToTable(packet.tResult)
+	--packet.sResult = nil
 	func(packet, tCb.args)
 end
 
