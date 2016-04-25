@@ -22,7 +22,7 @@ end
 
 --定时器，C层调用
 function CHandlerTimer(id)
-	print("====db =CHandlerTimer============")
+	--print("====db =CHandlerTimer============")
 	return timer.DoTimer(id)
 end
 

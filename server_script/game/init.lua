@@ -16,7 +16,7 @@ end
 
 --定时器，C层调用
 function CHandlerTimer(id)
-	print("=====CHandlerTimer============")
+	--print("=====CHandlerTimer============")
 	return timer.DoTimer(id)
 end
 
@@ -27,6 +27,7 @@ function init()
 	--timer.CallLater(TestSendPacket, 1000)
 	--timer.CallLater(G_TestLog, 1000)
 	timer.CallLater(testDb, 1000)
+	startUpdateTimer()
 end
 
 --src:发来服务器编号

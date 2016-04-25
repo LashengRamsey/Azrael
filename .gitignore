@@ -47,3 +47,13 @@
 /exe/db/log
 /Router/Debug/Router.vcxprojResolveAssemblyReference.cache
 /bin/log
+/bin/win32/db/DbServer.exe
+/bin/win32/db/DbServer.ilk
+/bin/win32/db/DbServer.pdb
+/bin/win32/game/game.exe
+/bin/win32/game/game.ilk
+/bin/win32/game/game.pdb
+/bin/win32/router/Router.exe
+/bin/win32/router/Router.ilk
+/bin/win32/router/Router.pdb
+/lib/win32/libCore.lib

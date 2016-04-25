@@ -23,6 +23,7 @@ L_METHOD(LuaGlobal, C_GetMTime)
 L_METHOD(LuaGlobal, C_StopServer)
 L_METHOD(LuaGlobal, C_GetHashCode)
 L_METHOD(LuaGlobal, C_ToNumber)
+L_METHOD(LuaGlobal, C_SystemName)
 LUA_FUNC_END
 
 
@@ -378,5 +379,16 @@ int LuaGlobal::C_ToNumber(lua_State* L)
 	lua_pushnumber(L, iValue);
 	return 1;
 }
+
+int LuaGlobal::C_SystemName(lua_State* L)
+{
+#ifdef WIN32
+	lua_pushnumber(L, 1);
+#else
+	lua_pushnumber(L, 2);
+#endif
+	return 1;
+}
+
 
 
