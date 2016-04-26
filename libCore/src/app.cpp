@@ -95,7 +95,7 @@ ServerApp* ServerApp::get()
 #ifndef WIN32
 static void sh(int sig)
 {
-	if (SIGINT == SIG || SIGTERM == sig)
+	if (SIGINT == sig || SIGTERM == sig)
 	{
 		ServerApp::get()->stop();
 	}
@@ -111,7 +111,7 @@ static __sighandler_t oldsigsegv = 0;
 void sigdump(int s)
 {
 	ERROR("App segment fault");
-	vid *array[10];
+	void *array[10];
 	size_t size;
 	char **strings;
 	size_t i;
@@ -161,21 +161,21 @@ void ServerApp::rlimit()
 		olimit.rlim_cur = olimit.rlim_max = RLIM64_INFINITY;
 		if (!setrlimit(RLIMIT_CORE, &olimit))
 		{
-			if (!getrlimit((RLIMIT_CORE, &olimit))
+			if (!getrlimit(RLIMIT_CORE, &olimit))
 			{
 				NOTICE(">>RLIMIT core cur=%d,max=%d", olimit.rlim_cur, olimit.rlim_max);
 			}
 		}
 	}
 
-	if (!getrlimit((RLIMIT_NOFILE, &olimit))
+	if (!getrlimit(RLIMIT_NOFILE, &olimit))
 	{
 		NOTICE(">>RLIMIT maxfd cur=%d,max=%d", olimit.rlim_cur, olimit.rlim_max);
 		
 		olimit.rlim_cur = olimit.rlim_max = 10240;
 		if (!setrlimit(RLIMIT_NOFILE, &olimit))
 		{
-			if (!getrlimit((RLIMIT_NOFILE, &olimit))
+			if (!getrlimit(RLIMIT_NOFILE, &olimit))
 			{
 				NOTICE(">>RLIMIT maxfd cur=%d,max=%d", olimit.rlim_cur, olimit.rlim_max);
 				if(olimit.rlim_cur != 10240)

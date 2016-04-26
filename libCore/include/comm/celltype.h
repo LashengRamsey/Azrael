@@ -18,7 +18,7 @@ typedef unsigned __int64 uint64;
 #else
 #include <sys/types.h>
 typedef __int64_t int64;
-typedef unsigned __int64_t uint64;
+typedef u_int64_t uint64;
 #endif
 
 typedef unsigned short uint16;
@@ -39,7 +39,7 @@ union _FL
 	float f;
 };
 inline int F2L(float f) { _FL fl; fl.f = f; return fl.i;}
-inline float L2F(long l) { _FL fl; fl.i = (int)i; return fl.f; }
+inline float L2F(long l) { _FL fl; fl.i = (int)l; return fl.f; }
 #endif
 
 

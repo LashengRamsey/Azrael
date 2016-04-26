@@ -35,15 +35,15 @@ set(EXECUTABLE_OUTPUT_PATH ${PROJECT_BINARY_DIR}/bin)
 set(LIBRARY_OUTPUT_PATH ${PROJECT_BINARY_DIR}/lib)
 
 
-
 #include
 message(STATUS ${PROJECT_SOURCE_DIR})
 include_directories(${PROJECT_SOURCE_DIR})
 include_directories(${PROJECT_SOURCE_DIR}/include/comm)
 include_directories(${PROJECT_SOURCE_DIR}/include/event/include)
+include_directories(${PROJECT_SOURCE_DIR}/include/event/include/event2)
 include_directories(${PROJECT_SOURCE_DIR}/include/zmq/include)
 include_directories(${PROJECT_SOURCE_DIR}/include/lua/include)
-include_directories(${PROJECT_SOURCE_DIR}/../Lib/linux_event/include)
+
 include_directories(/usr/include)
 
 
@@ -51,7 +51,7 @@ include_directories(/usr/include)
 message(STATUS "start link_directories")
 link_directories(/usr/lib)
 link_directories(/usr/local/lib)
-link_directories(${PROJECT_SOURCE_DIR}/../lib/linux/.libs)
+link_directories(${PROJECT_SOURCE_DIR}/../lib/linux)
 
 #string(TOUPPER ${CMAKE_BUILD_TYPE} BUILD_TYPE)
 #message(STATUS "CXX_FLAGS = " ${CMAKE_CXX_FLAGS} " " ${CMAKE_CXX_FLAGS_${BUILD_TYPE}})

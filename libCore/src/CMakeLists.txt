@@ -12,7 +12,7 @@ set(libCore_SRCS
   luaglobal.cpp
   luanetwork.cpp
   luasvr.cpp
-  lunap.cpp
+  lunar.cpp
   mqnet.cpp
   net.cpp
   timer.cpp
@@ -28,6 +28,8 @@ message(STATUS "target_link_libraries:event")
 target_link_libraries(libCore event)
 target_link_libraries(libCore event_core)
 target_link_libraries(libCore event_extra)
+
+target_link_libraries(libCore zmq)
 
 
 set(HEADERS
