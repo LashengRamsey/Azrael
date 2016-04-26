@@ -3,7 +3,7 @@ require "test.testinit"
 require "game.Connect"
 require "db.dbStruct"
 require "db.dbClient"
-require "game.login"
+require "game.Account.login"
 
 
 require "game.Account.Account"
