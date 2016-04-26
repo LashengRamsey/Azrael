@@ -9,7 +9,7 @@
 #include <Windows.h>
 #include <process.h>
 #else
-#include <sys/utime.h>
+#include <sys/time.h>
 #include <sys/ioctl.h>
 #endif
 
@@ -46,24 +46,26 @@ void resetIO()
 #ifndef WIN32
 	if fd;
 	for (int i = 0; i < 3; ++i)
+	{
 		close(i);
+	}
 
 	fd = open("/dev/null", O_RDWR);
-	IF (fd != STDERR_FILENO)
+	if (fd != STDERR_FILENO)
 	{
 		dup2(fd, STDERR_FILENO);
 		close(fd);
 	}
 
 	fd = open("/dev/null", O_RDWR);
-	IF (fd != STDIN_FILENO)
+	if (fd != STDIN_FILENO)
 	{
 		dup2(fd, STDIN_FILENO);
 		close(fd);
 	}
 
 	fd = open("/dev/null", O_RDWR);
-	IF (fd != STDOUT_FILENO)
+	if (fd != STDOUT_FILENO)
 	{
 		dup2(fd, STDOUT_FILENO);
 		close(fd);
@@ -78,10 +80,14 @@ void be_daemon()
 	umask(0);
 	pid_t pid;
 	if ((pid = fork()) != 0)
+	{
 		exit(0);
+	}
 	setsid();
 	if ((pid = fork()) != 0)
+	{
 		exit(0);
+	}
 	resetIO();
 	g_isDaemon = 1;
 #endif
@@ -92,7 +98,7 @@ void signalIgn()
 #ifndef WIN32
 	signal(SIGTERM, SIG_IGN);
 	signal(SIGHUP, SIG_IGN);
-	signal(SIGPIPI, SIG_IGN);
+	signal(SIGPIPE, SIG_IGN);
 #endif
 }
 
@@ -133,7 +139,7 @@ int getProcessPath(char *path, int len)
 {
 #ifndef WIN32
 	char cmd[MAX_PATH] = {0,};
-	FILE* fp = NULL:
+	FILE* fp = NULL;
 
 	sprintf(cmd, "readlink -f /proc/%d/exe", getpid());
 	if (NULL == (fp=popen(cmd, "r")))
@@ -349,7 +355,7 @@ const char* getInput()
 #ifdef WIN32
 void __cdecl threadTrample(void * ud)
 #else
-void  threadTrample(void * ud)
+void * threadTrample(void * ud)
 #endif
 {
 	Thread *th = (Thread*)ud;
@@ -358,7 +364,7 @@ void  threadTrample(void * ud)
 		th->work();
 	}
 #ifndef WIN32
-	return NULL;
+	//return NULL;
 #endif
 }
 
