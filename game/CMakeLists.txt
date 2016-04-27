@@ -26,7 +26,8 @@ set(CXX_FLAGS
  # -MMD
  # -std=c++0x
  -rdynamic
- -static
+ #-static
+ -share
  -Wmissing-field-initializers
 
  )
@@ -47,6 +48,7 @@ include_directories(${PROJECT_SOURCE_DIR}/../libCore/include/lua/include)
 
 #库目录
 message(STATUS "start link_directories")
+link_directories(/lib)
 link_directories(/usr/lib)
 link_directories(/usr/local/lib)
 link_directories(${PROJECT_SOURCE_DIR}/../lib/linux)
@@ -54,16 +56,13 @@ link_directories(${PROJECT_SOURCE_DIR}/../lib/linux)
 #执行
 add_executable(game ${SRCS_SERVER})
 
+
 #库
-#target_link_libraries(game pthread)
+target_link_libraries(game -lpthread)
 target_link_libraries(game dl)
 #target_link_libraries(game rt)
 
-message(STATUS "target_link_libraries:libCore")
-target_link_libraries(game libCore.a)
 
-message(STATUS "target_link_libraries:zmq")
-target_link_libraries(game libzmq.a)
 
 message(STATUS "target_link_libraries:event")
 target_link_libraries(game event)
@@ -71,8 +70,18 @@ target_link_libraries(game event_extra)
 target_link_libraries(game event_core)
 #target_link_libraries(game event_pthreads)
 
+message(STATUS "target_link_libraries:libCore")
+target_link_libraries(game Core)
+
+message(STATUS "target_link_libraries:zmq")
+target_link_libraries(game libzmq.a)
+
+
+
 message(STATUS "target_link_libraries:lua")
 target_link_libraries(game liblua.a)
+
+
 
 #输出目录
 set(EXECUTABLE_OUTPUT_PATH ${PROJECT_BINARY_DIR}/bin)

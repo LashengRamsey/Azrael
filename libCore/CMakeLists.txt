@@ -60,6 +60,47 @@ link_directories(${PROJECT_SOURCE_DIR}/../lib/linux)
 #message(STATUS "CXX_FLAGS = " ${CMAKE_CXX_FLAGS} " " ${CMAKE_CXX_FLAGS_${BUILD_TYPE}})
 
 #子目录
-add_subdirectory(src)
+#add_subdirectory(src)
+
+set(Core_SRCS
+  src/app.cpp
+  src/arch.cpp
+  src/bevstream.cpp
+  src/buf.cpp
+  src/bufferstring.cpp
+  src/Config.cpp
+  src/connection.cpp
+  src/log.cpp
+  src/LogThread.cpp
+  src/luabit.cpp
+  src/luaglobal.cpp
+  src/luanetwork.cpp
+  src/luasvr.cpp
+  src/lunar.cpp
+  src/mqnet.cpp
+  src/net.cpp
+  src/timer.cpp
+  )
+
+
+add_library(Core ${Core_SRCS})
+
+#message(STATUS "target_link_libraries:pthread")
+#target_link_libraries(Core pthread rt)
+
+#message(STATUS "target_link_libraries:event")
+#target_link_libraries(Core event)
+#target_link_libraries(Core event_core)
+#target_link_libraries(Core event_extra)
+
+#message(STATUS "target_link_libraries:zmq")
+#target_link_libraries(Core zmq)
+
+
+#set(HEADERS
+#  luabit.h
+#  luaglobal.h
+#  luanetwork.h
+#  )
 
 
