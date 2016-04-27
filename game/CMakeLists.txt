@@ -19,15 +19,14 @@ set(CXX_FLAGS
  -DCHECK_PTHREAD_RETURN_VALUE
  -D_FILE_OFFSET_BITS=64
  -Wno-write-strings
- -DLOG2FILE_WHTH_C
  #-Wall
  -Wextra
  -march=native
  # -MMD
  # -std=c++0x
- -rdynamic
+ #-rdynamic
  #-static
- -share
+ #-share
  -Wmissing-field-initializers
 
  )
@@ -51,6 +50,9 @@ message(STATUS "start link_directories")
 link_directories(/lib)
 link_directories(/usr/lib)
 link_directories(/usr/local/lib)
+
+message(STATUS "PROJECT_SOURCE_DIR")
+message(STATUS ${PROJECT_SOURCE_DIR}/../lib/linux)
 link_directories(${PROJECT_SOURCE_DIR}/../lib/linux)
 
 #执行
@@ -62,26 +64,20 @@ target_link_libraries(game -lpthread)
 target_link_libraries(game dl)
 #target_link_libraries(game rt)
 
-
-
 message(STATUS "target_link_libraries:event")
-target_link_libraries(game event)
-target_link_libraries(game event_extra)
-target_link_libraries(game event_core)
-#target_link_libraries(game event_pthreads)
+target_link_libraries(game event.a)
+target_link_libraries(game event_extra.a)
+target_link_libraries(game event_core.a)
+#target_link_libraries(game event_pthreads.a)
 
 message(STATUS "target_link_libraries:libCore")
-target_link_libraries(game Core)
+target_link_libraries(game Core.a)
 
 message(STATUS "target_link_libraries:zmq")
-target_link_libraries(game libzmq.a)
-
-
+target_link_libraries(game zmq.a)
 
 message(STATUS "target_link_libraries:lua")
-target_link_libraries(game liblua.a)
-
-
+target_link_libraries(game lua.a)
 
 #输出目录
 set(EXECUTABLE_OUTPUT_PATH ${PROJECT_BINARY_DIR}/bin)
