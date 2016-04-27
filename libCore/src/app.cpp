@@ -2,6 +2,7 @@
 #include "lua.hpp"
 #include <stdlib.h>
 #include <stdio.h>
+#include <cstddef>
 #include <assert.h>
 #include <time.h>
 #include "arch.h"
@@ -27,6 +28,7 @@
 #include <sys/stat.h>
 #include <sys/resource.h>
 #include <syslog.h>
+#include <execinfo.h>
 #endif
 
 ServerApp *ServerApp::Self_ = NULL;
@@ -108,14 +110,17 @@ static void sh(int sig)
 }
 
 static __sighandler_t oldsigsegv = 0;
+//在程序出错时打印出函数的调用堆栈
 void sigdump(int s)
 {
 	ERROR("App segment fault");
 	void *array[10];
-	size_t size;
+	size_t size = 0;
 	char **strings;
 	size_t i;
 
+	size = backtrace (array, 10);
+	strings = backtrace_symbols (array, size);
 	ERROR("Obtained %2d stack fames.\n", size);
 	for (i = 0; i < size; ++i)
 	{

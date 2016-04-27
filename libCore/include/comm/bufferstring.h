@@ -1,6 +1,6 @@
 #ifndef _BUFFERSTRING_H
 #define _BUFFERSTRING_H
-#include "string"
+#include <string>
 class BufferString
 {
 public:

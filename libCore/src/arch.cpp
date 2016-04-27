@@ -44,13 +44,12 @@ void *stack(int i)
 void resetIO()
 {
 #ifndef WIN32
-	if fd;
 	for (int i = 0; i < 3; ++i)
 	{
 		close(i);
 	}
 
-	fd = open("/dev/null", O_RDWR);
+	int fd = open("/dev/null", O_RDWR);
 	if (fd != STDERR_FILENO)
 	{
 		dup2(fd, STDERR_FILENO);

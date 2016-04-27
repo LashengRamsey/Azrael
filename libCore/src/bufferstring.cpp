@@ -1,5 +1,6 @@
 #include "bufferstring.h"
 #include "arch.h"
+#include <string.h>
 
 BufferString::BufferString()
 {

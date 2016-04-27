@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 2.8)
 
-project(libCore CXX)
+project(Core CXX)
 
 #if(NOT CMAKE_BUILD_TYPE)
 #  set(CMAKE_BUILD_TYPE "Debug")
@@ -13,6 +13,7 @@ set(CXX_FLAGS
  -DHAVE_CLOCK_GETTIME
  -DCHECK_PTHREAD_RETURN_VALUE
  -D_FILE_OFFSET_BITS=64
+ -DLOG2FILE_WHTH_C
  -Wno-write-strings
  #-Wall
  -Wextra
@@ -31,11 +32,13 @@ string(REPLACE ";" " " CMAKE_CXX_FLAGS "${CXX_FLAGS}")
 set(CMAKE_CXX_COMPILER "g++")
 set(CMAKE_CXX_FLAGS_DEBUG "-O0")
 set(CMAKE_CXX_FLAGS_RELEASE "-O2 -finline-limit=1000 -DNDEBUG")
+
+#输出目录
 set(EXECUTABLE_OUTPUT_PATH ${PROJECT_BINARY_DIR}/bin)
 set(LIBRARY_OUTPUT_PATH ${PROJECT_BINARY_DIR}/lib)
 
 
-#include
+#include#头文件目录
 message(STATUS ${PROJECT_SOURCE_DIR})
 include_directories(${PROJECT_SOURCE_DIR})
 include_directories(${PROJECT_SOURCE_DIR}/include/comm)
@@ -47,7 +50,7 @@ include_directories(${PROJECT_SOURCE_DIR}/include/lua/include)
 include_directories(/usr/include)
 
 
-#lib
+#lib#库目录
 message(STATUS "start link_directories")
 link_directories(/usr/lib)
 link_directories(/usr/local/lib)
@@ -56,6 +59,7 @@ link_directories(${PROJECT_SOURCE_DIR}/../lib/linux)
 #string(TOUPPER ${CMAKE_BUILD_TYPE} BUILD_TYPE)
 #message(STATUS "CXX_FLAGS = " ${CMAKE_CXX_FLAGS} " " ${CMAKE_CXX_FLAGS_${BUILD_TYPE}})
 
+#子目录
 add_subdirectory(src)
 
 

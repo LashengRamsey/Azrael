@@ -1,4 +1,4 @@
-set(libCore_SRCS
+set(Core_SRCS
   app.cpp
   arch.cpp
   bevstream.cpp
@@ -19,17 +19,18 @@ set(libCore_SRCS
   )
 
 
-add_library(libCore ${libCore_SRCS})
+add_library(Core ${Core_SRCS})
 
 message(STATUS "target_link_libraries:pthread")
-target_link_libraries(libCore pthread rt)
+target_link_libraries(Core pthread rt)
 
 message(STATUS "target_link_libraries:event")
-target_link_libraries(libCore event)
-target_link_libraries(libCore event_core)
-target_link_libraries(libCore event_extra)
+target_link_libraries(Core event)
+target_link_libraries(Core event_core)
+target_link_libraries(Core event_extra)
 
-target_link_libraries(libCore zmq)
+message(STATUS "target_link_libraries:zmq")
+target_link_libraries(Core zmq)
 
 
 set(HEADERS
