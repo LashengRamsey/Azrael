@@ -11,6 +11,7 @@ L_METHOD(Bit, c_band64)
 L_METHOD(Bit, c_bor)
 L_METHOD(Bit, c_bor64)
 L_METHOD(Bit, c_bxor)
+L_METHOD(Bit, c_bxor64)
 L_METHOD(Bit, c_blsh)
 L_METHOD(Bit, c_blsh64)
 L_METHOD(Bit, c_brsh)
@@ -59,6 +60,13 @@ int Bit::c_bxor(lua_State* L)
 {
 	int rvalue = lua_tointeger(L, -1);
 	int lvalue = lua_tointeger(L, -2);
+	lua_pushnumber(L, rvalue^lvalue);
+	return 1;
+}
+int Bit::c_bxor64(lua_State* L)
+{
+	int64 rvalue = lua_tointeger(L, -1);
+	int64 lvalue = lua_tointeger(L, -2);
 	lua_pushnumber(L, rvalue^lvalue);
 	return 1;
 }

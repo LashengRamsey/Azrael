@@ -141,7 +141,7 @@ function print_r(tb)
     print(str)
 end
 
-function print_lua_table (lua_table, indent)
+function print_lua_table(lua_table, indent)
     indent = indent or 0
     for k, v in pairs(lua_table) do
         if type(k) == "string" then
@@ -207,252 +207,10 @@ function clone(object)
     return _copy(object)
 end
 
-
---单例类
-function sclass(classname, super)
-    local superType = type(super)
-    local cls
-
-    if superType ~= "function" and superType ~= "table" then
-        superType = nil
-        super = nil
-    end
-
-    if superType == "function" or (super and super.__ctype == 1) then
-        -- inherited from native C++ Object
-        cls = {}
-
-        if superType == "table" then
-            -- copy fields from super
-            for k,v in pairs(super) do cls[k] = v end
-            cls.__create = super.__create
-            cls.super    = super
-        else
-            cls.__create = super
-        end
-
-        cls.ctor    = function() end
-        cls.dtor    = function() end
-        cls.__cname = classname
-        cls.__ctype = 1
-
-        function cls.new(...)
-            -- 已经是单例的对象，如果再被new就提示错误
-            if cls.__instance then
-                Log_Error(string.format("%s is single, can't produce others instance", cls.__cname))
-                return nil
-            end
-            local instance = cls.__create(...)
-            -- copy fields from class to native object
-            for k,v in pairs(cls) do instance[k] = v end
-            instance.class = cls
-
-            local function _create(obj, ...)
-                if obj.super then
-                    _create(obj.super, ...)
-                end
-                obj.ctor(instance, ...)
-            end
-
-            _create(instance, ...)
-            return instance
-        end
-    else
-        -- inherited from Lua Object
-        if super then
-            cls = clone(super)
-            cls.super = super
-        else
-            cls = {ctor = function() end,
-                dtor = function() end}
-        end
-
-        cls.__cname = classname
-        cls.__ctype = 2 -- lua
-        cls.__index = cls
-
-        function cls.new(...)
-            -- 已经是单例的对象，如果再被new就提示错误
-            if cls.__instance then
-                Log_Error(string.format("%s is single, can't produce others instance", cls.__cname))
-                return nil
-            end
-            local instance = setmetatable({}, cls)
-            instance.class = cls
-            local function _create(obj, ...)
-                if obj.super then
-                    _create(obj.super, ...)
-                end
-                obj.ctor(instance, ...)
-            end
-
-            _create(instance, ...)
-            return instance
-        end
-    end
-
-    cls.__instance = nil
-    -- 单例
-    function cls.getInstance()
-        if not cls.__instance then
-            cls.__instance = cls.new()
-        end
-        return cls.__instance
-    end
-    -- 析构单例
-    function cls.releaseInstance()
-        if cls.__instance then
-            cls.__instance:delete()
-            cls.__instance = nil
-        end
-    end
-    -- 析构函数
-    function cls.delete(cls)
-        local function _delete(obj)
-            obj.dtor(cls)
-            if obj.super then
-                _delete(obj.super)
-            end
-        end
-        _delete(cls)
-    end
-    return cls
-end
-
---多例类
-function class(classname, super)
-    local superType = type(super)
-    local cls
-
-    if superType ~= "function" and superType ~= "table" then
-        superType = nil
-        super = nil
-    end
-
-    if superType == "function" or (super and super.__ctype == 1) then
-        -- inherited from native C++ Object
-        cls = {}
-
-        if superType == "table" then
-            -- copy fields from super
-            for k,v in pairs(super) do cls[k] = v end
-            cls.__create = super.__create
-            cls.super    = super
-        else
-            cls.__create = super
-        end
-
-        cls.ctor    = function() end
-        cls.__cname = classname
-        cls.__ctype = 1
-
-        function cls.new(...)
-            local instance = cls.__create(...)
-            -- copy fields from class to native object
-            for k,v in pairs(cls) do instance[k] = v end
-            instance.class = cls
-            instance:ctor(...)
-            return instance
-        end
-
-    else
-        -- inherited from Lua Object
-        if super then
-            cls = clone(super)
-            cls.super = super
-        else
-            cls = {ctor = function() end}
-        end
-
-        cls.__cname = classname
-        cls.__ctype = 2 -- lua
-        cls.__index = cls
-
-        function cls.new(...)
-            local instance = setmetatable({}, cls)
-            instance.class = cls
-            instance:ctor(...)
-            return instance
-        end
-    end
-
-    return cls
-end
-
-
 function handler(target, method)
     return function(...) return method(target, ...) end
 end
 
-function io.exists(path)
-    local file = io.open(path, "r")
-    if file then
-        io.close(file)
-        return true
-    end
-    return false
-end
-
-function io.readfile(path)
-    local file = io.open(path, "r")
-    if file then
-        local content = file:read("*a")
-        io.close(file)
-        return content
-    end
-    return nil
-end
-
-function io.writefile(path, content, mode)
-    mode = mode or "w+b"
-    local file = io.open(path, mode)
-    if file then
-        print("file is ok ok ok  ok ok ")
-        if file:write(content) == nil then print("file is bad bad bad bad ") return false end
-        io.close(file)
-        return true
-    else
-        return false
-    end
-end
-
-function io.pathinfo(path)
-    local pos = string.len(path)
-    local extpos = pos + 1
-    while pos > 0 do
-        local b = string.byte(path, pos)
-        if b == 46 then -- 46 = char "."
-            extpos = pos
-        elseif b == 47 then -- 47 = char "/"
-            break
-        end
-        pos = pos - 1
-    end
-
-    local dirname = string.sub(path, 1, pos)
-    local filename = string.sub(path, pos + 1)
-    extpos = extpos - pos
-    local basename = string.sub(filename, 1, extpos - 1)
-    local extname = string.sub(filename, extpos)
-    return {
-        dirname = dirname,
-        filename = filename,
-        basename = basename,
-        extname = extname
-    }
-end
-
-function io.filesize(path)
-    local size = false
-    local file = io.open(path, "r")
-    if file then
-        local current = file:seek()
-        size = file:seek("end")
-        file:seek("set", current)
-        io.close(file)
-    end
-    return size
-end
 
 --计数器
 local function newCounter()
@@ -463,15 +221,12 @@ local function newCounter()
     end
 end
 
-g_id_generator = newCounter()
+local g_id_generator = newCounter()
 function getNextID()
   local nextID 
     nextID = g_id_generator()
     return nextID
 end
-
-
-
 
 --去除扩展名
 function stripExtension(filename)
@@ -494,3 +249,67 @@ function strippath(filename)
     return string.match(filename, ".+/([^/]*%.%w+)$") -- *nix system
     --return string.match(filename, “.+\\([^\\]*%.%w+)$”) — *nix system
 end
+
+cEvent=class()
+function cEvent.__init__(self)
+    self.tHandler = {}
+    self.iId = 0
+end
+function cEvent.addEventHandler(self,func,sTag)
+    local tag
+    if sTag~=nil then
+        if type(sTag)~='string' then
+            error('事件响应的tag必须是string,你可以不提供,函数会返回一个标识给你')
+        end
+        tag=sTag
+    else
+        self.iId=self.iId+1
+        tag=self.iId
+    end
+    self.tHandler[tag]=func
+    return tag
+end
+
+function cEvent.removeEventHandler(self,tag)
+    self.tHandler[tag]=nil
+end
+
+function cEvent.triggerEvent(self,...)
+    for key,func in pairs(self.tHandler) do --不能用ipair,因为表中间有nil存在
+        local bRet=func(...)
+        if bRet==true then break end --如果其中一个事件响应函数返回true,则中断事件分发,即是之后的事件响应函数不会得到调用
+    end
+end
+
+function isInstance(obj,cls)--判断一个实例是不是某个类的对象(有面向对象语义,奶牛也是牛)
+    if obj.__class__==nil then
+        error('obj 不是实列',0)
+    end
+    if not cls.__isClass__ then
+        error('cls 不是类',0)
+    end
+    return isSubClass(obj.__class__,cls)
+end
+
+function isSubClass(cls,superCls)--判断1个类是否为另1个类的子类
+    if not cls.__isClass__ then
+        error('cls 不是类',0)
+    end
+    if not superCls.__isClass__ then
+        error('superCls 不是类',0)
+    end
+
+    for i,tempCls in ipairs(cls.__bases__) do
+        if tempCls==superCls then
+            return true     
+        end
+    end
+
+    for i,tempCls in ipairs(cls.__bases__) do
+        if isSubClass(tempCls,superCls) then
+            return true
+        end
+    end
+    return false
+end
+

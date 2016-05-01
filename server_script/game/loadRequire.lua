@@ -5,6 +5,6 @@ require "db.dbStruct"
 require "db.dbClient"
 require "game.Account.login"
 
-
+require "game.pst"
 require "game.Account.Account"
 require "game.Account.AccountMng"

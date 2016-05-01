@@ -10,7 +10,7 @@ function doHotUpdate()
 		--print("========doHotUpdate====")
 		HU.Update(FileNameList)
 	end
-	test.func()
+	--test.func()
 end
 
 function doGetHUFileMap()
