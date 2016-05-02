@@ -250,12 +250,12 @@ function strippath(filename)
     --return string.match(filename, “.+\\([^\\]*%.%w+)$”) — *nix system
 end
 
-cEvent=class()
-function cEvent.__init__(self)
+CEvent=class()
+function CEvent.__init__(self)
     self.tHandler = {}
     self.iId = 0
 end
-function cEvent.addEventHandler(self,func,sTag)
+function CEvent.addEventHandler(self,func,sTag)
     local tag
     if sTag~=nil then
         if type(sTag)~='string' then
@@ -270,11 +270,11 @@ function cEvent.addEventHandler(self,func,sTag)
     return tag
 end
 
-function cEvent.removeEventHandler(self,tag)
+function CEvent.removeEventHandler(self,tag)
     self.tHandler[tag]=nil
 end
 
-function cEvent.triggerEvent(self,...)
+function CEvent.triggerEvent(self,...)
     for key,func in pairs(self.tHandler) do --不能用ipair,因为表中间有nil存在
         local bRet=func(...)
         if bRet==true then break end --如果其中一个事件响应函数返回true,则中断事件分发,即是之后的事件响应函数不会得到调用

@@ -2,7 +2,7 @@
 --[[
 u.lua表示util.lua或utility.lua,工具模块
 --]]
---module('u', package.seeall)
+module('u', package.seeall)
 
 None={} --表示没有
 

@@ -53,8 +53,8 @@ function insert_account(account)
 		Gold = 100,
 		VipLv = 1,
 		VipExp = 0,
-		LastLoginTime = G_GetSecond(),
-		CreateTime = G_GetSecond(),
+		LastLoginTime = timeU.GetSecond(),
+		CreateTime = timeU.GetSecond(),
 		DATA = "",
 	}
 
@@ -75,8 +75,8 @@ function update_account(account)
 		Gold = 100,
 		VipLv = 1,
 		VipExp = 0,
-		LastLoginTime = G_GetSecond(),
-		CreateTime = G_GetSecond(),
+		LastLoginTime = timeU.GetSecond(),
+		CreateTime = timeU.GetSecond(),
 		DATA = "",
 	}
 	dbClient.command(dbClient.giCommandUpdate, "account", value, update_account_cb, account)

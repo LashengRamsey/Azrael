@@ -143,7 +143,7 @@ end
 --[[
 local cAnimal=class()--生成一个类
 	function cAnimal.__init__(self,sName,iAge)
-		print('cAnimal.__init__')
+		--print('cAnimal.__init__')
 		self.sName=sName
 		self.iAge=iAge
 	end
@@ -154,10 +154,11 @@ local cAnimal=class()--生成一个类
 
 local oAnimal=cAnimal('wang cai',7)--产生实例
 oAnimal:voice()
-
+print('------------111111111---------------')
+print(oAnimal.__call)
 oAnimal()
 
-print('---------------------------')
+print('---------------2222222222------------')
 
 --]]
 
