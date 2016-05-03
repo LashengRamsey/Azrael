@@ -94,39 +94,43 @@ function CBlock:_saveToDB()--override 执行update语句
 	local dData=oPst.save()
 	local sData=ujson.dumps(dData)
 	db4mainService.gConnectionPool.query(self.getUdStm(),sData,*self.tPriKey)		
-	if config.IS_INNER_SERVER
-		self.sBackup=sData
+	if config.IS_INNER_SERVER then
+		self.sBackup = sData
+	end
 	return True
 end
 
 function CBlock:_loadFromDB()--override 执行select语句
 	rs=db4mainService.gConnectionPool.query(self.getSlStm(),*self.tPriKey)
 	--print 'rs.rows==',rs.rows
-	if len(rs.rows)>1
+	if len(rs.rows)>1 then
 		raise Exception,'行数过多,返回结果集应该只有1行'
-	elseif len(rs.rows)<1--数据库中没有此行			
-		return False
+	elseif len(rs.rows)<1 then--数据库中没有此行			
+		return false
+	end
 
-	if len(rs.rows[0])!=1
+	if len(rs.rows[0])!=1 then
 		raise Exception,'列数只能是1列'
+	end
 	sData=rs.rows[0][0]
-	if sData
+	if sData then
 		try
 			dData=ujson.loads(sData)--反序列化
 		except Exception
 			u.reRaise('反序列化\'{}\'数据块时出错,主键为{}'.format(self.sChineseName,self.getPriKey()))
 	else
 		dData={}
+	end
 
 	oPst=self.getPstObj()
 	oPst.load(dData)
 	
-	if config.IS_INNER_SERVER
+	if config.IS_INNER_SERVER then
 		self.sBackup=ujson.dumps(oPst.save())  -- save可能新加了一些标记
-	
+	end
 	self.bInitialized=True
 	self._onInitialized()
-	return True
+	return true
 end
 
 function CBlock:_onInitialized()

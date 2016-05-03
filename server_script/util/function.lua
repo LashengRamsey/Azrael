@@ -2,6 +2,23 @@
 
 
 --表操作
+--以数组的方式找一个空位
+function table.insertEx(t, v)
+    local index
+    for _k, _v in ipairs do
+        index = _k
+    end
+    --t[index+1]肯定是空的
+    t[index+1] = v
+end
+
+function table.removeEx(t, v)
+    for _k, _v in pairs(t) do
+        if _v == v then
+            t[_k] = nil
+        end
+    end
+end
 
 --获取表中值
 function table.get(t, k, default)
@@ -19,7 +36,7 @@ end
 function table.keys(t)
     local keys = {}
     if t == nil then
-        return keys;
+        return keys
     end
     for k, v in pairs(t) do
         keys[#keys + 1] = k
@@ -38,7 +55,7 @@ end
 function table.values(t)
     local values = {}
     if t == nil then
-        return values;
+        return values
     end
     for k, v in pairs(t) do
         values[#values + 1] = v

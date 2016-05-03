@@ -5,24 +5,23 @@ local CProduct = class()
 function CProduct:__init__(sChineseName, ...)
 	self.oFactory = nil
 	self.sChineseName = sChineseName --有个中文名,方便调试查找错误
-	self.tPriKey = {...}
+	self.sPriKey = table.concat({...}, "|")
 	self.iBirthStamp = 0 --从数据库中加载回来的时间戳
 	self.tKeepers = {}
 end
 
 function CProduct:addKeeper(oKeeper)
 	local oPrx = u.proxy(oKeeper) --避免keeper与product互相循环引用
-	table.insert(self.tKeepers, oPrx)
+	table.insertEx(self.tKeepers, oPrx)
 end
 
 function CProduct:removeKeeper(oKeeper)
 	local oPrx = u.proxy(oKeeper) --避免keeper与product互相循环引用
-	--if oPrx in self.lKeepers
-	--	self.tKeepers.remove(oPrx)
+	table.removeEx(self.tKeepers, oPrx)
 end
 
 function CProduct:keeperAmount()
-	return table.count(self.tPriKey)
+	return table.count(self.tKeepers)
 end
 
 function CProduct:this()
@@ -30,7 +29,7 @@ function CProduct:this()
 end
 
 function CProduct:getPriKey()--返回主键,类型是tuple
-	return self.tPriKey
+	return self.sPriKey
 end
 
 function CProduct:chineseName()
@@ -55,7 +54,7 @@ function CProduct:birthStamp()
 end
 
 function CProduct:setBirthStamp(iBirthStamp)
-	self.iBirthStamp=iBirthStamp
+	self.iBirthStamp = iBirthStamp
 end
 
 function CProduct:liveTime()--至今存活时间(进入内存总共多长时间),返回如 94天21时56分5秒 字符串
