@@ -109,14 +109,14 @@ end
 	
 function CScheduler.__next(self)
 	--iLen=len(self.deqItems)--这个不准确的,以self.dKeyMapFunc为准
-	local iLen = len(self.dKeyMapFunc)
+	local iLen = table.count(self.dKeyMapFunc)
 	if iLen == 0 then
 		return -1 --表示没有元素,不需要定时器了
 	end
+
 	local fDelay = self.icycleTime/iLen --平均间隔		
 	if fDelay < self.iMinInterval then--不能太密,影响性能
 		fDelay = self.iMinInterval 
-
 	elseif fDelay > self.iMaxInterval then--不能太疏,不影响性能的情况下要保证精度
 		fDelay = self.iMaxInterval
 	end

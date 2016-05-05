@@ -57,6 +57,15 @@ function DoTimer(id)
 	return 0
 end
 
+--===========================
+CTimerMng = class()
+
+function CTimerMng.__init__(self)
+	
+end
+
+
+
 
 
 
