@@ -169,6 +169,14 @@ function print_lua_table(lua_table, indent)
     end
 end
 
+function toPriKeyStr(...)
+    local s = table.concat({...}, "|")
+    if s == "" then
+        s = nil
+    end
+    return s
+end
+
 
 local tonumber_ = tonumber
 function tonumber(v, base)

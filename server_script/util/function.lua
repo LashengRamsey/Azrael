@@ -117,6 +117,14 @@ function table.count(t)
 	return i
 end
 
+function table.nums(t)
+    local i = 0
+    for _,_ in pairs(t) do
+        i = i + 1
+    end
+    return i
+end
+
 function table.isArray(t)
 	if #t == table.count(t) then
 		return true

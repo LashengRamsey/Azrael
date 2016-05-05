@@ -11,22 +11,21 @@ function CKeeper:__init__()
 end
 
 function CKeeper:getObj(...)--返回proxy
-	local tPriKey = {...}
-	if #tPriKey <= 0 then
+	local sPriKey = toPriKeyStr(...)
+	if not sPriKey then
 		error('请提供主键.')
 		return
 	end
-	local sPriKey = table.concat(tPriKey, "|")
+	
 	return self.dProxy[sPriKey]
 end
 
 function CKeeper:addObj(obj, ...)
-	local tPriKey = {...}
-	if #tPriKey <= 0 then
+	local sPriKey = toPriKeyStr(...)
+	if not sPriKey then
 		error('请提供主键.')
 		return
 	end
-	local sPriKey = table.concat(tPriKey, "|")
 	if self.dProxy[sPriKey] then
 		return
 	end
@@ -36,8 +35,8 @@ function CKeeper:addObj(obj, ...)
 end
 
 function CKeeper:removeObj(...)
-	local tPriKey = {...}
-	if #tPriKey <= 0 then
+	local sPriKey = toPriKeyStr(...)
+	if not sPriKey then
 		error('请提供主键.')
 		return
 	end
