@@ -63,7 +63,9 @@ function table.values(t)
     return values
 end
 
-
+function table.isEmpty(t)
+    return _G.next(t) == nil
+end
 
 --table t是否存在key
 function table.has_key( t, key )
@@ -129,6 +131,83 @@ end
 function table.merge(dest, src)
     for k, v in pairs(src) do
         dest[k] = v
+    end
+end
+
+--支持带环的表，拷贝出来是临时表
+function table.deepCopy(object)
+     local lookup_table = {}
+     local function _copy(object)
+         if type(object) ~= "table" then
+            return object
+         elseif lookup_table[object] then
+            return lookup_table[object]
+         end
+         local new_table = {}
+         lookup_table[object] = new_table
+         for index, value in pairs(object) do
+            new_table[_copy(index)] = _copy(value)
+         end
+         return setmetatable(new_table, getmetatable(object))--保留常量特性
+         -- setmetatable(new_table,nil)
+         -- return new_table
+     end
+     return _copy(object)
+end
+
+function table.remove2(t, v)
+    for k,v1 in pairs(t) do
+        if  type(v1) == type(v) and v1 == v then
+            if type(k) == 'number' and k <= #t then
+                table.remove(t, k)
+            else
+                t[k] = nil
+            end
+        end
+    end
+end
+
+--连接tbale t1和t2，t1存在的字段以t2中的为主（t1和t2中的相同字段的value同为为table类型则再次连接），t1不存在的字段以t2的补全t1
+function table.connect(t1, t2)
+    if 'table' ~= type(t1) or 'table' ~= type(t2) then
+        --ZFM_LOG(PRINT_CRITICAL,'警告：尝试使用table.connect连接非table类型')
+        return false
+    end
+    for k2,v2 in pairs(t2) do
+        if nil == t1[k2] then
+            if type(k2) == 'number' then
+                table.insert(t1, v2)
+            else
+                t1[k2] = v2
+            end
+        elseif 'table' == type(t1[k2]) and 'table' == type(v2) then
+            table.connect(t1[k2], v2)
+        else
+            t1[k2] = v2
+        end
+    end
+    return true
+end
+
+function table.reverse(v)
+    local len = table.nums(v)
+    if len == 1 then 
+        return 
+    end
+    for i=2,len do
+        table.insert(v,v[len-(i-1)])
+        table.remove(v,len-(i-1))
+    end
+
+end
+
+function table.join(t1,t2)
+    if t1 == nil or t2 == nil then 
+        error("不能连接数组为空")
+    else
+        for k,v in pairs(t2) do
+            table.insert(t1,v)
+        end
     end
 end
 
@@ -312,5 +391,36 @@ function io.filesize(path)
         io.close(file)
     end
     return size
+end
+
+function math.newrandomseed()
+    local ok, socket = pcall(function()
+        return require("socket")
+    end)
+
+    if ok then
+        math.randomseed(socket.gettime() * 1000)
+    else
+        math.randomseed(os.time())
+    end
+    math.random()
+    math.random()
+    math.random()
+    math.random()
+end
+
+function math.round(value)
+    value = checknumber(value)
+    return math.floor(value + 0.5)
+end
+
+local pi_div_180 = math.pi / 180
+function math.angle2radian(angle)
+    return angle * pi_div_180
+end
+
+local pi_mul_180 = math.pi * 180
+function math.radian2angle(radian)
+    return radian / pi_mul_180
 end
 

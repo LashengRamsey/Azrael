@@ -62,19 +62,19 @@ function CProduct:liveTime()--至今存活时间(进入内存总共多长时间)
 end
 
 function CProduct:_insertToDB(...)
-	--raise NotImplementedError,'请在子类实现'
+	error('请在子类实现')
 end
 
 function CProduct:_deleteFromDB()
-	--raise NotImplementedError,'请在子类实现'
+	error('请在子类实现')
 end
 
 function CProduct:_saveToDB()--执行update语句,bForce为真时不管内存数据有没有发生变化都强行存盘,bForce=False
-	--raise NotImplementedError,'请在子类实现'
+	error('请在子类实现')
 end
 
 function CProduct:_loadFromDB()--执行select语句,bNotExistInsert表示数据库中查不到时是否当场insert
-	--raise NotImplementedError,'请在子类实现'
+	error('请在子类实现')
 end
 
 function CProduct:checkMarkDirty()

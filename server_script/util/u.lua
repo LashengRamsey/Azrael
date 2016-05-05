@@ -6,7 +6,127 @@ module('u', package.seeall)
 
 None={} --表示没有
 
-function error(...)
+function printLog(tag, fmt, ...)
+    local t = {
+        "[",
+        string.upper(tostring(tag)),
+        "] ",
+        string.format(tostring(fmt), ...)
+    }
+    print(table.concat(t))
+end
+
+function printError(fmt, ...)
+    printLog("ERR", fmt, ...)
+    print(debug.traceback("", 2))
+end
+
+function printInfo(fmt, ...)
+    if type(DEBUG) ~= "number" or DEBUG < 2 then return end
+    printLog("INFO", fmt, ...)
+end
+
+local function dump_value_(v)
+    if type(v) == "string" then
+        v = "\"" .. v .. "\""
+    end
+    return tostring(v)
+end
+
+function dump(value, desciption, nesting)
+    if type(nesting) ~= "number" then nesting = 3 end
+
+    local lookupTable = {}
+    local result = {}
+
+    local traceback = string.split(debug.traceback("", 2), "\n")
+    print("dump from: " .. string.trim(traceback[3]))
+
+    local function dump_(value, desciption, indent, nest, keylen)
+        desciption = desciption or "<var>"
+        local spc = ""
+        if type(keylen) == "number" then
+            spc = string.rep(" ", keylen - string.len(dump_value_(desciption)))
+        end
+        if type(value) ~= "table" then
+            result[#result +1 ] = string.format("%s%s%s = %s", indent, dump_value_(desciption), spc, dump_value_(value))
+        elseif lookupTable[tostring(value)] then
+            result[#result +1 ] = string.format("%s%s%s = *REF*", indent, dump_value_(desciption), spc)
+        else
+            lookupTable[tostring(value)] = true
+            if nest > nesting then
+                result[#result +1 ] = string.format("%s%s = *MAX NESTING*", indent, dump_value_(desciption))
+            else
+                result[#result +1 ] = string.format("%s%s = {", indent, dump_value_(desciption))
+                local indent2 = indent.."    "
+                local keys = {}
+                local keylen = 0
+                local values = {}
+                for k, v in pairs(value) do
+                    keys[#keys + 1] = k
+                    local vk = dump_value_(k)
+                    local vkl = string.len(vk)
+                    if vkl > keylen then keylen = vkl end
+                    values[k] = v
+                end
+                table.sort(keys, function(a, b)
+                    if type(a) == "number" and type(b) == "number" then
+                        return a < b
+                    else
+                        return tostring(a) < tostring(b)
+                    end
+                end)
+                for i, k in ipairs(keys) do
+                    dump_(values[k], k, indent2, nest + 1, keylen)
+                end
+                result[#result +1] = string.format("%s}", indent)
+            end
+        end
+    end
+    dump_(value, desciption, "- ", 1)
+
+    for i, line in ipairs(result) do
+        print(line)
+    end
+end
+
+function printf(fmt, ...)
+    print(string.format(tostring(fmt), ...))
+end
+
+function checknumber(value, base)
+    return tonumber(value, base) or 0
+end
+
+function checkint(value)
+    return math.round(checknumber(value))
+end
+
+function checkbool(value)
+    return (value ~= nil and value ~= false)
+end
+
+function checktable(value)
+    if type(value) ~= "table" then value = {} end
+    return value
+end
+
+function isset(hashtable, key)
+    local t = type(hashtable)
+    return (t == "table" or t == "userdata") and hashtable[key] ~= nil
+end
+
+
+function err(sText,...)--包装一下,少敲键盘
+	error(string.format(sText,...),0)
+end
+
+function reRaise(tError,sErrText)--重新抛出异常
+	if type(tError)~='table' then
+		error('参数tError必须是table,只能对xpcall返回的table进行再次抛出',0)
+	end
+	tError[1]=sErrText .. ';' .. tError[1] --加上更为高层的错误信息
+	error(tError,0)
 end
 
 function printBytes(sBinary)
@@ -21,18 +141,6 @@ function checkInstance(obj)--检查是不是一个实例
 	if type(obj)~='table' and type(obj)~='userdata' then
 		error(string.format('不是一个实例,有可能调用函数时你用了点,而不是冒号.总之参数错了'),0)
 	end
-end
-
-function err(sText,...)--包装一下,少敲键盘
-	error(string.format(sText,...),0)
-end
-
-function reRaise(tError,sErrText)--重新抛出异常
-	if type(tError)~='table' then
-		error('参数tError必须是table,只能对xpcall返回的table进行再次抛出',0)
-	end
-	tError[1]=sErrText .. ';' .. tError[1] --加上更为高层的错误信息
-	error(tError,0)
 end
 
 function setDefault(t,key,newValue)

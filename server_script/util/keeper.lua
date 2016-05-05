@@ -13,8 +13,7 @@ end
 function CKeeper:getObj(...)--返回proxy
 	local tPriKey = {...}
 	if #tPriKey <= 0 then
-		--raise ValueError,'请提供主键.'
-		print('请提供主键.')
+		error('请提供主键.')
 		return
 	end
 	local sPriKey = table.concat(tPriKey, "|")
@@ -24,8 +23,7 @@ end
 function CKeeper:addObj(obj, ...)
 	local tPriKey = {...}
 	if #tPriKey <= 0 then
-		--raise ValueError,'请提供主键.'
-		print('请提供主键.')
+		error('请提供主键.')
 		return
 	end
 	local sPriKey = table.concat(tPriKey, "|")
@@ -40,8 +38,7 @@ end
 function CKeeper:removeObj(...)
 	local tPriKey = {...}
 	if #tPriKey <= 0 then
-		--raise ValueError,'请提供主键.'
-		print('请提供主键.')
+		error('请提供主键.')
 		return
 	end
 	--下面两句有顺序的,先从proxy弹出,避免从dObjs弹出进引起的析构函数访问dProxy里面的元素,

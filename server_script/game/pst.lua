@@ -28,11 +28,11 @@ function CPersist:onBorn(...)
 end
 
 function CPersist:save()
-	--raise NotImplementedError,'请在子类override,记得返回一个dict哦'
+	error('请在子类override,记得返回一个dict哦')
 end
 
 function CPersist:load(tData)
-	--raise NotImplementedError,'请在子类override'
+	error('请在子类override')
 end	
 
 -------------------------------------------------------
