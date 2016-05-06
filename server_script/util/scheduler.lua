@@ -12,7 +12,7 @@ function CScheduler.__init__(self, icycleTime, iMinInterval, iMaxInterval)
 	self.iMinInterval = iMinInterval or MIN_INTERVAL
 	self.iMaxInterval = iMaxInterval or MAX_INTERVAL
 
-	self.timerMng = timer.cTimerMng()--用于
+	--self.timerMng = timer.cTimerMng()--用于
 	self.deqItems = Struct.deque()--双端队列
 	self.dKeyMapFunc = {}--主键映射函数
 	self.uTimerId = 0
@@ -53,7 +53,8 @@ function CScheduler.__addCallLater(self, bAppend, func, ...)
 	
 	if self.uTimerId == 0 then--定时器尚未起动
 		local fDelay = self.__next()
-		self.uTimerId = self.timerMng.run(self.__helperFunc,fDelay,timer.NOT_REPEAT,timer.NO_NAME,None,timer.LOWEST)
+		--self.uTimerId = self.timerMng.run(self.__helperFunc,fDelay,timer.NOT_REPEAT,timer.NO_NAME,None,timer.LOWEST)
+		self.uTimerId = timer.CallLater(self.__helperFunc, fDelay, None, timer.NOT_REPEAT, timer.NO_NAME)
 	end
 end
 
@@ -100,7 +101,8 @@ function CScheduler.__helperFunc(self)
 		if fDelay < self.fNext then--越走越快
 			self.fNext = fDelay
 		end
-		self.uTimerId = self.timerMng.run(self.__helperFunc,self.fNext,timer.NOT_REPEAT,timer.NO_NAME,None,timer.LOWEST)
+		--self.uTimerId = self.timerMng.run(self.__helperFunc,self.fNext,timer.NOT_REPEAT,timer.NO_NAME,None,timer.LOWEST)
+		self.uTimerId = timer.CallLater(self.__helperFunc, fDelay, None, timer.NOT_REPEAT, timer.NO_NAME)
 	else
 		self.uTimerId = 0 --标识定时器未起动
 		self.fNext = self.iMaxInterval --全部执行完了,恢复初始速度

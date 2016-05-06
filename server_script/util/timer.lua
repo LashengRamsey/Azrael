@@ -3,6 +3,10 @@
 C_Timer = Timer 				--c层定时器
 module("timer", package.seeall)
 
+REPEAT = 1
+NOT_REPEAT = 0
+NO_NAME = "NO_NAME"
+
 local _timerHandleId = 0		--定时器ID
 local MAX_HANDLE_ID = 2^31-1
 local _timerList = {}
@@ -19,8 +23,8 @@ function CallLater(callback, delay, args, cycle, name)
 		_timerHandleId = 0
 	end
 	_timerHandleId = _timerHandleId + 1
-	cycle = cycle or 0
-	name = name or "No Name"
+	cycle = cycle or NOT_REPEAT
+	name = name or NO_NAME
 	local _timer = {callback = callback, delay = delay, id = _timerHandleId, args=args, cycle = cycle, name = name}
 	table.insert(_timerList, _timer)
 	C_Timer.addTimer(0, delay, _timerHandleId)
