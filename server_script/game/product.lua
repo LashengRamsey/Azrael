@@ -1,11 +1,11 @@
 module("product", package.seeall)
 
 --产品,抽象类
-local CProduct = class()
+CProduct = class()
 function CProduct:__init__(sChineseName, ...)
 	self.oFactory = nil
 	self.sChineseName = sChineseName --有个中文名,方便调试查找错误
-	self.sPriKey = table.concat({...}, "|")
+	self.sPriKey = toPriKeyStr(...)
 	self.iBirthStamp = 0 --从数据库中加载回来的时间戳
 	self.tKeepers = {}
 end

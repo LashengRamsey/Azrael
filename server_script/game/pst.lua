@@ -1,7 +1,7 @@
 module("pst", package.seeall)
 
 --可持久化类(抽象类)
-local CPersist = class()
+CPersist = class()
 
 function CPersist:__init__()
 	--print("==========CPersist:__init__========")

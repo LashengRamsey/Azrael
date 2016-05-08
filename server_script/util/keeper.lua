@@ -1,4 +1,4 @@
-
+module('keeper', package.seeall)
 --对象管理器
 
 --key映射obj

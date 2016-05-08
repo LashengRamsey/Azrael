@@ -39,7 +39,8 @@ function table.keys(t)
         return keys
     end
     for k, v in pairs(t) do
-        keys[#keys + 1] = k
+        --keys[#keys + 1] = k
+        table.insert(keys, k)
     end
     return keys
 end
