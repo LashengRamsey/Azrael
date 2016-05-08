@@ -18,7 +18,7 @@ local _timerList = {}
 --cycle是否执行多次 0:只执行一次，1： 执行多次
 --返回定时器ID，执行多次要手动删除定时器
 function CallLater(callback, delay, args, cycle, name)
-	--print("======CallLater===============")
+	--print("======CallLater============== delay =" .. delay)
 	if _timerHandleId >= MAX_HANDLE_ID then
 		_timerHandleId = 0
 	end
@@ -62,15 +62,31 @@ function DoTimer(id)
 end
 
 --===========================
-CTimerMng = class()
+--test
 
-function CTimerMng.__init__(self)
-	
+local CTestTimer = class()
+function CTestTimer.__init__(self)
+	print("\n")
+	print("-------CTestTimer.__init__-------")
+	print("\n")
+
+	CallLater(handler(self, self.callback), 10000)
 end
 
+function CTestTimer.callback(self, ...)
+	print("\n")
+	print("========CTestTimer.callback======")
+	print("\n")
+end
 
+local gtTestTimerObj = {}
+function test_timer()
+	for i=1,2 do
+		local obj = CTestTimer()
+		gtTestTimerObj[i] = obj
+	end
+end
 
+--test_timer()
 
-
-
-
+------------------------------------

@@ -238,7 +238,7 @@ function memFunc(func,obj,... )--不会影响实例的生命期
 	end
 end
 
-function functor(func,...)
+function functor(func, ...)
 	if type(func)~='function' then
 		error('func参数一定是个function',0)
 	end

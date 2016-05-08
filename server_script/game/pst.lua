@@ -158,4 +158,4 @@ function test_CEasyPersist()
 
 	print_r(obj:save())
 end
-test_CEasyPersist()
+--test_CEasyPersist()
