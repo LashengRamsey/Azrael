@@ -3,12 +3,12 @@
 #include <time.h>
 #include "log.h"
 
-typedef struct LogServerInfo
+typedef struct __LogServerInfo
 {
 	unsigned int noExecSize;
 	unsigned int execSize;
 	unsigned int startTime;
-};
+}LogServerInfo;
 
 LogServerInfo serverInfo;
 

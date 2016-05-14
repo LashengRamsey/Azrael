@@ -35,7 +35,7 @@ typedef enum
 #define  LOGFILE_fd int
 #endif
 
-typedef struct LOGFILE
+typedef struct __LOGFILE
 {
 	LOGFILE_fd fd;
 	LogfileType type;
@@ -44,7 +44,7 @@ typedef struct LOGFILE
 	unsigned int createMonth;
 	unsigned int createDay;
 	unsigned int createYear;
-};
+}LOGFILE;
 
 class LogThread
 {
