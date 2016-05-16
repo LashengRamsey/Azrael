@@ -12,7 +12,7 @@ set(HEADERS_SERVER
  game.h
 )
 
-set(CXX_FLAGS
+ set(CXX_FLAGS
  -g
  # -DVALGRINDz
  -DLOG2FILE_WITH_C
@@ -22,14 +22,16 @@ set(CXX_FLAGS
  #-Wall
  -Wextra
  -march=native
+ #-lpthread
  # -MMD
  # -std=c++0x
- #-rdynamic
- #-static
- #-share
+ -levent
+ -levent_extra
+ -levent_core
+ -rdynamic
  -Wmissing-field-initializers
-
  )
+
 
 string(REPLACE ";" " " CMAKE_CXX_FLAGS "${CXX_FLAGS}")
 
@@ -40,8 +42,8 @@ set(CMAKE_CXX_COMPILER "g++")
 #头文件目录
 include_directories(/usr/include)
 include_directories(${PROJECT_SOURCE_DIR}/../libCore/include/comm)
-include_directories(${PROJECT_SOURCE_DIR}/../libCore/include/event/include_linux)
 include_directories(${PROJECT_SOURCE_DIR}/../libCore/include/event/include_linux/event2)
+include_directories(${PROJECT_SOURCE_DIR}/../libCore/include/event/include_linux)
 include_directories(${PROJECT_SOURCE_DIR}/../libCore/include/zmq/include)
 include_directories(${PROJECT_SOURCE_DIR}/../libCore/include/lua/include)
 
@@ -62,21 +64,21 @@ add_executable(game ${SRCS_SERVER})
 #库
 target_link_libraries(game -lpthread)
 target_link_libraries(game dl)
-#target_link_libraries(game rt)
+target_link_libraries(game rt)
 
 message(STATUS "target_link_libraries:event")
-target_link_libraries(game event.a)
-target_link_libraries(game event_extra.a)
-target_link_libraries(game event_core.a)
-#target_link_libraries(game event_pthreads.a)
+#target_link_libraries(game libevent.a)
+#target_link_libraries(game libevent_extra.a)
+#target_link_libraries(game libevent_core.a)
+#target_link_libraries(game libevent_pthreads.a)
 
 message(STATUS "target_link_libraries:libCore")
 target_link_libraries(game Core.a)
 
-message(STATUS "target_link_libraries:zmq")
+#message(STATUS "target_link_libraries:zmq")
 target_link_libraries(game zmq.a)
 
-message(STATUS "target_link_libraries:lua")
+#message(STATUS "target_link_libraries:lua")
 target_link_libraries(game lua.a)
 
 #输出目录

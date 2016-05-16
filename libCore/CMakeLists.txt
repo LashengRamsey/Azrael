@@ -21,9 +21,10 @@ set(CXX_FLAGS
  #-lpthread
  # -MMD
  # -std=c++0x
- -rdynamic
+ #-rdynamic
  -Wmissing-field-initializers
  )
+
 if(CMAKE_BUILD_BITS EQUAL 32)
   list(APPEND CXX_FLAGS "-m32")
 endif()
@@ -86,16 +87,19 @@ set(Core_SRCS
 add_library(Core ${Core_SRCS})
 
 #message(STATUS "target_link_libraries:pthread")
-#target_link_libraries(Core pthread rt)
+target_link_libraries(Core pthread rt)
 
-#message(STATUS "target_link_libraries:event")
-#target_link_libraries(Core event)
-#target_link_libraries(Core event_core)
-#target_link_libraries(Core event_extra)
+message(STATUS "target_link_libraries:event")
+target_link_libraries(Core event)
+target_link_libraries(Core event_extra)
+target_link_libraries(Core event_core)
+#target_link_libraries(Core event_pthreads.a)
 
-#message(STATUS "target_link_libraries:zmq")
-#target_link_libraries(Core zmq)
+message(STATUS "target_link_libraries:zmq")
+target_link_libraries(Core zmq.a)
 
+message(STATUS "target_link_libraries:lua")
+target_link_libraries(Core lua.a)
 
 #set(HEADERS
 #  luabit.h

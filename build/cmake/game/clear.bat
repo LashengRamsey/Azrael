@@ -4,3 +4,4 @@ del Makefile
 rd /s/q CMakeFiles
 rd /s/q lib
 rd /s/q src
+rd /s/q bin

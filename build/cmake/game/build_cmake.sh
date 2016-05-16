@@ -3,4 +3,5 @@
 
 cmake ../../../game
 make
-#cp lib/libCore.a ../../../lib/linux
+
+cp bin/game ../../../bin/linux/game
