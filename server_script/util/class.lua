@@ -136,7 +136,7 @@ function class(...)--创建一个class
 	cls.__isClass__ = true --方便检查一个表是不是类,获取时要用rawget,否则实例也会返回true
 	return cls
 end
-
+return class
 
 --最基本的用法
 --

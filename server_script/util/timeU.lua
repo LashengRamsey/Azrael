@@ -176,6 +176,6 @@ function test_timeU()
 	print(getTimeStr(ni-GetSecond()))
 end
 
-test_timeU()
+--test_timeU()
 
 

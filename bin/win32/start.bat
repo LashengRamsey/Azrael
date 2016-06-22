@@ -1,3 +1,11 @@
 cd router
-start Router -n router_1 -s 9000 -p 10001 -d 0 -w ../server_script/config/router
+start /b Router RouterConfig
+cd ..
+
+cd redis/Redis-win
+del dump.rdb
+start /b startup.bat
+cd ../..
+
+start /b db/DbServer db/DBConfig
 

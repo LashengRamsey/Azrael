@@ -71,7 +71,7 @@ function test_deque()
    --x=lp:popBack(lp)
    --print(x)
 end
-test_deque()
+--test_deque()
 
 --输出结果
 -- 2
