@@ -20,14 +20,14 @@ void PrintLog(int level, const char* fmt, ...);
 #ifdef WIN32
 #define LOG(fmt, ...) PrintLog(L_LOG, fmt, __VA_ARGS__);
 #define INFO(fmt, ...) PrintLog(L_INFO, fmt, __VA_ARGS__);
-#define ERROR(fmt, ...) PrintLog(L_ERROR, fmt, __VA_ARGS__);
+#define ERRLOG(fmt, ...) PrintLog(L_ERROR, fmt, __VA_ARGS__);
 #define NOTICE(fmt, ...) PrintLog(L_NOTICE, fmt, __VA_ARGS__);
 #define CRITICAL(fmt, ...) PrintLog(L_CRITICAL, fmt, __VA_ARGS__);
 #define WARNING(fmt, ...) PrintLog(L_WARNING, fmt, __VA_ARGS__);
 #else
 #define LOG(fmt, args...) PrintLog(L_LOG, fmt, ##args);
 #define INFO(fmt, args...) PrintLog(L_INFO, fmt, ##args);
-#define ERROR(fmt, args...) PrintLog(L_ERROR, fmt, ##args);
+#define ERRLOG(fmt, args...) PrintLog(L_ERROR, fmt, ##args);
 #define NOTICE(fmt, args...) PrintLog(L_NOTICE, fmt, ##args);
 #define CRITICAL(fmt, args...) PrintLog(L_CRITICAL, fmt, ##args);
 #define WARNING(fmt, args...) PrintLog(L_WARNING, fmt, ##args);
@@ -36,8 +36,8 @@ void PrintLog(int level, const char* fmt, ...);
 void DumpMemory(void* src, int len);
 
 #define MARK INFO("MARK: %-4d:%s %s", __LINE__, __FILE__, __FUNCTION__)
-#define FATAL(tip) {ERROR("ERROR: %s %s %d:%s\n", __FUNCTION__, __LINE__, __FILE__, tip);}
-#define ASSERT(cond) {if(!(cond)) {ERROR("ASSERT failed on: %s %s %d", __LINE__, __FUNCTION__, __FILE__);abort();}}
+#define FATAL(tip) {ERRLOG("ERRLOG: %s %s %d:%s\n", __FUNCTION__, __LINE__, __FILE__, tip);}
+#define ASSERT(cond) {if(!(cond)) {ERRLOG("ASSERT failed on: %s %s %d", __LINE__, __FUNCTION__, __FILE__);abort();}}
 
 
 #ifdef WIN32

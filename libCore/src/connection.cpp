@@ -105,19 +105,19 @@ int Connection::connect(const char* host, int port, int itmeout)
 	hostent *h = gethostbyname(host);
 	if (!h)
 	{
-		ERROR("Could't lookup %s:%d", host, h_errno);
+		ERRLOG("Could't lookup %s:%d", host, h_errno);
 		return 1;
 	}
 	if (h->h_addrtype != AF_INET)
 	{
-		ERROR("No ipv6 support, sorry.");
+		ERRLOG("No ipv6 support, sorry.");
 		return 1;
 	}
 
 	int fd = socket(AF_INET, SOCK_STREAM, 0);
 	if (fd<0)
 	{
-		ERROR("Create new socket failed");
+		ERRLOG("Create new socket failed");
 		return 1;
 	}
 

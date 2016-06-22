@@ -17,7 +17,7 @@ void Game::onInited()
 	std::string bindPort = Config::GetValue("BindPort");
 	if (bindPort.empty())
 	{
-		ERROR("get bind port failed");
+		ERRLOG("get bind port failed");
 		return;
 	}
 	net_ = new Net(LM_CHECKOVERTIME);
@@ -43,13 +43,13 @@ void Game::onUpdate(unsigned int dtime)
 {
 	if (buf == NULL)
 	{
-		ERROR("doNetMsg method buf is NULL error");
+		ERRLOG("doNetMsg method buf is NULL error");
 		return;
 	}
 	int len = buf->getLength();
 	if (len < 2)
 	{
-		ERROR("doNetMsg method len less then 2 error");
+		ERRLOG("doNetMsg method len less then 2 error");
 		return;
 	}
 	uint16 fid = 0;

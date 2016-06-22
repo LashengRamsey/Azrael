@@ -295,7 +295,7 @@ int LuaGlobal::C_Info(lua_State* L)
 int LuaGlobal::C_Error(lua_State* L)
 {
 	//const char *str = lua_tostring(L, 1);
-	//ERROR("%s", str);
+	//ERRLOG("%s", str);
 
 	char* path = "";
 	char* str = "";
@@ -365,7 +365,7 @@ int LuaGlobal::C_GetHashCode(lua_State* L)
 	}
 	else
 	{
-		ERROR("GetHashCode expected string,got nil");
+		ERRLOG("GetHashCode expected string,got nil");
 	}
 	lua_pushnumber(L, code);
 	return 1;

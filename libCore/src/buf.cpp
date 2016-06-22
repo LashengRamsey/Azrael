@@ -85,7 +85,7 @@ bool Buf::unpack(const char *fmt, ...) const
 			break;
 
 		default:
-			ERROR("Buf::unpack,undefined argument typed specified");
+			ERRLOG("Buf::unpack,undefined argument typed specified");
 			break;
 		}
 	}
@@ -136,7 +136,7 @@ void Buf::pack(const char *fmt, va_list va)
 			break;
 
 		default:
-			ERROR("Buf::unpack,undefined argement typed specified");
+			ERRLOG("Buf::unpack,undefined argement typed specified");
 			break;
 		}
 	}
@@ -199,7 +199,7 @@ int Buf::read(void *data, int size) const
 	size = size < 0 ? getLength() : size;
 	if (getLength() < (uint)size)
 	{
-		ERROR("Buf::read,no enough data to read");
+		ERRLOG("Buf::read,no enough data to read");
 		return -1;
 	}
 	//evbuffer_remove（）函数从buf前面复制和移除datlen字节到data处的内存中。
@@ -258,7 +258,7 @@ bool Buf::writeLString(const std::string& s)
 	//(1<<16) == 65536
 	if (s.size() > 65536)
 	{
-		ERROR("writeLString too big %d to return", s.size());
+		ERRLOG("writeLString too big %d to return", s.size());
 		return false;
 	}
 	unsigned short len = (unsigned short)s.size();
@@ -276,7 +276,7 @@ bool Buf::readLString(std::string& s)
 	{
 		if (len > 366350)
 		{
-			ERROR("readLString too big string %d,pls check %s", len, s.data());
+			ERRLOG("readLString too big string %d,pls check %s", len, s.data());
 		}
 		return true;
 	}

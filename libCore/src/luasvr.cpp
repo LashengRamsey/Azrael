@@ -95,7 +95,7 @@ ScriptTimeCheckThread* LuaSvr::scriptCTT_ = NULL;
 //panic 函数可以从栈顶取到出错信息
 static int error_hook(lua_State *L)
 {
-	ERROR("[LUA ERROR] %s", lua_tostring(L, -1));
+	ERRLOG("[LUA ERROR] %s", lua_tostring(L, -1));
 	lua_Debug ldb;
 	int i = 0;
 	std::string errdump = lua_tostring(L, -1);
@@ -107,12 +107,12 @@ static int error_hook(lua_State *L)
 		const char *name = ldb.name ? ldb.name : "";
 		const char *filename = ldb.source ? ldb.source : "";
 		char errline[8096];
-		snprintf(errline, 8096, "[LUA ERROR] %s '%s' @'%s:%d'\n",
+		snprintf(errline, 8096, "[LUA ERRLOG] %s '%s' @'%s:%d'\n",
 			ldb.what, name, filename, ldb.currentline);
 		errdump += errline;
 	}
-	ERROR(errdump.c_str());
-	ERROR("=======Report error to server========");
+	ERRLOG(errdump.c_str());
+	ERRLOG("=======Report error to server========");
 
 	//调用脚本
 	LuaSvr::call("CHandlerError", "S", &errdump);
@@ -316,7 +316,7 @@ bool LuaSvr::scriptInit()
 
 	if (!mainscript)
 	{
-		ERROR("Can't find main script key section\n");
+		ERRLOG("Can't find main script key section\n");
 		return false;
 	}
 	//for(int i=0;i<strlen(mainscript);++i)
@@ -324,7 +324,7 @@ bool LuaSvr::scriptInit()
 	INFO("load main script file:%s", mainscript);
 	if (luaL_loadfile(L_, mainscript) || lua_pcall(L_, 0, LUA_MULTRET, stackErrorHook_))
 	{
-		ERROR("err=%s\n", lua_tostring(L_, -1));
+		ERRLOG("err=%s\n", lua_tostring(L_, -1));
 		return false;
 	}
 
@@ -372,7 +372,7 @@ void LuaSvr::loadScript()
 
 	if (luaL_loadfile(L_, scriptPath) || lua_pcall(L_, 0, LUA_MULTRET, stackErrorHook_))
 	{
-		ERROR("err=%s\n", lua_tostring(L_, -1));
+		ERRLOG("err=%s\n", lua_tostring(L_, -1));
 	}
 	if (LuaSvr::scriptCTT_)
 		LuaSvr::scriptCTT_->leave();
@@ -384,7 +384,7 @@ void LuaSvr::run()
 	bool ret = scriptInit();
 	if(!ret)
 	{
-		ERROR("app init failed");
+		ERRLOG("app init failed");
 	}
 }
 
@@ -421,7 +421,7 @@ void LuaSvr::doUpdate(uint dtime)
 	}
 
 	if (lua_gettop(L_) > 10)
-		ERROR("lua stack count;%d", lua_gettop(L_));
+		ERRLOG("lua stack count;%d", lua_gettop(L_));
 
 	timeGc_ += dtime;
 	if (timeGc_ > 10000)//10s
@@ -523,7 +523,7 @@ bool LuaSvr::call(const char* fmt, va_list va)
 				break;
 			}
 		default:
-			ERROR("undefined argument typed specified:%c, fmt:%s ", c , fmt);
+			ERRLOG("undefined argument typed specified:%c, fmt:%s ", c , fmt);
 			return false;
 		}
 	}
@@ -535,7 +535,7 @@ bool LuaSvr::call(const char *fn, const char* fmt, ...)
 {
 	if (!LuaSvr::get())
 	{
-		ERROR("LuaSvr pointer miss");
+		ERRLOG("LuaSvr pointer miss");
 		return false;
 	}
 
@@ -547,7 +547,7 @@ bool LuaSvr::call(const char *fn, const char* fmt, ...)
 		if (lua_isnil(L, -1))
 		{
 			lua_pop(L, 1);
-			ERROR("Can't find %s to call", fn);
+			ERRLOG("Can't find %s to call", fn);
 			return false;
 		}
 	}
@@ -555,7 +555,7 @@ bool LuaSvr::call(const char *fn, const char* fmt, ...)
 	if (!lua_isfunction(L, -1))
 	{
 		lua_pop(L, 1);
-		ERROR("Can't find %s to call", fn);
+		ERRLOG("Can't find %s to call", fn);
 		return false;
 	}
 
@@ -571,7 +571,7 @@ bool LuaSvr::call(const char* fn, int nargs, int nrets)
 {
 	if (!LuaSvr::get())
 	{
-		ERROR("LuaSvr pointer miss");
+		ERRLOG("LuaSvr pointer miss");
 		return false;
 	}
 
@@ -583,7 +583,7 @@ bool LuaSvr::call(const char* fn, int nargs, int nrets)
 		if (lua_isnil(L, -1))
 		{
 			lua_pop(L, 1);
-			ERROR("Can't find %s to call", fn);
+			ERRLOG("Can't find %s to call", fn);
 			return false;
 		}
 	}
@@ -591,7 +591,7 @@ bool LuaSvr::call(const char* fn, int nargs, int nrets)
 	if (!lua_isfunction(L, -1))
 	{
 		lua_pop(L, 1);
-		ERROR("Can't find %s to call", fn);
+		ERRLOG("Can't find %s to call", fn);
 		return false;
 	}
 

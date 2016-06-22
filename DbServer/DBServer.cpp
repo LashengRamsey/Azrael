@@ -62,7 +62,7 @@ void DBServer::onInited()
 	}
 	else
 	{
-		ERROR("dbserver mqnet init failed!\n");
+		ERRLOG("dbserver mqnet init failed!\n");
 		return;
 	}
 
@@ -81,7 +81,7 @@ void DBServer::onInited()
 
 	if ((rc = zmq_bind(socket_, path)) != 0)
 	{
-		ERROR("dbserver bind %s failed %d!\n", path, rc);
+		ERRLOG("dbserver bind %s failed %d!\n", path, rc);
 		return;
 	}
 	INFO("bind to path %s ok!", path);

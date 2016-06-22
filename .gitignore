@@ -57,3 +57,6 @@
 /bin/win32/router/Router.ilk
 /bin/win32/router/Router.pdb
 /lib/win32/libCore.lib
+/libCore/*.opendb
+/libCore/*.db
+/lib/win32/libCore.pdb

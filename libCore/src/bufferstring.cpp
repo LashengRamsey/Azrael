@@ -10,9 +10,7 @@ BufferString::BufferString()
 
 BufferString::~BufferString()
 {
-	DEBUG_TRY;
 	mContent.clear();
-	DEBUG_CATCH;
 }
 
 BufferString::BufferString(const BufferString& string)
@@ -164,7 +162,7 @@ BufferString& BufferString::append(unsigned long long v)
 	DEBUG_TRY;
 	char buffer[128];
 	memset(buffer,0,128);
-	sprintf(buffer,"%lu",v);
+	sprintf(buffer,"%llu",v);
 	mContent.append(buffer);
 	return *this;
 	DEBUG_CATCH;

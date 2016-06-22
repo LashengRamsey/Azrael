@@ -30,14 +30,14 @@ void BevStream::innerWrite(void* data, uint size)
 {
 	int rc = bufferevent_write(bev_, data, size);
 	if (rc < 0)
-		ERROR("buffer write failed");
+		ERRLOG("buffer write failed");
 }
 
 void BevStream::innerWrite(const Buf& buf)
 {
 	int rc = bufferevent_write_buffer(bev_, buf.get());
 	if (rc < 0)
-		ERROR("buffer write failed");
+		ERRLOG("buffer write failed");
 }
 
 //
@@ -55,7 +55,7 @@ void BevStream::decode()
 			evbuffer_copyout(input, &header, sizeof(header));
 			if (header[0] != PACKET_HEAD)
 			{
-				ERROR("Connection closed due to error header %x,%d", header, packLen_);
+				ERRLOG("Connection closed due to error header %x,%d", header, packLen_);
 				this->close();
 				break;
 			}
@@ -63,14 +63,14 @@ void BevStream::decode()
 			packLen_ = conv_num(packLen_);
 			if (packLen_ <= 1 || packLen_ > 10240)
 			{
-				ERROR("Connection closed due to error len %d", packLen_);
+				ERRLOG("Connection closed due to error len %d", packLen_);
 				this->close();
 				break;
 			}
 
 			if (packLen_ > 4096)
 			{
-				ERROR("Too large packet size %d", packLen_);
+				ERRLOG("Too large packet size %d", packLen_);
 			}
 		}
 
@@ -82,14 +82,14 @@ void BevStream::decode()
 
 			if ((uint)ret != packLen_)
 			{
-				ERROR("Can't read data from bev, need %d,return %d", packLen_,ret);
+				ERRLOG("Can't read data from bev, need %d,return %d", packLen_,ret);
 			}
 
 			unsigned char tail = 0;
 			evbuffer_remove(input, &tail, kTailLen);
 			if (tail != PACKET_END)
 			{
-				ERROR("Connection closed due to error tail %.2,%d", tail, packLen_);
+				ERRLOG("Connection closed due to error tail %.2,%d", tail, packLen_);
 				this->close();
 				Buf buf;
 				buf.set(data, packLen_);

@@ -126,7 +126,7 @@ void formatLogInfo(LogType type,BufferString& bufferStr,int outMaxLen,const char
 		bufferStr.append("|WAR|");
 		break;
 	case LOG_ERROR:
-		bufferStr.append("|ERROR|");
+		bufferStr.append("|ERRLOG|");
 		break;
 	}
 	bufferStr.append(info);
@@ -384,7 +384,6 @@ LogThread::LogThread():iRun(false),iKilled(true)
 
 LogThread::~LogThread()
 {
-	DEBUG_TRY;
 	CachedFileMap::iterator iter = iCachedFile.begin();
 	while(iter != iCachedFile.end())
 	{
@@ -395,7 +394,6 @@ LogThread::~LogThread()
 		iter++;
 	}
 	iCachedFile.clear();
-	DEBUG_CATCH;
 }
 
 LogThread* LogThread::CreateLogThread()

@@ -123,7 +123,7 @@ namespace Lua
 				lp++;
 				break;
 			default:
-				ERROR("undefined argument typed specified, %d", c);
+				ERRLOG("undefined argument typed specified, %d", c);
 				break;
 			}
 		}
@@ -182,7 +182,7 @@ namespace Lua
 				}
 				break;
 			default:
-				ERROR("undefined argument typed specified,%d", c);
+				ERRLOG("undefined argument typed specified,%d", c);
 				break;
 			}
 		}

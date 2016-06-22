@@ -77,14 +77,14 @@ static void event_cb(struct bufferevent* bev, short events, void* ctx)
 	else if(session && events & BEV_EVENT_ERROR)
 	{
 		int code = EVUTIL_SOCKET_ERROR();
-		ERROR("Event %d, fd %d, error %d(%s) and disconnected client %d:%s",
+		ERRLOG("Event %d, fd %d, error %d(%s) and disconnected client %d:%s",
 			code,evutil_socket_error_to_string(code),session->sn(),
 			session->remoteIP().c_str());
 		session->close();
 	}
 	else if(!session)
 	{
-		ERROR("Session missed");
+		ERRLOG("Session missed");
 	}
 }
 
@@ -128,7 +128,7 @@ static void accept_conn_cb(struct evconnlistener* listener,
 	}
 	else
 	{
-		ERROR("Can't get remoteip");
+		ERRLOG("Can't get remoteip");
 	}
 
 }
@@ -182,7 +182,7 @@ static void accept_error_cb(struct evconnlistener *listener, void *ctx)
 {
 	struct event_base *base = evconnlistener_get_base(listener);
 	int err = EVUTIL_SOCKET_ERROR();
-	ERROR("Got an error %d(%s) on the listener Shutting down.\n", err, evutil_socket_error_to_string(err));
+	ERRLOG("Got an error %d(%s) on the listener Shutting down.\n", err, evutil_socket_error_to_string(err));
 
 	//event_base_loopexit（）让event_base在给定时间之后停止循环。如果tv参数为NULL，event_base会立即停止循环，没有延时。
 	//如果event_base当前正在执行任何激活事件的回调，则回调会继续运行，直到运行完所有激活事件的回调之才退出。
@@ -257,7 +257,7 @@ void Session::checkAcc()
 
 	if (timecheat_>= TimeCheatCount)
 	{
-		ERROR("Close %s,due to accelerate", remoteip_.c_str());
+		ERRLOG("Close %s,due to accelerate", remoteip_.c_str());
 		net_->closeForReason(sn_, CC_CLIENT_ACCELERATE, 5000);
 	}
 }
@@ -380,7 +380,7 @@ void Net::init()
 	int port = Config::GetIntValue("BindPort");
 	if ( port == 0 )
 	{
-		ERROR("Network Net::init port is 0");
+		ERRLOG("Network Net::init port is 0");
 		port = 30000;
 	}
 
@@ -398,7 +398,7 @@ int Net::netListen(int port)
 {
 	if (listener_)
 	{
-		ERROR("Network had started listened");
+		ERRLOG("Network had started listened");
 		return 0;
 	}
 
@@ -413,7 +413,7 @@ int Net::netListen(int port)
 		(struct sockaddr*)&listen_addr, sizeof(listen_addr));
 	if (!listener_)
 	{
-		ERROR("Could't create listener, maybe process alread started");
+		ERRLOG("Could't create listener, maybe process alread started");
 		return 1;
 	}
 	evconnlistener_set_error_cb(listener_, accept_error_cb);
@@ -474,7 +474,7 @@ void Net::checkOvertimeSession(uint dtime)
 	std::vector<Session*>::iterator st = sess.begin();
 	for (; st!= sess.end(); ++st)
 	{
-		ERROR("Close connection %d,%s, due to overtime", 
+		ERRLOG("Close connection %d,%s, due to overtime",
 			(*st)->sn(),(*st)->remoteIP().c_str());
 		this->closeConnect(*st);
 	}
@@ -486,7 +486,7 @@ void Net::onConnect(Session* session)
 	SessionMap_t::iterator it = sessionMap_.lower_bound(session->sn());
 	if(it != sessionMap_.end() && it->second->sn() == session->sn())
 	{
-		ERROR("BevMap had value with same key %d", session->sn());
+		ERRLOG("BevMap had value with same key %d", session->sn());
 		return;
 	}
 	//通知脚本层有新连接
@@ -524,7 +524,7 @@ void Net::closeConnect(Session *session)
 		}
 		else
 		{
-			ERROR("double free session %d", session->sn());
+			ERRLOG("double free session %d", session->sn());
 		}
 	}
 }
@@ -532,7 +532,7 @@ void Net::closeConnect(Session *session)
 void Net::closeForReason(int sn,int reason, int waitfor)
 {
 	closeAfterSend(waitfor);
-	ERROR("CloseConnection:%d,reason:%d", sn, reason);
+	ERRLOG("CloseConnection:%d,reason:%d", sn, reason);
 }
 
 
@@ -565,7 +565,7 @@ void Net::SendString(int sn, const char* str, uint size)
 		}
 		else
 		{
-			ERROR("Some sn can't find %d, so some packet can't be send", sn);
+			ERRLOG("Some sn can't find %d, so some packet can't be send", sn);
 		}
 	}
 }
@@ -575,7 +575,7 @@ void Net::sendPacket(int sn, const Buf& buf)
 	Session *session = getSession(sn);
 	if (session && session->sn() != (uint)sn)
 	{
-		ERROR("Session wrong %d", sn);
+		ERRLOG("Session wrong %d", sn);
 		return ;
 	}
 	sendPacket(session, buf);

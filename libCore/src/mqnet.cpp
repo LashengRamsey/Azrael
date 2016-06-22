@@ -40,7 +40,7 @@ MsgChannel::MsgChannel(void* socket, int len)
 {
 	if (len> 655350)
 	{
-		ERROR("MsgChannel:TOO large msg %d", len);
+		ERRLOG("MsgChannel:TOO large msg %d", len);
 		len = 655350;
 	}
 	zmq_msg_init_size(&msg_, len);
@@ -177,7 +177,7 @@ void MQNet::disconnect()
 	if (flag_&MQ_INNER)
 	{
 		sendTo(myid_, PT_SERVER_STOP);
-		ERROR("MQNet:disconnect");
+		ERRLOG("MQNet:disconnect");
 	}
 }
 
@@ -263,7 +263,7 @@ void MQNet::update(uint dtime)
 {
 	if (socket_ && (flag_&MQ_INNER) && !serverok_ && timer_get_time()-connTime_>10000)
 	{
-		//ERROR("Connect router server fail");
+		//ERRLOG("Connect router server fail");
 		connTime_ = timer_get_time();
 	}
 
@@ -284,7 +284,7 @@ void MQNet::readFromRouter()
 		//控制每次处理包数量
 		if (mp++ > MaxPackHandle)
 		{
-			ERROR("Max pack break %d", MaxPackHandle);
+			ERRLOG("Max pack break %d", MaxPackHandle);
 			MaxPackHandle = MaxPackHandle + 1000;
 			return;
 		}
@@ -306,7 +306,7 @@ void MQNet::readFromRouter()
 		{
 			if(len < 12)
 			{
-				ERROR("Not all server runned with same rcp version len less then 12");
+				ERRLOG("Not all server runned with same rcp version len less then 12");
 				delete msg;
 				break;
 			}
@@ -317,7 +317,7 @@ void MQNet::readFromRouter()
 
 			if (digi != 10001)
 			{
-				ERROR("Not all server runned with same rcp version, expected[%d]", digi);
+				ERRLOG("Not all server runned with same rcp version, expected[%d]", digi);
 				delete msg;
 				break;
 			}
@@ -394,7 +394,7 @@ int MQNet::readChannel(void* socket, zmq_msg_t *msg)
 		int err = zmq_errno();
 		if(err != EAGAIN)//no data to read
 		{
-			ERROR("MQRecv error (%d),%s", err, zmq_strerror(err));
+			ERRLOG("MQRecv error (%d),%s", err, zmq_strerror(err));
 		}
 		zmq_msg_close(msg);
 		return code;

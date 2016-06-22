@@ -49,7 +49,7 @@ int ServerApp::loadConfig(const char *file)
 
 	if (luaL_dofile(L, file))
 	{
-		ERROR("%s", lua_tostring(L, -1));
+		ERRLOG("%s", lua_tostring(L, -1));
 		return 1;
 	}
 
@@ -113,7 +113,7 @@ static __sighandler_t oldsigsegv = 0;
 //在程序出错时打印出函数的调用堆栈
 void sigdump(int s)
 {
-	ERROR("App segment fault");
+	ERRLOG("App segment fault");
 	void *array[10];
 	size_t size = 0;
 	char **strings;
@@ -121,10 +121,10 @@ void sigdump(int s)
 
 	size = backtrace (array, 10);
 	strings = backtrace_symbols (array, size);
-	ERROR("Obtained %2d stack fames.\n", size);
+	ERRLOG("Obtained %2d stack fames.\n", size);
 	for (i = 0; i < size; ++i)
 	{
-		ERROR("%s\n", strings[i]);
+		ERRLOG("%s\n", strings[i]);
 	}
 	free(strings);
 	oldsigsegv(s);
@@ -185,13 +185,13 @@ void ServerApp::rlimit()
 				NOTICE(">>RLIMIT maxfd cur=%d,max=%d", olimit.rlim_cur, olimit.rlim_max);
 				if(olimit.rlim_cur != 10240)
 				{
-					ERROR("Can't set maxfd to 10240, it's %s", olimit.rlim_cur);
+					ERRLOG("Can't set maxfd to 10240, it's %s", olimit.rlim_cur);
 				}
 			}
 		}
 		else
 		{
-			ERROR("Can't change maxfd to proper value, should fix this problem");
+			ERRLOG("Can't change maxfd to proper value, should fix this problem");
 		}
 	}
 #endif
@@ -208,7 +208,7 @@ bool ServerApp::init(int argc, char* argv[])
 	const char* dir = Config::GetValue("ScriptDir");
 	if (dir && chdir(dir))
 	{
-		ERROR("Failed, no define ScirptDir");
+		ERRLOG("Failed, no define ScirptDir");
 		return false;
 	}
 
@@ -239,7 +239,7 @@ bool ServerApp::init(int argc, char* argv[])
 	const char *pidFile = Config::GetValue("PidFile");
 	if (!pidFile)
 	{
-		ERROR("get config pidFile error");
+		ERRLOG("get config pidFile error");
 		return false;
 	}
 	INFO("load config %s ok!", pidFile);
@@ -253,7 +253,7 @@ bool ServerApp::init(int argc, char* argv[])
 	
 	if (!Config::GetValue("RouterPort"))
 	{
-		ERROR("Failed, no define RouterPort");
+		ERRLOG("Failed, no define RouterPort");
 		return false;
 	}
 	//init zmq
@@ -310,7 +310,7 @@ void ServerApp::update()
 	int dtime = timer_get_time() - lastTickTime_;
 	if (dtime<0)
 	{
-		ERROR("calcd dtime < 0 ,time %d,lastTick %d", timer_get_time(), lastTickTime_);
+		ERRLOG("calcd dtime < 0 ,time %d,lastTick %d", timer_get_time(), lastTickTime_);
 		dtime  = 0;
 	}
 	//定时器
@@ -381,13 +381,13 @@ void ServerApp::doNetMsg(int sn, Buf *buf)
 {
 	if (buf == NULL)
 	{
-		ERROR("doNetMsg method buf is NULL error");
+		ERRLOG("doNetMsg method buf is NULL error");
 		return;
 	}
 	int len = buf->getLength();
 	if (len < 2)
 	{
-		ERROR("doNetMsg method len less then 2 error");
+		ERRLOG("doNetMsg method len less then 2 error");
 		return;
 	}
 	//uint16 fid = 0;
@@ -457,7 +457,7 @@ void ServerApp::connectRouter()
 	}
 	else
 	{
-		ERROR("Failed, ServerApp::connectRouter mqnet_ is null");
+		ERRLOG("Failed, ServerApp::connectRouter mqnet_ is null");
 	}
 }
 
@@ -480,7 +480,7 @@ void ServerApp::connectDB()
 	}
 	else
 	{
-		ERROR("Failed, ServerApp::connectDB mqnet_ is null");
+		ERRLOG("Failed, ServerApp::connectDB mqnet_ is null");
 	}
 }
 
