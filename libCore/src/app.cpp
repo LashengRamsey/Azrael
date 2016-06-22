@@ -301,7 +301,7 @@ void ServerApp::run()
 	{
 		timer_->init();
 	}
-	INFO("Server start success")
+	INFO("Server start success");
 }
 
 

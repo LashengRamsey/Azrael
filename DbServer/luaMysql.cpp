@@ -14,6 +14,7 @@
 LUA_IMPLE(LuaMysql, LuaMysql);
 
 LUA_FUNC(LuaMysql)
+L_METHOD(LuaMysql, c_mysql_init)
 L_METHOD(LuaMysql, c_mysql_connect)
 L_METHOD(LuaMysql, c_mysql_disconntect)
 L_METHOD(LuaMysql, c_mysql_query)
@@ -22,6 +23,19 @@ L_METHOD(LuaMysql, c_mysql_update)
 L_METHOD(LuaMysql, c_mysql_character_set)
 LUA_FUNC_END
 
+
+int LuaMysql::c_mysql_init(lua_State* L)
+{
+	MYSQL *mysql = mysql_init(NULL);
+	if (!mysql)
+	{
+		return luaL_error(L, "init mysql error");
+	}
+
+	mysql_set_character_set(mysql, "utf8");
+	lua_pushlightuserdata(L, mysql);
+	return 1;
+}
 
 int LuaMysql::c_mysql_connect(lua_State* L)
 {

@@ -1,30 +1,26 @@
-require "game.loadRequire"
-require "NetWork.PacketHandler"
-require "serverToGate"
-require "SvrType"
+local ClientSession = require "gate.ClientSession"
 
 G_ServerNo = 0
 
 --启动服务器C层入口
 function c_main()
-	print("======c_main=====1111==========")
-	SvrType.setSvrType(SvrType.G_SERVER_GAME)
-	G_InitLog("game")
 	G_ServerNo = C_GetServerID()
-
-	print("G_ServerNo = " .. G_ServerNo)
-	print("SvrType.getSvrType = " .. SvrType.getSvrType())
-	PacketHandler.initGamePacketHandler()
-	startUpdateTimer()	--热更新定时器
-	serverToGate.connectToGate()
-	--timer.CallLater(TestSendPacket, 1000)
-	--timer.CallLater(G_TestLog, 1000)
-	--timer.CallLater(testDb, 1000)
+	print("gate G_ServerNo = " .. G_ServerNo)
+	require "gate.loadRequire"
+	require "NetWork.PacketHandler"
+	init()
 end
 
 --定时器，C层调用
 function CHandlerTimer(id)
 	return timer.DoTimer(id)
+end
+
+function init()
+	G_InitLog("gate")
+	PacketHandler.initGamePacketHandler()
+	timer.CallLater(testDb, 1000)
+	startUpdateTimer()--热更新定时器
 end
 
 --src:发来服务器编号
@@ -42,18 +38,18 @@ end
 function CHandlerConnect(sn)
 	print("========CHandlerConnect=============")
 	print("sn = " .. sn)
-	Session.newSession(sn)
+	ClientSession.newSession(sn)
 end
 
 function CHandlerDisconnect(sn)
 	print("=======CHandlerDisconnect==============")
-	Session.delSession(sn)	
+	ClientSession.delSession(sn)	
 end
 
 --错误信息
 function CHandlerError(err)
 	print("========CHandlerError=============")
-	print(err)
+	CLogError("error", err)
 end
 
 function CHandlerNetMsg(sn, data, startPos, size)

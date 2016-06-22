@@ -180,7 +180,7 @@ void LuaSvr::initRef()
 	{
 		FATAL("[LUA FATAL] lua script no CHandlerNetMsg function****");
 	}
-	ref(L_, "CHandlerNetMsg", REF_ERROR);
+	ref(L_, "CHandlerNetMsg", REF_NET_MSG);
 }
 
 int LuaSvr::getRef( int ref)
@@ -384,7 +384,8 @@ void LuaSvr::run()
 	bool ret = scriptInit();
 	if(!ret)
 	{
-		ERRLOG("app init failed");
+		ERRLOG("luasvr run failed");
+		printf("luasvr run failed\n");
 	}
 }
 

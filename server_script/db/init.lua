@@ -2,6 +2,7 @@
 --package.path = "../server_script/?.lua;" .. package.path
 --package.path = "./?.lua" .. package.path
 --print(package.path)
+
 --C++层类
 C_LuaNetWork = LuaNetwork		--网络
 C_Bit = Bit						--位操作

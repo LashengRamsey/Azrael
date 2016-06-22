@@ -8,6 +8,7 @@ class LuaMysql
 public:
 	LUA_EXPORT(LuaMysql)
 
+	static int c_mysql_init(lua_State* L);
 	static int c_mysql_connect(lua_State* L);
 	static int c_mysql_disconntect(lua_State* L);
 	static int c_mysql_query(lua_State* L);

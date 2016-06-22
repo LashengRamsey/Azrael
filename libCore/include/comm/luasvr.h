@@ -12,6 +12,7 @@ enum LuaRef{
 	REF_CONNECT,
 	REF_DISCONNECT,
 	REF_ERROR,
+	REF_NET_MSG,
 	REF_MAX,
 };
 
