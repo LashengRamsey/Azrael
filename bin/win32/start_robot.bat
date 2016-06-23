@@ -1,2 +1,2 @@
-start "robot" game/game robot/RobotConfig
+start "robot" game/game robot/RobotConfig commConfig
 

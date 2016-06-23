@@ -1,2 +1,2 @@
-start "gateServer" game/game gate/GateConfig
+start "gateServer" game/game gate/GateConfig commConfig
 

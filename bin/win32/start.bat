@@ -7,8 +7,8 @@ del dump.rdb
 start /b startup.bat
 cd ../..
 
-start /b db/DbServer db/DBConfig
+start /b db/DbServer db/DBConfig commConfig
 
-start /b game/game game/GameConfig
+start /b game/game game/GameConfig commConfig
 
-start "gateServer" game/game gate/GateConfig
+start "gateServer" game/game gate/GateConfig commConfig

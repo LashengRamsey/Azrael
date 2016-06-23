@@ -200,14 +200,17 @@ void ServerApp::rlimit()
 
 bool ServerApp::init(int argc, char* argv[])
 {
-	if (argc<2)
-	{
-		INFO("argc = %d,not Config", argc);
-		return false;
-	}
+	//if (argc<3)
+	//{
+	//	INFO("argc = %d,not Config", argc);
+	//	return false;
+	//}
+	
+	char* s = getenv("ServerID");
 	const char* dir = Config::GetValue("ScriptDir");
 	if (dir && chdir(dir))
 	{
+		printf("Failed, no define ScirptDir dir = %s\n", dir);
 		ERRLOG("Failed, no define ScirptDir");
 		return false;
 	}

@@ -1,1 +1,1 @@
-start game/game game/GameConfig_2
+start game/game game/GameConfig_2 commConfig

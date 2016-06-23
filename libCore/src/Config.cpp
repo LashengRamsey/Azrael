@@ -10,6 +10,8 @@
 bool Config::mFlag = false;
 std::map<std::string,std::string> Config::m_KeyValueMap;
 char* Config::mConfigName = "";
+char* Config::mCommConfig = "";
+
 
 Config::Config()
 {
@@ -30,13 +32,16 @@ bool InStr(char ch,const char *pStr)
   return false;
 }
 
-void Config::SetConfigName(char* configName)
+void Config::SetConfigName(char* configName, char* commConfig)
 {
 	mConfigName = configName;
+	mCommConfig = commConfig;
 }
 
 bool Config::ReadFromFile(const char *pFilePath)
 {
+	if (strlen(pFilePath) == 0)
+		return false;
 	FILE* fp = fopen(pFilePath,"rb");
 	if( fp )
 	{
@@ -58,7 +63,6 @@ bool Config::ReadFromFile(const char *pFilePath)
 
 void Config::ReadFromBuffer(char *pBuf,long uSize)
 {
-	m_KeyValueMap.clear();
 	bool b = true;
 	bool bNote = false; 
 	char key[128] = "";
@@ -128,7 +132,9 @@ const char * Config::GetValue(const char * strKey)
 	if (! Config::mFlag)
 	{
 		Config::mFlag = true;
+		m_KeyValueMap.clear();
 		ReadFromFile(mConfigName);
+		ReadFromFile(mCommConfig);
 	}
 
 	KeyValueMap::iterator it = m_KeyValueMap.find(strKey);

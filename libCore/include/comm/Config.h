@@ -14,7 +14,7 @@ public:
 	static void PrintAllConfig();
 	static const char* GetValue(const char* strKey);
 	static int GetIntValue(const char* strKey);
-	static void SetConfigName(char* configName);
+	static void SetConfigName(char* configName, char* commConfig);
 protected:
 	static bool ReadFromFile(const char *pFilePath);
 	static void ReadFromBuffer(char *pBuf,long uSize);
@@ -23,6 +23,7 @@ protected:
 private:
 	static bool mFlag;
 	static char *mConfigName;
+	static char *mCommConfig;
 	typedef std::map<std::string, std::string> KeyValueMap;
 	static KeyValueMap m_KeyValueMap; 
 };

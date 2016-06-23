@@ -28,7 +28,7 @@ int main(int argc, char *argv[])
 	}
 	printf("router server Config path:%s\n",argv[1]);
 	//ÅäÖÃÎÄ¼şÂ·¾¶
-	Config::SetConfigName(argv[1]);
+	Config::SetConfigName(argv[1], "");
 
 	//myName_ = Config::GetValue("ServerID");
 

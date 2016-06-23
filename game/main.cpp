@@ -53,7 +53,12 @@ int main(int argc, char *argv[])
 #	endif
 #endif
 	///DEBUG_TRY;
-	Config::SetConfigName(argv[1]);
+	if (argc < 3)
+	{
+		printf("need 3 args,config and common cofig\n");
+		exit(1);
+	}
+	Config::SetConfigName(argv[1], argv[2]);
 	StartLogServer();
 
 	if(!startThread(argc, argv))

@@ -1,2 +1,2 @@
-start db/DbServer db/DBConfig
+start db/DbServer db/DBConfig commConfig
 
