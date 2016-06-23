@@ -39,19 +39,19 @@ end
 
 --发送网络包到客户端
 function SendPacket(sn)
-	C_SendToNet(0, sn, G_NetPacket())
+	C_SendToNet(sn, G_NetPacket())
 end
 
 --游戏服发到游戏服
 function sendToServer(src, sn, protocol, packet)
 	G_AddPacket(protocol, packet)
-	C_SendToServer(src, 0, sn, G_NetPacket())
+	C_SendToServer(src, sn, G_NetPacket())
 end
 
 --游戏服发到DB服
 function sendToDB(protocol, packet)
 	G_AddPacket(protocol, packet)
-	C_SendToDB(0, 20, 0, G_NetPacket())
+	C_SendToDB(0, 20, G_NetPacket())
 end
 
 --DB服发到游戏服

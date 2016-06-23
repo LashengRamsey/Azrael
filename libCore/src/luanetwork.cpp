@@ -96,9 +96,9 @@ int LuaNetwork::ConnectDB(lua_State* L)
 
 int LuaNetwork::SendToDB(lua_State* L)
 {
-	int channel, target, fid, t;
-
-	Lua::argParse(L, "iiit", &channel, &target, &fid, &t);
+	int channel, target, t;
+	int fid = 0;
+	Lua::argParse(L, "iit", &channel, &target, &t);
 	Buf buf;
 	int len = lua_objlen(L, t);
 	for (int i = 1;i <= len; ++i)
@@ -123,8 +123,8 @@ int LuaNetwork::SendToDB(lua_State* L)
 
 int LuaNetwork::SendToNet(lua_State* L)
 {
-	int sn, fid, t;
-	Lua::argParse(L, "iit", &fid, &sn, &t);
+	int sn, t;
+	Lua::argParse(L, "it", &sn, &t);
 
 	Buf buf;
 	int len = lua_objlen(L, t);
@@ -141,16 +141,16 @@ int LuaNetwork::SendToNet(lua_State* L)
 	Net *net = ServerApp::get()->getNet();
 	if (net)
 	{
-		net->sendPacket(sn, fid, buf);
+		net->sendPacket(sn, 0, buf);
 	}
 	return 0;
 }
 
 int LuaNetwork::SendToServer(lua_State* L)
 {
-	int target, sn, fid, t;
+	int target, sn, t;
 
-	Lua::argParse(L, "iiit", &target, &fid, &sn, &t);
+	Lua::argParse(L, "iit", &target, &sn, &t);
 	Buf buf;
 	int len = lua_objlen(L, t);
 	for (int i = 1;i <= len; ++i)
@@ -163,15 +163,15 @@ int LuaNetwork::SendToServer(lua_State* L)
 		resolvePacketTableItem(L, &buf);
 		lua_pop(L, 1);
 	}
-	ServerApp::get()->SendPacket(target, fid, sn, buf);
+	ServerApp::get()->SendPacket(target, 0, sn, buf);
 	return 0;
 }
 
 int LuaNetwork::SendToGameServer(lua_State* L)
 {
-	int target, sn, fid, t;
-	
-	Lua::argParse(L, "iiit", &target, &fid, &sn, &t);
+	int target, sn, t;
+	int fid = 0;
+	Lua::argParse(L, "iit", &target, &sn, &t);
 	
 	Buf buf;
 	//返回指定的索引处的值的长度。对于 string ，那就是字符串的长度；对于 table ，
