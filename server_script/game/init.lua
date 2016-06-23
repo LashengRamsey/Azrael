@@ -35,30 +35,22 @@ end
 --startPos：数据开始下标
 --size：数据大小
 function CHandlerMsg(src, sn, fid, data, startPos, size)
-	print("========CHandlerMsg=============")
-	print("src = " .. src)
-	print("sn = " .. sn)
 	Net.doHandlerMsg(src, sn, fid, data, startPos, size)
 end
 
 function CHandlerConnect(sn)
-	print("========CHandlerConnect=============")
-	print("sn = " .. sn)
-	Session.newSession(sn)
+
 end
 
 function CHandlerDisconnect(sn)
-	print("=======CHandlerDisconnect==============")
-	Session.delSession(sn)	
+
 end
 
 --错误信息
 function CHandlerError(err)
-	print("========CHandlerError=============")
-	print(err)
+
 end
 
 function CHandlerNetMsg(sn, data, startPos, size)
-	print("========CHandlerNetMsg=============")
 	Net.doHandlerMsg(0, sn, 0, data, startPos, size)
 end

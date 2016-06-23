@@ -65,7 +65,7 @@ end
 
 --客户端网络包
 function RecvClientPacket(src, packet)
-	local sn = packet.iSn or 0
+	local sn = packet.sn or 0
 	G_SetMsgPacket(packet.data, packet.startPos, packet.size)
 	local protocol = G_UnPacketI(4)
 	local func = PacketHandler.getPacketHandler(protocol)

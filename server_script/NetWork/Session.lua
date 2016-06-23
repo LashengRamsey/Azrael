@@ -42,7 +42,7 @@ function delSession(sn)
 	local sessionObj = gtSessionMap[sn]
 	if sessionObj then
 		gtSessionMap[sn] = nil
-		if sessionObj.refObj then
+		if sessionObj.refObj and sessionObj.refObj.onDisconnect then
 			sessionObj.refObj:onDisconnect()
 		end
 	end
