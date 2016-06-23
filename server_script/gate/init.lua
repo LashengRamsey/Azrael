@@ -26,6 +26,7 @@ end
 --startPos：数据开始下标
 --size：数据大小
 function CHandlerMsg(src, sn, fid, data, startPos, size)
+	print("========CHandlerMsg=============")
 	print("src = " .. src)
 	print("sn = " .. sn)
 	Net.doHandlerMsg(src, sn, fid, data, startPos, size)
@@ -39,16 +40,18 @@ end
 
 function CHandlerDisconnect(sn)
 	print("=======CHandlerDisconnect==============")
-	ClientSession.delSession(sn)	
+	ClientSession.closeSession(sn)	
 end
 
 --错误信息
 function CHandlerError(err)
 	print("========CHandlerError=============")
-	CLogError("error", err)
+	CLogError(err)
 end
 
+--客户端消息
 function CHandlerNetMsg(sn, data, startPos, size)
 	print("========CHandlerNetMsg=============")
-	Net.doHandlerMsg(0, sn, 0, data, startPos, size)
+	print("sn="..sn)
+	Net.gateHandlernetMsg(sn, data, startPos, size)
 end

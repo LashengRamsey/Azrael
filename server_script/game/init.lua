@@ -27,6 +27,7 @@ function CHandlerTimer(id)
 	return timer.DoTimer(id)
 end
 
+--服务器消息
 --src:发来服务器编号
 --fid：消息类型
 --sn:连接id
@@ -34,6 +35,7 @@ end
 --startPos：数据开始下标
 --size：数据大小
 function CHandlerMsg(src, sn, fid, data, startPos, size)
+	print("========CHandlerMsg=============")
 	print("src = " .. src)
 	print("sn = " .. sn)
 	Net.doHandlerMsg(src, sn, fid, data, startPos, size)

@@ -26,27 +26,24 @@ ClientSession = class()
 
 local gtSessionMap = {}
 function newSession(sn)
-	delSession(sn)
+	closeSession(sn)
 	local sessionObj = ClientSession(sn)
 	gtSessionMap[sn] = sessionObj
 
 	--通知各个服务器有新建立了一个连接
-	local t = {
-		iSn = sn,
-	}
 	for _,src in pairs({1}) do 	--todo  写死了服务ID
-		Net.sendToServer(src, 0, Protocol.G2S_ClientConn, t)
+		Net.sendToServer(src, 0, Protocol.G2S_ClientConn, {sn = sn})
 	end
 
 	return sessionObj
 end
 
-function delSession(sn)
+function closeSession(sn)
 	local sessionObj = gtSessionMap[sn]
 	if sessionObj then
 		gtSessionMap[sn] = nil
-		if sessionObj.refObj then
-			sessionObj.refObj:onDisconnect()
+		for _,src in pairs({1}) do 	--todo  写死了服务ID
+			Net.sendToServer(src, 0, Protocol.G2S_ClientDisConn, {sn = sn})
 		end
 	end
 end

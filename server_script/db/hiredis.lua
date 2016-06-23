@@ -18,17 +18,17 @@ end
 --连接redis服务器
 function hiredis_connect()
 	if not gsRedisIp and not giRedisPort then
-		CLogError("error", "hiredis_connect error: gsRedisIp or giRedisPort is nil")
+		CLogError("hiredis_connect error: gsRedisIp or giRedisPort is nil")
 		return
 	end
 	
 	local conn = c_hiredis.connect(gsRedisIp, giRedisPort, 0)
 	--print(type(conn))
 	if not conn then
-		CLogError("error", "hiredis_connect failed")
+		CLogError("hiredis_connect failed")
 		timer.CallLater(hiredis_connect, 10000)
 	elseif type(conn) == "string" then
-		CLogError("error", "hiredis_connect failed:%s", conn)
+		CLogError("hiredis_connect failed:%s", conn)
 		timer.CallLater(hiredis_connect, 10000)
 	elseif type(conn) == "userdata" then
 		--print_r(conn)
@@ -44,17 +44,17 @@ end
 --关闭redis服务器
 function hiredis_close()
 	if not guRedisConn then 
-		CLogError("error", "hiredis_close error:redis server not connect")
+		CLogError("hiredis_close error:redis server not connect")
 		return
 	end
 	guRedisConn:close()
-	CLogInfo("LogInfo", "hiredis_close success")
+	CLogInfo("hiredis_close success")
 end
 
 --执行redis命令
 function hiredis_command(...)
 	if not guRedisConn then 
-		CLogError("error", "hiredis_command error:redis server not connect")
+		CLogError("hiredis_command error:redis server not connect")
 		return c_hiredis.NIL
 	end
 	local nret = guRedisConn:command(...)

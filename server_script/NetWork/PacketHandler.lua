@@ -31,8 +31,10 @@ function getGamePacketHandler( protocol )
 end
 
 function initGamePacketHandler()
-	--initComPacketHandler()
+	initComPacketHandler()
 	gtPacketHandler[Protocol.G2S_ClientConn] = gateService.GameClientConnection
+	gtPacketHandler[Protocol.G2S_ClientDisConn] = gateService.GameClientDisConn
+	gtPacketHandler[Protocol.G2S_RevPackage] = Net.RecvClientPacket
 
 	gtPacketHandler[Protocol.C2G_Login] = login.login
 	gtPacketHandler[Protocol.D2G_COMMAND_RESULT] = dbClient.CommandCallBack
@@ -46,7 +48,7 @@ function getDbPacketHandler(protocol)
 end
 
 function initDbPacketHandler()
-	--initComPacketHandler()
+	initComPacketHandler()
 	gtPacketHandler[Protocol.G2D_COMMAND] = dbServer.G2DExeCommand
 
 end

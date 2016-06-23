@@ -1,6 +1,12 @@
 module("gateService", package.seeall)
 
 
-function GameClientConnection( ... )
-	print("=======GameClientConnection=========")
+function GameClientConnection( sn )
+	print("=======GameClientConnection======== sn=" .. sn)
 end
+
+function GameClientDisConn( sn )
+	print("=======GameClientDisConn======== sn=" .. sn)
+end
+
+

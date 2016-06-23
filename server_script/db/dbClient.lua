@@ -36,7 +36,7 @@ function CommandCallBack(fn, packet)
 	--print_r(packet)
 	local iCbId = packet.iCbId
 	if not iCbId then
-		CLogError("error", "dbClient.CommandCallBack error not iCbId")
+		CLogError("dbClient.CommandCallBack error not iCbId")
 		return
 	end
 
@@ -44,7 +44,7 @@ function CommandCallBack(fn, packet)
 	gtExecuteMap[iCbId] = nil
 	local func = tCb.cb
 	if not tCb or not func then
-		CLogError("error", "dbClient.CommandCallBack error not tCb : iCbId = %d func = %s", iCbId, func)
+		CLogError("dbClient.CommandCallBack error not tCb : iCbId = %d func = %s", iCbId, func)
 		return
 	end
 

@@ -17,7 +17,14 @@ function CLogInfo(dir, str, ...)
 	C_Info(dir, str)
 end
 
-function CLogError(dir, str, ...)
+function CLogError(str, ...)
+	dir = string.format("%s%s", G_LOG_PATH, "error")
+	str = "[Error]" .. string.format(str, ...)
+	print(str)
+	C_Error(dir, str)
+end
+
+function CLogErrorDir(dir, str, ...)
 	dir = string.format("%s%s", G_LOG_PATH, dir)
 	str = "[Error]" .. string.format(str, ...)
 	print(str)

@@ -4,9 +4,19 @@ G_PacketStruct = {}
 
 
 G_PacketStruct[Protocol.G2S_ClientConn] ={
-	iSn = {"Long"}
+	sn = {"Long"}
 }
 
+G_PacketStruct[Protocol.G2S_ClientDisConn] ={
+	sn = {"Long"}
+}
+
+G_PacketStruct[Protocol.G2S_RevPackage] ={
+	sn = {"Long"},
+	data = {"Str"},
+	startPos = {"Int"},
+	size = {"Int"},
+}
 
 G_PacketStruct[Protocol.G2G_Test] = 
 {

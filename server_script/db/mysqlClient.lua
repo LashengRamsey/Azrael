@@ -45,24 +45,24 @@ end
 function mysql_disconntect()
 	c_mysql_disconntect(mysql_context)
 	mysql_context = nil
-	CLogError("error", "mysql disconntect")
+	CLogError("mysql disconntect")
 end
 
 --执行query语句
 --//return double dimesional lua table
 function mysql_query(sql)
 	if not mysql_context then
-		CLogError("error", "msyql mysql_query error:mysql_context is nil")
+		CLogError("msyql mysql_query error:mysql_context is nil")
 		return
 	end
 	CLogInfo("LogInfo", "mysql mysql_query sql:%s", sql)
 	local result,tFields  = c_mysql_query(mysql_context, sql)
 	if result == -1 then
-		CLogError("error", "msyql mysql_query error: result = -1, parameter num error")
+		CLogError("msyql mysql_query error: result = -1, parameter num error")
 	elseif result == -2 then
-		CLogError("error", "msyql mysql_query error: result = -2,mysql_ping error")
+		CLogError("msyql mysql_query error: result = -2,mysql_ping error")
 	elseif result == -3 then
-		CLogError("error", "msyql mysql_query error: result = -3,mysql_query error sql = " .. sql)
+		CLogError("msyql mysql_query error: result = -3,mysql_query error sql = " .. sql)
 	elseif result == 0 then
 		CLogInfo("LogInfo", "mysql mysql_query success sql = " .. sql)
 		--print_r(tFields)
@@ -76,18 +76,18 @@ end
 --return inset_id
 function mysql_insert(sql)
 	if not mysql_context then
-		CLogError("error", "msyql insert error:mysql_context is nil")
+		CLogError("msyql insert error:mysql_context is nil")
 		return -1
 	end
 	local result,inset_id = c_mysql_insert(mysql_context, sql)
 
 	CLogInfo("LogInfo", "mysql mysql_insert")
 	if result == -1 then
-		CLogError("error", "msyql insert error: result = -1, parameter num error")
+		CLogError("msyql insert error: result = -1, parameter num error")
 	elseif result == -2 then
-		CLogError("error", "msyql insert error: result = -2,mysql_ping error")
+		CLogError("msyql insert error: result = -2,mysql_ping error")
 	elseif result == -3 then
-		CLogError("error", "msyql insert error: result = -3,insert error sql = " .. sql)
+		CLogError("msyql insert error: result = -3,insert error sql = " .. sql)
 	elseif result == 0 then
 		CLogInfo("LogInfo", "mysql mysql_insert success sql = " .. sql)
 	end
@@ -96,18 +96,18 @@ end
 --执行update
 function mysql_update(sql)
 	if not mysql_context then
-		CLogError("error", "msyql update error:mysql_context is nil")
+		CLogError("msyql update error:mysql_context is nil")
 		return
 	end
 	local result = c_mysql_update(mysql_context, sql)
 
 	CLogInfo("LogInfo", "mysql mysql_update")
 	if result == -1 then
-		CLogError("error", "msyql update error: result = -1, parameter num error")
+		CLogError("msyql update error: result = -1, parameter num error")
 	elseif result == -2 then
-		CLogError("error", "msyql update error: result = -2,mysql_ping error")
+		CLogError("msyql update error: result = -2,mysql_ping error")
 	elseif result == -3 then
-		CLogError("error", "msyql update error: result = -3,update error sql = " .. sql)
+		CLogError("msyql update error: result = -3,update error sql = " .. sql)
 	elseif result == 0 then
 		CLogInfo("LogInfo", "mysql mysql_update success sql = " .. sql)
 	end
@@ -116,14 +116,14 @@ end
 
 function mysql_character_set( sql )
 	if not mysql_context then
-		CLogError("error", "msyql character_set error:mysql_context is nil")
+		CLogError("msyql character_set error:mysql_context is nil")
 		return
 	end
 	local result = c_mysql_character_set(mysql_context, sql)
 
 	CLogInfo("LogInfo", "mysql c_mysql_character_set")
 	if result == -1 then
-		CLogError("error", "msyql c_mysql_character_set error: result = -1, parameter num error")
+		CLogError("msyql c_mysql_character_set error: result = -1, parameter num error")
 	elseif result == 0 then
 		CLogInfo("LogInfo", "mysql mysql_character_set success sql = " .. sql)
 	end

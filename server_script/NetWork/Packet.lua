@@ -15,7 +15,7 @@ end
 function G_PacketAddI(value, byte)
 	value = value or 0
 	if not table.containValue({1,2,4,8}, byte) then
-		CLogError("error", "ERROR G_PacketAddI byte not in {1,2,4,8}, byte %d", byte)
+		CLogError("ERROR G_PacketAddI byte not in {1,2,4,8}, byte %d", byte)
 		return
 	end
 	table.insert(tNetPacket, {byte, value})
@@ -56,7 +56,7 @@ local ARRAY_BASE = {
 function G_AddPacket(protocol, packet)
 	local struct = G_PacketStruct[protocol]
 	if not struct then
-		CLogError("error", "======G_AddPacket ERROR:not struct protocol=%d", protocol)
+		CLogError("======G_AddPacket ERROR:not struct protocol=%d", protocol)
 		return false
 	end
 	G_PacketPrepare(protocol)
@@ -95,7 +95,7 @@ function G_AddPacket(protocol, packet)
 			else
 				local byte = gtIntBytes[uType]
 				if not byte then
-					CLogError("error", "======G_AddPacket ERROR:byte error protocol=%d", protocol)
+					CLogError("======G_AddPacket ERROR:byte error protocol=%d", protocol)
 				end
 				uValue = uValue or 0
 				G_PacketAddI(uValue, byte)
@@ -119,7 +119,7 @@ end
 
 function G_UnPacketI(byte)
 	if not table.containValue({1,2,4,8}, byte) then
-		CLogError("error", "ERROR G_UnPacketI byte not in {1,2,4,8}, byte %d", byte)
+		CLogError("ERROR G_UnPacketI byte not in {1,2,4,8}, byte %d", byte)
 		return
 	end
 	
@@ -147,7 +147,7 @@ function G_UnPacketTable(protocol)
 	local result = {}
 	local struct = G_PacketStruct[protocol]
 	if not struct then
-		CLogError("error", "======G_UnPacketTable ERROR:not struct protocol=%d", protocol)
+		CLogError("======G_UnPacketTable ERROR:not struct protocol=%d", protocol)
 		return nil
 	end
 
@@ -182,7 +182,7 @@ function G_UnPacketTable(protocol)
 			else
 				local byte = gtIntBytes[uType]
 				if not byte then
-					CLogError("error", "======G_AddPacket ERROR:byte error protocol=%d", protocol)
+					CLogError("======G_AddPacket ERROR:byte error protocol=%d", protocol)
 				end
 				_result[k] = G_UnPacketI(byte)
 			end
@@ -194,6 +194,29 @@ function G_UnPacketTable(protocol)
 	return result
 end
 
+--==============================================
+--网关服用
+function G_DataUnPacketI(byte, data, sMsgStarPos, size)
+	if byte > size - sMsgStarPos then
+		CLogError("ERROR G_UnPacketI byte %d > size %d - sMsgStarPos %d", byte, sMsgStarPos, size)
+		return
+	end
+	if not table.containValue({1,2,4,8}, byte) then
+		CLogError("ERROR G_UnPacketI byte not in {1,2,4,8}, byte %d", byte)
+		return
+	end
+	
+	local temp = string.sub(data, sMsgStarPos+1, sMsgStarPos+byte)
+	--sMsgStarPos = sMsgStarPos + byte
+	local len = string.len(temp)
+	local hex = "0x"
+	for i=len, 1, -1 do
+		hex = hex .. string.format("%x", string.byte(temp, i))
+	end
+	
+	local value = C_ToNumber(hex)
+	return value or 0
+end
 
 --==============================================
 --网络包测试
