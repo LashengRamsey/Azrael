@@ -1,5 +1,5 @@
 #服务器ID
-ServerID=1
+ServerID=10
 
 #监听客户端端口
 BindPort=7800

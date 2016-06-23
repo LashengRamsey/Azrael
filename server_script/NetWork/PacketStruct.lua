@@ -2,6 +2,12 @@
 
 G_PacketStruct = {}
 
+
+G_PacketStruct[Protocol.G2S_ClientConn] ={
+	iSn = {"Long"}
+}
+
+
 G_PacketStruct[Protocol.G2G_Test] = 
 {
 	int11 = {"Char"},

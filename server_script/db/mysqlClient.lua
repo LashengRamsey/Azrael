@@ -8,6 +8,21 @@ local mysql_passwd = nil
 
 local mysql_context = nil
 
+local function testSql()
+	-- mysql_insert([[insert into test (tid, name) values (1, "1_name")]])
+	-- mysql_query([[select tid, name from test where tid = 1]])
+	-- mysql_update([[update test set name = "2_name" where tid=1]])
+end
+
+--连接mysql数据库
+local function mysql_connect()
+	CLogInfo("LogInfo", "mysql_connect start：%s,%s,%s,%s,%s", mysql_ip, mysql_user, mysql_passwd, mysql_db_name, mysql_port)
+	--有返回说明连接数据库成功
+	mysql_context = c_mysql_connect(mysql_ip, mysql_user, mysql_passwd, mysql_db_name, mysql_port)
+	CLogInfo("LogInfo", "mysql_connect success")
+	--testSql()
+end
+
 function mysql_init()
 	print("========mysql_init===========")
 
@@ -24,21 +39,6 @@ function mysql_init()
 	CLogInfo("LogInfo", "mysql_passwd = " .. mysql_passwd)
 
 	mysql_connect()
-end
-
-local function testSql()
-	-- mysql_insert([[insert into test (tid, name) values (1, "1_name")]])
-	-- mysql_query([[select tid, name from test where tid = 1]])
-	-- mysql_update([[update test set name = "2_name" where tid=1]])
-end
-
---连接mysql数据库
-local function mysql_connect()
-	CLogInfo("LogInfo", "mysql_connect start：%s,%s,%s,%s,%s", mysql_ip, mysql_user, mysql_passwd, mysql_db_name, mysql_port)
-	--有返回说明连接数据库成功
-	mysql_context = c_mysql_connect(mysql_ip, mysql_user, mysql_passwd, mysql_db_name, mysql_port)
-	CLogInfo("LogInfo", "mysql_connect success")
-	--testSql()
 end
 
 --断开数据连接

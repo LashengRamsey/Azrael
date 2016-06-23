@@ -1,6 +1,6 @@
 require "game.loadRequire"
 require "NetWork.PacketHandler"
-require "serverToGate"
+--require "serverToGate"
 require "SvrType"
 
 G_ServerNo = 0
@@ -16,7 +16,7 @@ function c_main()
 	print("SvrType.getSvrType = " .. SvrType.getSvrType())
 	PacketHandler.initGamePacketHandler()
 	startUpdateTimer()	--热更新定时器
-	serverToGate.connectToGate()
+	--serverToGate.connectToGate()
 	--timer.CallLater(TestSendPacket, 1000)
 	--timer.CallLater(G_TestLog, 1000)
 	--timer.CallLater(testDb, 1000)

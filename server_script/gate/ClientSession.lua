@@ -27,8 +27,17 @@ ClientSession = class()
 local gtSessionMap = {}
 function newSession(sn)
 	delSession(sn)
-	local sessionObj = ClientSession:new(sn)
+	local sessionObj = ClientSession(sn)
 	gtSessionMap[sn] = sessionObj
+
+	--通知各个服务器有新建立了一个连接
+	local t = {
+		iSn = sn,
+	}
+	for _,src in pairs({1}) do 	--todo  写死了服务ID
+		Net.sendToServer(src, 0, Protocol.G2S_ClientConn, t)
+	end
+
 	return sessionObj
 end
 

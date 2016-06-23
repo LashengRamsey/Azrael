@@ -1,26 +1,22 @@
-local ClientSession = require "gate.ClientSession"
+require "gate.loadRequire"
+require "NetWork.PacketHandler"
+require "gate.ClientSession"
 
 G_ServerNo = 0
 
 --启动服务器C层入口
 function c_main()
 	G_ServerNo = C_GetServerID()
+	print("==========gate============")
 	print("gate G_ServerNo = " .. G_ServerNo)
-	require "gate.loadRequire"
-	require "NetWork.PacketHandler"
-	init()
+	G_InitLog("gate")
+	PacketHandler.initGatePacketHandler()
+	startUpdateTimer()--热更新定时器
 end
 
 --定时器，C层调用
 function CHandlerTimer(id)
 	return timer.DoTimer(id)
-end
-
-function init()
-	G_InitLog("gate")
-	PacketHandler.initGamePacketHandler()
-	timer.CallLater(testDb, 1000)
-	startUpdateTimer()--热更新定时器
 end
 
 --src:发来服务器编号

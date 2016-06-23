@@ -9,3 +9,5 @@ cd ../..
 
 start /b db/DbServer db/DBConfig
 
+start /b game/game game/GameConfig
+
