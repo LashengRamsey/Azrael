@@ -8,19 +8,9 @@ C_SendToDB = C_LuaNetWork.sendToDB
 C_SendToGameServer = C_LuaNetWork.sendToGameServer
 
 function gateHandlernetMsg(sn, data, startPos, size)
-	print("========gateHandlernetMsg=============")
-	-- print("sn = " .. sn)
-	-- print("startPos = " .. startPos)
-	-- print("size = " .. size)
-	--print_r("data = " .. data)
-	--print(string.len(data))
-
 	--解析协议头，看要向哪个服务发送
 	local protocol = G_DataUnPacketI(4, data, startPos, size)
-	--print("======== protocol="..protocol)
-	--print(type(protocol))
 	local svrType = Protocol.whereToSend(protocol)
-	--print("======== svrType="..svrType)
 	local send = {
 		sn = sn,
 		data = data,
@@ -32,35 +22,16 @@ end
 
 function doHandlerMsg(src, sn, fid, data, startPos, size)
 	print("========doHandlerMsg=============")
-	-- print("src = " .. src)
-	-- print("sn = " .. sn)
-	-- print("fid = " .. fid)
-	-- print("startPos = " .. startPos)
-	-- print("size = " .. size)
-	--print_r("data = " .. data)
-	-- print(string.len(data))
 	G_SetMsgPacket(data, startPos, size)
-	
 	local protocol = G_UnPacketI(4)
 	CLogInfo("LogInfo", "******doHandlerMsg protocol = " .. protocol)
 	local func = PacketHandler.getPacketHandler(protocol)
-	--print(func)
 	if not func then
 		CLogInfo("LogInfo", "******doHandlerMsg error not func******* protocol = %d", protocol)
 		return
 	end
 	local packet = G_UnPacketTable(protocol)
 	func(src, packet)
-
-	-- local sessionObj = Session.getSession(sn)
-	-- local packet = G_UnPacketTable(protocol)
-
-	-- if sessionObj then
-	-- 	func(sessionObj, packet)
-	-- else
-	-- 	func(src, packet)
-	-- end
-
 end
 
 --客户端网络包
