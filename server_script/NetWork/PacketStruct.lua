@@ -4,59 +4,59 @@ G_PacketStruct = {}
 
 
 G_PacketStruct[Protocol.G2S_ClientConn] ={
-	sn = {"Long"}
+	sn = {"int64"}
 }
 
 G_PacketStruct[Protocol.G2S_ClientDisConn] ={
-	sn = {"Long"}
+	sn = {"int64"}
 }
 
 G_PacketStruct[Protocol.G2S_RevPackage] ={
-	sn = {"Long"},
-	data = {"Str"},
-	startPos = {"Int"},
-	size = {"Int"},
+	sn = {"int64"},
+	data = {"string"},
+	startPos = {"int32"},
+	size = {"int32"},
 }
 
 G_PacketStruct[Protocol.G2G_Test] = 
 {
-	int11 = {"Char"},
-	int12 = {"Short"},
-	int14 = {"Int"},
-	int18 = {"Long"},
-	str1 = {"Str"},
-	int111 = {"Char"},
-	int112 = {"Short"},
-	int114 = {"Int"},
-	int118 = {"Long"},
+	-- int11 = {"int8"},
+	-- int12 = {"int16"},
+	-- int14 = {"int32"},
+	int18 = {"int64"},
+	str1 = {"string"},
+	-- int111 = {"int8"},
+	-- int112 = {"int16"},
+	-- int114 = {"int32"},
+	-- int118 = {"int64"},
 
-	array1 = {"Array", "Test"},
+	-- array1 = {"Array", "Test"},
 
-	arrayChar = {"ArrayChar"},
-	arrayShort = {"ArrayShort"},
-	arrayInt = {"ArrayInt"},
-	arrayLong = {"ArrayLong"},
-	arrayStr = {"ArrayStr"},
+	-- arrayInt8 = {"ArrayInt8"},
+	-- arrayInt16 = {"ArrayInt16"},
+	-- arrayInt32t = {"ArrayInt32"},
+	-- arrayInt64 = {"ArrayInt64"},
+	-- arrayStr = {"ArrayStr"},
 
 }
 
 G_PacketStruct[Protocol.C2G_Login] = 
 {
-	AccountStr = {"Str"}
+	AccountStr = {"string"}
 }
 
 G_PacketStruct[Protocol.G2D_COMMAND] =
 {
-	iCbId = {"Int"},
-	iType = {"Char"},
-	db_name = {"Str"},
-	sValue = {"Str"},
+	iCbId = {"int32"},
+	iType = {"int8"},
+	db_name = {"string"},
+	sValue = {"string"},
 }
 
 G_PacketStruct[Protocol.D2G_COMMAND_RESULT] = 
 {
-	iCbId = {"Int"}, 
-	result = {"Char"},
+	iCbId = {"int32"}, 
+	result = {"int8"},
 	tResult = {"ArrayStr"}
 }
 

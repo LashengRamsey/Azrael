@@ -11,6 +11,7 @@
 #include "timer.h"
 #include "connection.h"
 #include "luanetwork.h"
+#include "lua_module_register.h"
 
 
 #define LuaDebug
@@ -289,7 +290,7 @@ void LuaSvr::init()
 		scriptCTT_ = new ScriptTimeCheckThread(L_);
 		LOG("init ScriptTimeCheckThread succ!!!!");
 	}
-
+	luaopen_struct(L_);
 	onInit();
 
 #ifndef WIN32

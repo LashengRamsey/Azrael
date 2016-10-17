@@ -3,40 +3,40 @@
 G_PacketStructExe = {}
 
 G_PacketStructExe["Test"] = {
-	int21 = {"Char"},
-	int22 = {"Short"},
-	int24 = {"Int"},
-	int28 = {"Long"},
-	str2 = {"Str"},
+	int21 = {"int8"},
+	int22 = {"int16"},
+	int24 = {"int32"},
+	int28 = {"int64"},
+	str2 = {"string"},
 	array2 = {"Array", "Test2"},
 }
 
 G_PacketStructExe["Test2"] = {
-	int31 = {"Char"},
-	int32 = {"Short"},
-	int34 = {"Int"},
-	int38 = {"Long"},
-	str3 = {"Str"},
+	int31 = {"int8"},
+	int32 = {"int16"},
+	int34 = {"int32"},
+	int38 = {"int64"},
+	str3 = {"string"},
 }
 
-G_PacketStructExe["ArrayChar"] = {
-	char = {"Char"}
+G_PacketStructExe["ArrayInt8"] = {
+	char = {"int8"}
 }
 
-G_PacketStructExe["ArrayShort"] = {
-	Short = {"Short"}
+G_PacketStructExe["ArrayInt16"] = {
+	int16 = {"int16"}
 }
 
-G_PacketStructExe["ArrayInt"] = {
-	char = {"Int"}
+G_PacketStructExe["ArrayInt32"] = {
+	int32 = {"int32"}
 }
 
-G_PacketStructExe["ArrayLong"] = {
-	char = {"Long"}
+G_PacketStructExe["ArrayInt64"] = {
+	char = {"int64"}
 }
 
 G_PacketStructExe["ArrayStr"] = {
-	char = {"Str"}
+	char = {"string"}
 }
 
 

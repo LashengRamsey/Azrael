@@ -17,7 +17,7 @@ function c_main()
 	PacketHandler.initGamePacketHandler()
 	startUpdateTimer()	--热更新定时器
 	--serverToGate.connectToGate()
-	--timer.CallLater(TestSendPacket, 1000)
+	timer.CallLater(TestSendPacket, 1000)
 	--timer.CallLater(G_TestLog, 1000)
 	--timer.CallLater(testDb, 1000)
 end

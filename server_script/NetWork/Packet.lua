@@ -1,5 +1,7 @@
 --module("Packet", package.seeall)
 
+
+
 local ARRAY_LEN = 2
 
 --发送网络包
@@ -35,19 +37,19 @@ function G_PrintPacket()
 	print_r(tNetPacket)
 end
 
-local STR = "Str"
+local STRING = "string"
 local ARRAY = "Array"
 local gtIntBytes = {
-	["Char"] = 1,
-	["Short"] = 2,
-	["Int"] = 4,
-	["Long"] = 8,
+	["int8"] = 1,
+	["int16"] = 2,
+	["int32"] = 4,
+	["int64"] = 8,
 }
 local ARRAY_BASE = {
-	["ArrayChar"] = gtIntBytes.Char,
-	["ArrayShort"] = gtIntBytes.Short,
-	["ArrayInt"] = gtIntBytes.Int,
-	["ArrayLong"] = gtIntBytes.Long,
+	["ArrayInt8"] = gtIntBytes.int8,
+	["ArrayInt16"] = gtIntBytes.int16,
+	["ArrayInt32"] = gtIntBytes.int32,
+	["ArrayInt64"] = gtIntBytes.int64,
 	["ArrayStr"] = -1,
 }
 
@@ -56,7 +58,7 @@ local ARRAY_BASE = {
 function G_AddPacket(protocol, packet)
 	local struct = G_PacketStruct[protocol]
 	if not struct then
-		CLogError("======G_AddPacket ERROR:not struct protocol=%d", protocol)
+		CLogError("======G_AddPacket ERROR:not struct protocol=%d======", protocol)
 		return false
 	end
 	G_PacketPrepare(protocol)
@@ -65,7 +67,7 @@ function G_AddPacket(protocol, packet)
 		for k, v in pairs(args) do
 			local uType = v[1]
 			local uValue = tValue[k]
-			if uType == STR then
+			if uType == STRING then
 				G_PacketAddS(uValue or "")
 
 			elseif uType == ARRAY then
@@ -95,7 +97,7 @@ function G_AddPacket(protocol, packet)
 			else
 				local byte = gtIntBytes[uType]
 				if not byte then
-					CLogError("======G_AddPacket ERROR:byte error protocol=%d", protocol)
+					CLogError("======_addPacket ERROR:byte error protocol=%d uType=%s =====", protocol, uType)
 				end
 				uValue = uValue or 0
 				G_PacketAddI(uValue, byte)
@@ -108,13 +110,13 @@ end
 
 --收到的网络包
 local sMsgPacket = ""
-local sMsgStarPos = 0
-local sMsgSize = 0
+local giMsgStarPos = 0
+local giMsgSize = 0
 
 function G_SetMsgPacket(str, startPos, size)
 	sMsgPacket = str
-	sMsgStarPos = startPos
-	sMsgSize = size
+	giMsgStarPos = startPos
+	giMsgSize = size
 end
 
 function G_UnPacketI(byte)
@@ -123,22 +125,35 @@ function G_UnPacketI(byte)
 		return
 	end
 	
-	local temp = string.sub(sMsgPacket, sMsgStarPos+1, sMsgStarPos+byte)
-	sMsgStarPos = sMsgStarPos + byte
+	local temp = string.sub(sMsgPacket, giMsgStarPos+1, giMsgStarPos+byte)
+	giMsgStarPos = giMsgStarPos + byte
+	value = 0
+	print("byte="..byte)
+	if byte > 4 then
+		print("=====")
+		--value = struct.unpack('m', temp)
+		value = struct.unpack('i'..byte, temp)
+		print(struct.unpack('i'..byte, temp))
+	else
+		value = struct.unpack('i'..byte, temp)
+	end
+	print(value)
 	local len = string.len(temp)
 	local hex = "0x"
 	for i=len, 1, -1 do
 		hex = hex .. string.format("%x", string.byte(temp, i))
 	end
-	
-	local value = C_ToNumber(hex)
+	print(hex)
+	print(C_ToNumber(hex))
+	-- local value = C_ToNumber(hex)
+
 	return value or 0
 end
 
 function G_UnPacketS()
 	local len = G_UnPacketI(2)
-	local str = string.sub(sMsgPacket, sMsgStarPos+1, sMsgStarPos+len)
-	sMsgStarPos = sMsgStarPos + len
+	local str = string.sub(sMsgPacket, giMsgStarPos+1, giMsgStarPos+len)
+	giMsgStarPos = giMsgStarPos + len
 	return str or ""
 end
 
@@ -154,7 +169,7 @@ function G_UnPacketTable(protocol)
 	local function _unPacket(args, _result)
 		for k, v in pairs(args) do
 			local uType = v[1]
-			if uType == STR then
+			if uType == STRING then
 				_result[k] = G_UnPacketS()
 			elseif uType == ARRAY then
 				local _args = G_PacketStructExe[v[2]]
@@ -196,9 +211,9 @@ end
 
 --==============================================
 --网关服用
-function G_DataUnPacketI(byte, data, sMsgStarPos, size)
-	if byte > size - sMsgStarPos then
-		CLogError("ERROR G_UnPacketI byte %d > size %d - sMsgStarPos %d", byte, sMsgStarPos, size)
+function G_DataUnPacketI(byte, data, giMsgStarPos, size)
+	if byte > size - giMsgStarPos then
+		CLogError("ERROR G_UnPacketI byte %d > size %d - giMsgStarPos %d", byte, giMsgStarPos, size)
 		return
 	end
 	if not table.containValue({1,2,4,8}, byte) then
@@ -206,23 +221,25 @@ function G_DataUnPacketI(byte, data, sMsgStarPos, size)
 		return
 	end
 	
-	local temp = string.sub(data, sMsgStarPos+1, sMsgStarPos+byte)
-	--sMsgStarPos = sMsgStarPos + byte
-	local len = string.len(temp)
-	local hex = "0x"
-	for i=len, 1, -1 do
-		hex = hex .. string.format("%x", string.byte(temp, i))
-	end
-	
-	local value = C_ToNumber(hex)
+	local temp = string.sub(data, giMsgStarPos+1, giMsgStarPos+byte)
+	giMsgStarPos = giMsgStarPos + byte
+	value = struct.unpack('i'..byte, temp)
 	return value or 0
+	-- local len = string.len(temp)
+	-- local hex = "0x"
+	-- for i=len, 1, -1 do
+	-- 	hex = hex .. string.format("%x", string.byte(temp, i))
+	-- end
+	
+	-- local value = C_ToNumber(hex)
+	-- return value or 0
 end
 
 --==============================================
 --网络包测试
 function GetTestSendPacket(sessionObj, packet)
 	print("=========GetTestSendPacket=====")
-	--print_r(packet)
+	print_r(packet)
 end
 
 function TestSendPacket()
@@ -232,72 +249,72 @@ function TestSendPacket()
 		--for i=1,100 do
 		local t = 
 		{
-			int11 = -1,--
-			int12 = -1,--
-			int14 = -1,--
-			int18 = 214748364789,--
+			-- int11 = -1,--
+			-- int12 = -2,--
+			-- int14 = -1,--
+			int18 = 92233720368547758,--
 			str1 = "TestSend Packet",--
-			int111 = 126,--
-			int112 = 32766,--
-			int114 = 2147483646,--
-			int118 = 214748364786,--
+			-- int111 = 126,--
+			-- int112 = 32766,--
+			-- int114 = 32768,--
+			-- int118 = 2147483648,--
 		}
 
-		t.array1 = {
-				{
-					int21 = 111,--
-					int22 = 112,--
-					int24 = 114,--
-					int28 = 118,--
-					str2 = "TestSend array 11 Packet",--
-				},
-				{
-					int21 = 121,--
-					int22 = 122,--
-					int24 = 124,--
-					int28 = 128,--
-					str2 = "TestSend array 12 Packet",--
-				},
-		}
+		-- t.array1 = {
+		-- 		{
+		-- 			int21 = 111,--
+		-- 			int22 = 112,--
+		-- 			int24 = 114,--
+		-- 			int28 = 118,--
+		-- 			str2 = "TestSend array 11 Packet",--
+		-- 		},
+		-- 		{
+		-- 			int21 = 121,--
+		-- 			int22 = 122,--
+		-- 			int24 = 124,--
+		-- 			int28 = 128,--
+		-- 			str2 = "TestSend array 12 Packet",--
+		-- 		},
+		-- }
 
-		t.array1[1].array2 = {
-					{	int31 = 211,--
-						int32 = 212,--
-						int34 = 214,--
-						int38 = 218,--
-						str3 = "TestSend array 21 Packet",--
-					},
-					{
-						int31 = 221,--
-						int32 = 222,--
-						int34 = 224,--
-						int38 = 228,--
-						str3 = "TestSend array 22 Packet",--
-					}
-		}
+		-- t.array1[1].array2 = {
+		-- 			{	int31 = 211,--
+		-- 				int32 = 212,--
+		-- 				int34 = 214,--
+		-- 				int38 = 218,--
+		-- 				str3 = "TestSend array 21 Packet",--
+		-- 			},
+		-- 			{
+		-- 				int31 = 221,--
+		-- 				int32 = 222,--
+		-- 				int34 = 224,--
+		-- 				int38 = 228,--
+		-- 				str3 = "TestSend array 22 Packet",--
+		-- 			}
+		-- }
 			
-		t.array1[2].array2 = {
-					{	int31 = 231,--
-						int32 = 232,--
-						int34 = 234,--
-						int38 = 238,--
-						str3 = "TestSend array 23 Packet",--
-					},
-					{
-						int31 = 241,--
-						int32 = 242,--
-						int34 = 244,--
-						int38 = 248,--
-						str3 = "TestSend array 24 Packet",--
-					}
-		}
+		-- t.array1[2].array2 = {
+		-- 			{	int31 = 231,--
+		-- 				int32 = 232,--
+		-- 				int34 = 234,--
+		-- 				int38 = 238,--
+		-- 				str3 = "TestSend array 23 Packet",--
+		-- 			},
+		-- 			{
+		-- 				int31 = 241,--
+		-- 				int32 = 242,--
+		-- 				int34 = 244,--
+		-- 				int38 = 248,--
+		-- 				str3 = "TestSend array 24 Packet",--
+		-- 			}
+		-- }
 
 
-		t.arrayChar = {1,2,3}
-		t.arrayShort = {4,5,6}
-		t.arrayInt = {7,8,9}
-		t.arrayLong = {10,11,12}
-		t.arrayStr = {"arrayStr1", "arrayStr2", "arrayStr3"}
+		-- t.arrayInt8 = {1,2,3}
+		-- t.arrayInt16 = {4,5,6}
+		-- t.arrayInt32 = {7,8,9}
+		-- t.arrayInt64 = {10,11,12}
+		-- t.arrayStr = {"arrayStr1", "arrayStr2", "arrayStr3"}
 
 		
 		Net.sendToServer(1, 0, Protocol.G2G_Test, t)

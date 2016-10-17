@@ -146,6 +146,7 @@
     <ClInclude Include="include\comm\comm.h" />
     <ClInclude Include="include\comm\LogThread.h" />
     <ClInclude Include="include\comm\bufferstring.h" />
+    <ClInclude Include="include\comm\lua_module_register.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\app.cpp" />
@@ -165,5 +166,6 @@
     <ClCompile Include="src\Config.cpp" />
     <ClCompile Include="src\LogThread.cpp" />
     <ClCompile Include="src\bufferstring.cpp" />
+    <ClCompile Include="src\struct.c" />
   </ItemGroup>
 </Project>
