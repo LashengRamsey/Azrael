@@ -1,0 +1,30 @@
+package client_scene;
+option py_generic_services=true;//是否生成python服务
+import "universal/public.proto";
+//import "universal/base.proto";
+
+
+//移动包,上行的,下行的都是这个
+message moveInfo{
+	required int64 iEttId=1; //实体id
+	required int32 x=2;//x
+	required int32 y=3;//y
+	required int32 sceneId=4; //场景id
+}
+
+//游戏客户端 --> 场景服务
+service client2scene{
+	//rpc rpcRoleMove(client_scene.moveInfo)returns(public.fake);//玩家移动
+
+
+	
+}
+
+//场景服务--> 游戏客户端
+service scene2client{
+	
+	//rpc rpcYYYY(base.int32_)returns(base.int32_);//
+
+}
+
+

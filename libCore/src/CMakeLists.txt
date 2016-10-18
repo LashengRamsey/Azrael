@@ -16,6 +16,8 @@ set(Core_SRCS
   mqnet.cpp
   net.cpp
   timer.cpp
+  pb.c
+  struct.c
   )
 
 

@@ -1,0 +1,66 @@
+package base;
+
+message int32_{
+	required int32 iValue=1;//属性值
+}
+message int64_{
+	required int64 iValue=1;//属性值
+}
+message uin32_{
+	required uint32 iValue=1;//属性值
+}
+message sint32_{
+	required sint32 iValue=1;//属性值
+}
+message sint64_{
+	required sint64 iValue=1;//属性值
+}
+message fixed32_{
+	required fixed32 iValue=1;//属性值
+}
+//message fixed64_{
+//	required fixed64 iValue=1;//属性值
+//}
+message sfixed32_{
+	required sfixed32 iValue=1;//属性值
+}
+message sfixed64_{
+	required sfixed64 iValue=1;//属性值
+}
+message bytes_{
+	required bytes sValue=1;//属性值
+}
+message bool_{
+	required bool bValue=1;//属性值
+}
+message float_{
+	required float fValue=1;//属性值
+}
+message double_{
+	required double fValue=1;//属性值
+}
+//-----------------------------------------
+
+message int32Pair{
+	required int32 iValue1=1;//属性值1
+	required int32 iValue2=2;//属性值2
+}
+message int64Pair{
+	required int64 iValue1=1;//属性值1
+	required int64 iValue2=2;//属性值2
+}
+message bytesPair{
+	required bytes sValue1=1;//属性值1
+	required bytes sValue2=2;//属性值2
+}
+//-----------------------------------------
+message int32int64{
+	required int32 iValue32=1;//属性值1
+	required int64 iValue64=2;//属性值2
+}
+
+message uint32uint64{
+	required uint32 iValueU32=1;//属性值1
+	required uint64 iValueU64=2;//属性值2
+}
+

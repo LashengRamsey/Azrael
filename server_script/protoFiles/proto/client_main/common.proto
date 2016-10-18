@@ -1,0 +1,198 @@
+package common;
+
+//通用选择框请求
+message selectBoxReq{
+	required bytes sQuestion=1;//内容
+	optional bytes sTitle=2;//标题,npc名字
+	optional int32 iShape=3;//npc半身相资源
+	optional int32 iTimeout=4[default=25000];//Countdown,倒数n毫秒后自动关闭,剩10000毫秒时显示倒数
+	optional bool bCloseButton=5 [default=true];//有无关闭按钮
+	optional int32 npcNo=6; //固定npc编号，为0时表示临时npc(如任务npc、活动npc)
+}
+
+//npc对话框
+message npcSayReq{
+	required int32 npcNo=1; //固定npc编号，为0时表示临时npc(如任务npc、活动npc)
+	required int32 shape=2; //造型
+	required bytes name=3; //名称
+	required bytes content=4; //内容
+}
+
+enum confirmBoxType {
+	TYPE_DEFAULT=0;//普通的确认框
+	TYPE_GLOD=1;//购买元宝
+	TYPE_DUPSWEEP=2;//纹章扫荡
+}
+
+message confirmationBoxReq{
+	required bytes sContent=1;//内容
+	optional int32 iTimeout=2[default=25000];//Countdown,倒数n毫秒后自动关闭,剩10000毫秒时显示倒数
+}
+
+//模态对话框
+message modalDialog{
+	required bytes sContent=1;//内容
+	optional bytes sTitle=2;//标题
+}
+
+//消息推送
+
+//暂时先填这些类型吧
+enum msgBallType {
+	TYPE_TEAM=0;//队伍，可能队伍消息还需要再细分。
+	TYPE_GUILD=1;//公会
+	TYPE_MAIL=2;//邮件
+	TYPE_GUILD_JOIN=3;//公会申请
+	TYPE_GUILD_INVITE=4;//公会邀请
+	TYPE_TIPS=5;//提示弹窗
+	TYPE_ADD_FRIEND=6;	//请求添加好友
+}
+
+message msgBall{
+	required msgBallType iType=1;//推送类型,1:请求归队,进队 2:公会邀请 3:邮件,4:精准营销...,客户端根据这个决定用什么icon
+	optional int32 iTimeout=2[default=1200000];//单位为毫秒,0表示永不超时(超时后建议客户端从推送队列里面删掉这个推送)
+}
+
+//上交界面请求
+message popUIReq{
+	required bytes title=1; //标题
+	repeated int64 idList=2;  //物品或宠物的id
+}
+
+//上交的物品或宠物
+message resMsg{
+	required int64 id=1; //物品或宠物的id
+	required int32 amount=2; //数量
+}
+
+//上交界面回复
+message popUIRes{
+	repeated resMsg resList=1; //回复列表
+}
+
+//进度条
+message ProcessBarReq{
+	required bytes title=1; //标题
+	required int32 icon=2; // 图标
+	required int32 time=3; //时间(单位:秒)
+	required int32 brk=4; // 是否可打断
+}
+
+
+//-----------------------------------------
+message sameRepeated{	
+	repeated bytes sSerialized=1;
+}
+
+message miscRepeated{
+	repeated tag misc=1;
+	message tag{
+		required bytes sMsgName=1;
+		required bytes sSerialized=2;
+	}
+}
+//-----------------------------------------
+message int32_{
+	required int32 iValue=1;//属性值
+}
+message int64_{
+	required int64 iValue=1;//属性值
+}
+message uin32_{
+	required uint32 iValue=1;//属性值
+}
+message sint32_{
+	required sint32 iValue=1;//属性值
+}
+message sint64_{
+	required sint64 iValue=1;//属性值
+}
+
+//message fixed32_{ 
+//	required fixed32 iValue=1;//属性值,proto-gen-lua不支持
+//}
+
+//message fixed64_{
+//	required fixed64 iValue=1;//属性值,proto-gen-lua不支持
+//}
+
+//message sfixed32_{
+//	required sfixed32 iValue=1;//属性值,proto-gen-lua不支持
+//}
+
+//message sfixed64_{
+//	required sfixed64 iValue=1;//属性值,proto-gen-lua不支持
+//}
+message bytes_{
+	required bytes sValue=1;//属性值
+}
+message bool_{
+	required bool bValue=1;//属性值
+}
+message float_{
+	required float fValue=1;//属性值
+}
+message double_{
+	required double fValue=1;//属性值
+}
+//-----------------------------------------
+
+message int32Pair{
+	required int32 iValue1=1;//属性值1
+	required int32 iValue2=2;//属性值2
+}
+message int64Pair{
+	required int64 iValue1=1;//属性值1
+	required int64 iValue2=2;//属性值2
+}
+message bytesPair{
+	required bytes sValue1=1;//属性值1
+	required bytes sValue2=2;//属性值2
+}
+//-----------------------------------------
+message int32int64{
+	required int32 iValue32=1;//属性值1
+	required int64 iValue64=2;//属性值2
+}
+
+message uint32uint64{
+	required uint32 iValueU32=1;//属性值1
+	required uint64 iValueU64=2;//属性值2
+}
+//-----------------------------------------
+message int32float{
+	required int32 iValue=1;//属性值1
+	required float fValue=2;//属性值2
+}
+
+//----------------------------------------
+message int32tre{
+	required int32 iValue1=1;//属性值1
+	required int32 iValue2=2;//属性值2
+	required int32 iValue3=3;//属性值3
+}
+
+//----------------------------------------
+message int32s{
+	repeated int32 iValue=1;
+}
+
+//聊天发送者
+message chatSender{
+	required int64 roleId=1; //角色id
+	required int32 shape=2; //造型
+	required bytes name=3; //角色名
+}
+
+//重新登录框
+message reloginMsg{
+	required bytes sContent=1;//内容
+	optional int32 iType=2;//重登原因1:服务器重启,2:被顶号
+}
+
+//打开界面
+message uiPanelMsg{
+	required int32 iLinkId = 1; 	//界面连接id(dtViewLink中的id)
+	optional bytes sPbName = 2;		//protod消息定义结构（例如：common_pb.reloginMsg)
+	optional bytes sSerialized = 3;//信息序列化后的字节流	
+}

@@ -1,0 +1,47 @@
+package public;
+
+message fake{};
+
+enum packetType{
+	TYPE_REQUEST=0;
+	TYPE_RESPONSE=1;
+};
+
+enum responseType{
+	TYPE_SUCCESS=0;	
+	TYPE_FAIL=1;
+};
+
+
+message fail{
+	optional bytes sReason=1;//失败原因
+	optional sint32 iCode=2;//失败编码
+};
+
+message request{
+	optional uint64 iRequestId=1;//请求id
+	optional uint64 iPeerRequestId=2;//对端发上来的请求id
+
+	required bytes sMethodName=3;//请求的方法名
+	optional bytes sSerialized=4;//序列化后的请求消息
+	optional int64 iStamp=5;//发起请求的时间戳,毫秒  //fixed64客户端会崩溃
+	optional uint32 iTimeout=6;
+	//超时,若对端在规定时间内没有完成,就不用回复了,发送端会主动结束
+	//0表示不会超时
+	//单位是毫秒
+
+	optional uint64 iSequence=7;//防止重放攻击(replay attack),游戏客户端每上传一个包后都递增.服务器下发不填这个域.
+};
+
+message response{
+	optional uint64 iResponseId=1;//响应id
+	optional responseType iSubType=2[default=TYPE_SUCCESS];//子类型,成功 或是 失败
+	optional bytes sSerialized=3;//序列化后的响应消息
+};
+
+message packet{
+	optional packetType iType=1[default=TYPE_REQUEST];//消息类型(请求 或 响应)	
+	required bytes sSerialized=2;//序列化后的请求或响应或失败的消息
+	
+	optional bytes sCheckSum=3;//校验和,使用adler32算法
+};

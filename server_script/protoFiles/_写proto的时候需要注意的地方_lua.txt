@@ -1,0 +1,26 @@
+﻿存在的问题：
+protobuf使用的问题，写proto文件的时候
+1、避免用大小写来区分内容(无论是变量还是对象还是结构体)，直接用不同的命名。
+2、不能为bytes的域分配默认值
+3、在使用message:HasField("field")的时候， 改方法返回nil代表发送方没有赋值，
+但是这个时候使用message.field，返回的是PB系统的默认值
+4、在写proto文件的时候，如果当前message需要使用repeated，
+repeated的引用的message对象需要放在当前message前面。
+例如：
+message teamInfo {
+	required int32   iTeamId=1;//队伍ID
+	required bytes   sName=2;//队伍名字
+	required bytes   sBarrierName=3;
+	required int32   iLevel=4;//难度级别
+	required fixed64 iLeaderId=5;
+	required bytes   sLeaderName=6;//队长名字
+	repeated members member=7;//成员数
+
+	message members {
+		required fixed64 iRoleId=1;
+	}
+}
+message teamList {
+	repeated teamInfo  team=1;
+}	
+5、在保存proto文件的时候，保存的格式必须是utf-8，最好大家统一用sublime这个编辑器

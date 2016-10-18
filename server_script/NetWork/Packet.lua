@@ -128,21 +128,18 @@ function G_UnPacketI(byte)
 	local temp = string.sub(sMsgPacket, giMsgStarPos+1, giMsgStarPos+byte)
 	giMsgStarPos = giMsgStarPos + byte
 
-	local len = string.len(temp)
-	local hex = "0x"
-	for i=len, 1, -1 do
-		hex = hex .. string.format("%x", string.byte(temp, i))
-	end
-	print(hex)
-	print(C_ToNumber(hex))
+	-- local len = string.len(temp)
+	-- local hex = "0x"
+	-- for i=len, 1, -1 do
+	-- 	hex = hex .. string.format("%x", string.byte(temp, i))
+	-- end
+	-- print(hex)
+	-- print(C_ToNumber(hex))
 
 
 	value = 0
-	print("byte="..byte)
 	if byte > 4 then
-		print("=====")
 		value = struct.unpack('m', temp)
-		print(value)
 	else
 		value = struct.unpack('i'..byte, temp)
 	end

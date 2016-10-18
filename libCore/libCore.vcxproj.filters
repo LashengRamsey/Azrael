@@ -167,5 +167,6 @@
     <ClCompile Include="src\LogThread.cpp" />
     <ClCompile Include="src\bufferstring.cpp" />
     <ClCompile Include="src\struct.c" />
+    <ClCompile Include="src\pb.c" />
   </ItemGroup>
 </Project>

@@ -291,6 +291,7 @@ void LuaSvr::init()
 		LOG("init ScriptTimeCheckThread succ!!!!");
 	}
 	luaopen_struct(L_);
+	luaopen_pb(L_);
 	onInit();
 
 #ifndef WIN32
