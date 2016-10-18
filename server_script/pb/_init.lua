@@ -1,0 +1,12 @@
+module(..., package.seeall)
+
+require("client_chat_pb")
+require("client_chat_rpc")
+require("public_pb")
+require("client_main_pb")
+require("client_main_rpc")
+require("common_pb")
+require("client_scene_pb")
+require("client_scene_rpc")
+require("base_pb")
+require("_rpc")
