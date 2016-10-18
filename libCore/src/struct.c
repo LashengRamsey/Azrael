@@ -35,7 +35,7 @@
 
 #include "lua.h"
 #include "lauxlib.h"
-//#include "celltype.h"
+#include "celltype.h"
 
 #if (LUA_VERSION_NUM >= 502)
 
@@ -53,7 +53,6 @@ typedef STRUCT_INT Inttype;
 
 /* corresponding unsigned version */
 typedef unsigned STRUCT_INT Uinttype;
-
 
 /* maximum size (in bytes) for integral types */
 #define MAXINTSIZE	32
@@ -111,6 +110,7 @@ static size_t optsize (lua_State *L, char opt, const char **fmt) {
     case 'B': case 'b': return sizeof(char);
     case 'H': case 'h': return sizeof(short);
     case 'L': case 'l': return sizeof(long);
+	case 'm': return sizeof(int64);
     case 'T': return sizeof(size_t);
     case 'f':  return sizeof(float);
     case 'd':  return sizeof(double);
@@ -287,6 +287,31 @@ static lua_Number getinteger (const char *buff, int endian,
   }
 }
 
+static int64 getint64(const char *buff, int endian,
+	int issigned, int size) {
+	uint64 l = 0;
+	int i;
+	if (endian == BIG) {
+		for (i = 0; i < size; i++) {
+			l <<= 8;
+			l |= (uint64)(unsigned char)buff[i];
+		}
+	}
+	else {
+		for (i = size - 1; i >= 0; i--) {
+			l <<= 8;
+			l |= (uint64)(unsigned char)buff[i];
+		}
+	}
+	if (!issigned)
+		return (int64)l;
+	else {  /* signed format */
+		uint64 mask = (uint64)(~((uint64)0)) << (size * 8 - 1);
+		if (l & mask)  /* negative value? */
+			l |= mask;  /* signal extension */
+		return (int64)l;
+	}
+}
 
 static int b_unpack (lua_State *L) {
   Header h;
@@ -303,13 +328,12 @@ static int b_unpack (lua_State *L) {
     luaL_argcheck(L, pos+size <= ld, 2, "data string too short");
     luaL_checkstack(L, 1, "too many results");
     switch (opt) {
-	 // case 'm': {
-		//const char *e = (const char *)memchr(data + pos, '\0', ld - pos);
-		//int64 iValue = 0;
-		//sscanf(e, "%I64x", &iValue);
-		//lua_pushnumber(L, iValue);
-		//break;
-	 // }
+	  case 'm': {
+		int issigned = islower(opt);
+		int64 res = getint64(data + pos, h.endian, issigned, size);
+		lua_pushnumber(L, res);
+		break;
+	  }
 
       case 'b': case 'B': case 'h': case 'H':
       case 'l': case 'L': case 'T': case 'i':  case 'I': {  /* integer types */

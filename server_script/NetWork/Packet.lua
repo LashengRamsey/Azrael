@@ -127,17 +127,7 @@ function G_UnPacketI(byte)
 	
 	local temp = string.sub(sMsgPacket, giMsgStarPos+1, giMsgStarPos+byte)
 	giMsgStarPos = giMsgStarPos + byte
-	value = 0
-	print("byte="..byte)
-	if byte > 4 then
-		print("=====")
-		--value = struct.unpack('m', temp)
-		value = struct.unpack('i'..byte, temp)
-		print(struct.unpack('i'..byte, temp))
-	else
-		value = struct.unpack('i'..byte, temp)
-	end
-	print(value)
+
 	local len = string.len(temp)
 	local hex = "0x"
 	for i=len, 1, -1 do
@@ -145,8 +135,17 @@ function G_UnPacketI(byte)
 	end
 	print(hex)
 	print(C_ToNumber(hex))
-	-- local value = C_ToNumber(hex)
 
+
+	value = 0
+	print("byte="..byte)
+	if byte > 4 then
+		print("=====")
+		value = struct.unpack('m', temp)
+		print(value)
+	else
+		value = struct.unpack('i'..byte, temp)
+	end
 	return value or 0
 end
 
@@ -252,7 +251,8 @@ function TestSendPacket()
 			-- int11 = -1,--
 			-- int12 = -2,--
 			-- int14 = -1,--
-			int18 = 92233720368547758,--
+			--int18 = 92233720368547758,--
+			int18 = 99999999999999,--
 			str1 = "TestSend Packet",--
 			-- int111 = 126,--
 			-- int112 = 32766,--
