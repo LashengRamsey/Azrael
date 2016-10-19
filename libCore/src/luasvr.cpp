@@ -115,6 +115,7 @@ static int error_hook(lua_State *L)
 	ERRLOG(errdump.c_str());
 	ERRLOG("=======Report error to server========");
 
+	printf("%s\n", errdump.c_str());
 	//µ÷ÓÃ½Å±¾
 	LuaSvr::call("CHandlerError", "S", &errdump);
 
