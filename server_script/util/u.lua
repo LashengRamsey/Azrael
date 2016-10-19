@@ -4,6 +4,35 @@ u.lua表示util.lua或utility.lua,工具模块
 --]]
 module('u', package.seeall)
 
+local tDefineVars = {}
+--tDefineVars["_PROMPT"]=true
+---[[
+setmetatable(_G, 
+	{
+		__newindex = function (_, key,value)
+			tDefineVars[key]=true
+			rawset(_,key,value)
+		end,
+		__index = function (_, key)
+			if tDefineVars[key]~=true then
+				error(string.format('没有定义的全局变量 "%s"',key), 2)
+			end
+			return nil
+		end,
+	}
+)
+--]]
+
+
+function getAttr(obj,sKey,default )
+    local bRet,value=pcall(function() return obj[sKey] end)
+    if bRet then
+        return value
+    else
+        return default
+    end
+end
+
 None={} --表示没有
 
 function printLog(tag, fmt, ...)
