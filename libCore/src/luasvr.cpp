@@ -456,9 +456,14 @@ bool LuaSvr::call(const char* fmt, ...)
 
 bool LuaSvr::call(const char* fmt, va_list va)
 {
+	if (!LuaSvr::get())
+	{
+		ERRLOG("LuaSvr pointer miss");
+		return false;
+	}
 	lua_State *L = LuaSvr::get()->L();
-	int p = 0, pc = 0;
-
+	int p = 0;
+	int nargs = 0;//参数个数
 	char c = 0;
 
 	while((c=fmt[p++]))
@@ -469,7 +474,7 @@ bool LuaSvr::call(const char* fmt, va_list va)
 			{
 				int i = va_arg(va, int);
 				lua_pushinteger(L, i);
-				pc++;
+				++nargs;
 			}
 			break;
 		case 'l':
@@ -479,7 +484,7 @@ bool LuaSvr::call(const char* fmt, va_list va)
 				//lua_pushinteger(L, (lua_Number)i);
 				lua_Integer i = va_arg(va, lua_Integer);
 				lua_pushinteger(L, i);
-				pc++;
+				++nargs;
 			}
 			break;
 		case 'm':
@@ -496,22 +501,22 @@ bool LuaSvr::call(const char* fmt, va_list va)
 				{
 					lua_pushlstring(L, "", 0);
 				}
-				pc++;
+				++nargs;
 			}
 			break;
 		case 't':
 			{
 				int i = va_arg(va, int);
 				lua_pushvalue(L, i);
-				pc++;
+				++nargs;
 			}
 			break;
-		case 'a':
-			{
-				//没有
-				pc++;
-			}
-			break;
+		//case 'a':
+		//	{
+		//		//没有
+		//		++nargs;
+		//	}
+		//	break;
 		case 'S':
 			{
 				std::string *s = va_arg(va, std::string*);
@@ -523,12 +528,12 @@ bool LuaSvr::call(const char* fmt, va_list va)
 				{
 					lua_pushnil(L);
 				}
-				pc++;
+				++nargs;
 			}
 			break;
 		case '|':
 			{
-				pc++;
+				++nargs;
 				break;
 			}
 		default:
@@ -537,10 +542,10 @@ bool LuaSvr::call(const char* fmt, va_list va)
 		}
 	}
 	
-	return LuaSvr::scriptCall(L, pc, 0);
+	return LuaSvr::scriptCall(L, nargs, 0);
 }
 
-bool LuaSvr::call(const char *fn, const char* fmt, ...)
+bool pushRefFunc(const char *funcName)
 {
 	if (!LuaSvr::get())
 	{
@@ -550,13 +555,13 @@ bool LuaSvr::call(const char *fn, const char* fmt, ...)
 
 	lua_State *L = LuaSvr::get()->L();
 
-	if (LuaSvr::get()->getRef(fn) != 0)
+	if (LuaSvr::get()->getRef(funcName) != 0)
 	{
-		lua_getglobal(L, fn);
+		lua_getglobal(L, funcName);
 		if (lua_isnil(L, -1))
 		{
-			lua_pop(L, 1);
-			ERRLOG("Can't find %s to call", fn);
+			lua_pop(L, 1);//pop nil
+			ERRLOG("Can't find %s to call", funcName);
 			return false;
 		}
 	}
@@ -564,7 +569,17 @@ bool LuaSvr::call(const char *fn, const char* fmt, ...)
 	if (!lua_isfunction(L, -1))
 	{
 		lua_pop(L, 1);
-		ERRLOG("Can't find %s to call", fn);
+		ERRLOG("Can't find %s to call", funcName);
+		return false;
+	}
+	return true;
+}
+
+
+bool LuaSvr::call(const char *funcName, const char* fmt, ...)
+{
+	if (!pushRefFunc(funcName))
+	{
 		return false;
 	}
 
@@ -575,9 +590,9 @@ bool LuaSvr::call(const char *fn, const char* fmt, ...)
 	return ret;
 }
 
-bool LuaSvr::call(const char* fn, int nargs, int nrets)
+bool LuaSvr::call(const char* funcName, int nargs, int nrets)
 {
-	if (!LuaSvr::get())
+	/*if (!LuaSvr::get())
 	{
 		ERRLOG("LuaSvr pointer miss");
 		return false;
@@ -585,13 +600,13 @@ bool LuaSvr::call(const char* fn, int nargs, int nrets)
 
 	lua_State *L = LuaSvr::get()->L();
 
-	if (LuaSvr::get()->getRef(fn) != 0)
+	if (LuaSvr::get()->getRef(funcName) != 0)
 	{
-		lua_getglobal(L, fn);
+		lua_getglobal(L, funcName);
 		if (lua_isnil(L, -1))
 		{
 			lua_pop(L, 1);
-			ERRLOG("Can't find %s to call", fn);
+			ERRLOG("Can't find %s to call", funcName);
 			return false;
 		}
 	}
@@ -599,11 +614,14 @@ bool LuaSvr::call(const char* fn, int nargs, int nrets)
 	if (!lua_isfunction(L, -1))
 	{
 		lua_pop(L, 1);
-		ERRLOG("Can't find %s to call", fn);
+		ERRLOG("Can't find %s to call", funcName);
+		return false;
+	}*/
+	if (!pushRefFunc(funcName))
+	{
 		return false;
 	}
-
-	return LuaSvr::scriptCall(L, nargs, nrets);
+	return LuaSvr::scriptCall(LuaSvr::get()->L(), nargs, nrets);
 }
 
 //nargs:参数个数
@@ -636,7 +654,6 @@ bool LuaSvr::scriptCall(lua_State *L, int nargs, int nrets)
 
 	return ret;
 }
-
 
 void LuaSvr::scriptCTTEnter() 
 {

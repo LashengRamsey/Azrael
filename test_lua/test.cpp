@@ -102,6 +102,7 @@ void init_test()
 
 void test_load_lua()
 {
+	lua_settop(gLuaState, 0);//清空堆栈
 	//nresults==LUA_MULTRET，所有的返回值都会push进栈
 	//nresults != LUA_MULTRET，返回值个数根据nresults来调整
 	if (luaL_loadfile(gLuaState, "test.lua") || lua_pcall(gLuaState, 0, LUA_MULTRET, 0))
@@ -128,4 +129,58 @@ void test_lua_insert()
 	//5 1 2 3 4
 	printf("after lua_insert\n");
 	stackDump(gLuaState);
+}
+
+
+void test_loadConfig(const char *file)
+{
+	lua_settop(gLuaState, 0);//清空堆栈
+	printf("====test_loadConfig====\n");
+	//lua_State *L = luaL_newstate();
+	//luaL_openlibs(L);
+	std::string path(file);
+	size_t pos = path.find_last_of("/");
+
+	if (pos != std::string::npos)
+	{
+		path = path.substr(0, pos);
+		lua_pushstring(gLuaState, path.c_str());
+		lua_setglobal(gLuaState, "ConfigPath");
+	}
+
+	if (luaL_dofile(gLuaState, file))
+	{
+		//ERRLOG("%s", lua_tostring(gLuaState, -1));
+		return ;
+	}
+
+	int idxG;
+	char *key = NULL;
+	char *val = NULL;
+	lua_getglobal(gLuaState, "Config");
+	if (!lua_istable(gLuaState, -1))
+		return ;
+
+	idxG = lua_gettop(gLuaState);
+	lua_pushnil(gLuaState);
+	stackDump(gLuaState);
+	//lua_next先把 表(lua栈 index所指的表), 的当前索引弹出，再把table 当前索引的值弹出
+	//这里重点说明一下lua_next。它执行操作是这样的，先判断上一个key的值
+	//（这个值放在栈顶，如果是nil，则表示当前取出的是table中第一个元素的值），
+	//然后算出当前的key，这时先把栈顶出栈，将新key进栈，最后将新key对应的值进栈。
+	//这样栈顶就是table中第一个遍历到的元素的值。
+	//用完这个值后，我们要把这个值出栈，让key在栈顶以便继续遍历。当根据上一个key值算不出下一个key值时，lua_next返回0，结束循环。
+
+
+	while (lua_next(gLuaState, idxG) != 0)
+	{
+		stackDump(gLuaState);
+		key = (char*)lua_tostring(gLuaState, -2);
+		val = (char*)lua_tostring(gLuaState, -1);
+		//setenv(key, val ? val : "", 1);
+		lua_pop(gLuaState, 1);
+		stackDump(gLuaState);
+	}
+	//lua_close(L);
+	//return 0;
 }

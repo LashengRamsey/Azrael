@@ -10,5 +10,6 @@ extern "C" {
 void init_test();
 void test_load_lua();
 void test_lua_insert();
+void test_loadConfig(const char *file="config.lua");
 
 #endif // !TEST_LUA

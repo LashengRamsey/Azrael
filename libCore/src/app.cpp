@@ -62,6 +62,13 @@ int ServerApp::loadConfig(const char *file)
 
 	idxG = lua_gettop(L);
 	lua_pushnil(L);
+	//lua_next先把 表(lua栈 index所指的表), 的当前索引弹出，再把table 当前索引的值弹出
+	//这里重点说明一下lua_next。它执行操作是这样的，先判断上一个key的值
+	//（这个值放在栈顶，如果是nil，则表示当前取出的是table中第一个元素的值），
+	//然后算出当前的key，这时先把栈顶出栈，将新key进栈，最后将新key对应的值进栈。
+	//这样栈顶就是table中第一个遍历到的元素的值。
+	//用完这个值后，我们要把这个值出栈，让key在栈顶以便继续遍历。当根据上一个key值算不出下一个key值时，lua_next返回0，结束循环。
+
 	while(lua_next(L, idxG) != 0)
 	{
 		key = (char*)lua_tostring(L, -2);
