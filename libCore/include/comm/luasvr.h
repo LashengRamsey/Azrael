@@ -82,6 +82,8 @@ protected:
 
 private:
 	bool scriptInit();
+	static void scriptCTTEnter();
+	static void scriptCTTLeave();
 
 	static class ScriptTimeCheckThread* scriptCTT_;
 

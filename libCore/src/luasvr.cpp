@@ -385,16 +385,14 @@ void LuaSvr::loadScript()
 	script_update = false;
 	char scriptPath[128] = "update.lua";
 	LOG("load main script file:%s", scriptPath);
-
-	if (LuaSvr::scriptCTT_)
-		LuaSvr::scriptCTT_->enter();
+	
+	scriptCTTEnter();
 
 	if (luaL_loadfile(L_, scriptPath) || lua_pcall(L_, 0, LUA_MULTRET, stackErrorHook_))
 	{
 		ERRLOG("err=%s\n", lua_tostring(L_, -1));
 	}
-	if (LuaSvr::scriptCTT_)
-		LuaSvr::scriptCTT_->leave();
+	scriptCTTLeave();
 	return;
 }
 
@@ -608,26 +606,48 @@ bool LuaSvr::call(const char* fn, int nargs, int nrets)
 	return LuaSvr::scriptCall(L, nargs, nrets);
 }
 
+//nargs:参数个数
+//nrets:结果返回个数
 bool LuaSvr::scriptCall(lua_State *L, int nargs, int nrets)
 {
 	bool ret = true;
+	//确保参数够
 	int base = lua_gettop(L) - nargs;
 	ASSERT(base>0);
-
+	//nargs=3
+	//function args1 args2 args3
+	//base = 1
 	lua_pushcfunction(L, error_hook);
-	lua_insert(L, base);
-	if (LuaSvr::scriptCTT_)
-		LuaSvr::scriptCTT_->enter();
+	//function args1 args2 args3 error_hook
+	lua_insert(L, base);//把栈顶元素插入指定的有效索引处，并依次移动这个索引之上的元素
+	//error_hook function args1 args2 args3 
+
+	scriptCTTEnter();
 
 	if (lua_pcall(L, nargs, nrets, base))
 	{
+		//出错返回nil,把nil移出栈顶
 		lua_pop(L, 1);
 		ret = false;
 	}
-	lua_remove(L, base);
+	lua_remove(L, base);	//把error_hook从堆栈中移除
 
-	if (LuaSvr::scriptCTT_)
-		LuaSvr::scriptCTT_->leave();
+	scriptCTTLeave();
 
 	return ret;
+}
+
+
+void LuaSvr::scriptCTTEnter() 
+{
+	if (!LuaSvr::scriptCTT_)
+		return
+	LuaSvr::scriptCTT_->enter();
+}
+
+void LuaSvr::scriptCTTLeave()
+{
+	if (!LuaSvr::scriptCTT_)
+		return
+	LuaSvr::scriptCTT_->leave();
 }

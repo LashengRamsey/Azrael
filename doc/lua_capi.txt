@@ -1,5 +1,5 @@
 Lua5.1中的API函数
-
+http://www.cnblogs.com/whiteyun/archive/2009/08/08/1541985.html
 
 lua_State* luaL_newstate()
 Lua脚本的编译执行是相互独立的，在不同的线程上执行。
