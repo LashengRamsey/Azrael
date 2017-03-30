@@ -63,7 +63,9 @@ end
 --游戏服发到游戏服
 function sendToServer(src, sn, protocol, packet)
 	G_AddPacket(protocol, packet)
-	C_SendToServer(src, sn, G_NetPacket())
+	local t = G_NetPacket()
+	print_r(t)
+	C_SendToServer(src, sn, t)
 end
 
 --游戏服发到DB服

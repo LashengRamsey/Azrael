@@ -127,10 +127,14 @@ function G_UnPacketI(byte)
 	sMsgStarPos = sMsgStarPos + byte
 	local len = string.len(temp)
 	local hex = "0x"
+	print("len = " .. len)
+	print(type(temp))
 	for i=len, 1, -1 do
 		hex = hex .. string.format("%x", string.byte(temp, i))
+		print(string.byte(temp, i))
 	end
-	
+	-- print(temp)
+	print("G_UnPacketI hex = " .. hex)
 	local value = C_ToNumber(hex)
 	return value or 0
 end
@@ -222,7 +226,7 @@ end
 --网络包测试
 function GetTestSendPacket(sessionObj, packet)
 	print("=========GetTestSendPacket=====")
-	--print_r(packet)
+	print_r(packet)
 end
 
 function TestSendPacket()
@@ -232,72 +236,72 @@ function TestSendPacket()
 		--for i=1,100 do
 		local t = 
 		{
-			int11 = -1,--
-			int12 = -1,--
-			int14 = -1,--
-			int18 = 214748364789,--
-			str1 = "TestSend Packet",--
-			int111 = 126,--
-			int112 = 32766,--
-			int114 = 2147483646,--
-			int118 = 214748364786,--
+			-- int11 = -1,--
+			int12 = -2,--
+			-- int14 = -1,--
+			-- int18 = 214748364789,--
+			-- str1 = "TestSend Packet",--
+			-- int111 = 126,--
+			-- int112 = 32766,--
+			-- int114 = 2147483646,--
+			-- int118 = 214748364786,--
 		}
 
-		t.array1 = {
-				{
-					int21 = 111,--
-					int22 = 112,--
-					int24 = 114,--
-					int28 = 118,--
-					str2 = "TestSend array 11 Packet",--
-				},
-				{
-					int21 = 121,--
-					int22 = 122,--
-					int24 = 124,--
-					int28 = 128,--
-					str2 = "TestSend array 12 Packet",--
-				},
-		}
+		-- t.array1 = {
+		-- 		{
+		-- 			int21 = 111,--
+		-- 			int22 = 112,--
+		-- 			int24 = 114,--
+		-- 			int28 = 118,--
+		-- 			str2 = "TestSend array 11 Packet",--
+		-- 		},
+		-- 		{
+		-- 			int21 = 121,--
+		-- 			int22 = 122,--
+		-- 			int24 = 124,--
+		-- 			int28 = 128,--
+		-- 			str2 = "TestSend array 12 Packet",--
+		-- 		},
+		-- }
 
-		t.array1[1].array2 = {
-					{	int31 = 211,--
-						int32 = 212,--
-						int34 = 214,--
-						int38 = 218,--
-						str3 = "TestSend array 21 Packet",--
-					},
-					{
-						int31 = 221,--
-						int32 = 222,--
-						int34 = 224,--
-						int38 = 228,--
-						str3 = "TestSend array 22 Packet",--
-					}
-		}
+		-- t.array1[1].array2 = {
+		-- 			{	int31 = 211,--
+		-- 				int32 = 212,--
+		-- 				int34 = 214,--
+		-- 				int38 = 218,--
+		-- 				str3 = "TestSend array 21 Packet",--
+		-- 			},
+		-- 			{
+		-- 				int31 = 221,--
+		-- 				int32 = 222,--
+		-- 				int34 = 224,--
+		-- 				int38 = 228,--
+		-- 				str3 = "TestSend array 22 Packet",--
+		-- 			}
+		-- }
 			
-		t.array1[2].array2 = {
-					{	int31 = 231,--
-						int32 = 232,--
-						int34 = 234,--
-						int38 = 238,--
-						str3 = "TestSend array 23 Packet",--
-					},
-					{
-						int31 = 241,--
-						int32 = 242,--
-						int34 = 244,--
-						int38 = 248,--
-						str3 = "TestSend array 24 Packet",--
-					}
-		}
+		-- t.array1[2].array2 = {
+		-- 			{	int31 = 231,--
+		-- 				int32 = 232,--
+		-- 				int34 = 234,--
+		-- 				int38 = 238,--
+		-- 				str3 = "TestSend array 23 Packet",--
+		-- 			},
+		-- 			{
+		-- 				int31 = 241,--
+		-- 				int32 = 242,--
+		-- 				int34 = 244,--
+		-- 				int38 = 248,--
+		-- 				str3 = "TestSend array 24 Packet",--
+		-- 			}
+		-- }
 
 
-		t.arrayChar = {1,2,3}
-		t.arrayShort = {4,5,6}
-		t.arrayInt = {7,8,9}
-		t.arrayLong = {10,11,12}
-		t.arrayStr = {"arrayStr1", "arrayStr2", "arrayStr3"}
+		-- t.arrayChar = {1,2,3}
+		-- t.arrayShort = {4,5,6}
+		-- t.arrayInt = {7,8,9}
+		-- t.arrayLong = {10,11,12}
+		-- t.arrayStr = {"arrayStr1", "arrayStr2", "arrayStr3"}
 
 		
 		Net.sendToServer(1, 0, Protocol.G2G_Test, t)
