@@ -24,6 +24,7 @@
     <ClInclude Include="include\comm\log.h" />
     <ClInclude Include="include\comm\LogThread.h" />
     <ClInclude Include="include\comm\luasvr.h" />
+    <ClInclude Include="include\comm\lua_module_register.h" />
     <ClInclude Include="include\comm\lunar.h" />
     <ClInclude Include="include\comm\mqnet.h" />
     <ClInclude Include="include\comm\msg.h" />
@@ -174,6 +175,8 @@
     <ClCompile Include="src\lunar.cpp" />
     <ClCompile Include="src\mqnet.cpp" />
     <ClCompile Include="src\net.cpp" />
+    <ClCompile Include="src\pb.c" />
+    <ClCompile Include="src\struct.c" />
     <ClCompile Include="src\timer.cpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">

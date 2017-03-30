@@ -7,8 +7,41 @@ function HU.DebugNofity(...)
 	if HU.DebugNofityFunc then HU.DebugNofityFunc(...) end
 end
 
+local function GetWorkingDir()
+	if HU.WorkingDir == nil then
+	    local p = io.popen("echo %cd%")
+	    if p then
+	        HU.WorkingDir = p:read("*l").."\\"
+	        p:close()
+	    end
+	end
+	return HU.WorkingDir
+end
+
+local function Normalize(path)
+	path = path:gsub("/","\\") 
+	if path:find(":") == nil then
+		path = GetWorkingDir()..path 
+	end
+	local pathLen = #path 
+	if path:sub(pathLen, pathLen) == "\\" then
+		 path = path:sub(1, pathLen - 1)
+	end
+	 
+    local parts = { }
+    for w in path:gmatch("[^\\]+") do
+        if     w == ".." and #parts ~=0 then table.remove(parts)
+        elseif w ~= "."  then table.insert(parts, w)
+        end
+    end
+    return table.concat(parts, "\\")
+end
+
 function HU.InitFileMap(RootPath)
 	for _, rootpath in pairs(RootPath) do
+		rootpath = Normalize(rootpath)
+		--local file = io.popen("dir /S/B /A:A "..rootpath)
+
 		local file  = ""
 		if C_SystemName() == 1 then	--windows
 			file= io.popen("dir /S/B /A:A "..rootpath)
@@ -16,6 +49,7 @@ function HU.InitFileMap(RootPath)
 			file = io.popen('ls | sed "s:^:`pwd`/:"')
 		end
 		--print(file)
+
 		io.input(file)
 		for line in io.lines() do
 	   		local FileName = string.match(line,".*\\(.*)%.lua")
@@ -25,7 +59,7 @@ function HU.InitFileMap(RootPath)
 	        	end
 	        	local luapath = string.sub(line, #rootpath+2, #line-4)
 				luapath = string.gsub(luapath, "\\", ".")
-				HU.LuaPathToSysPath[luapath] = SysPath
+				--HU.LuaPathToSysPath[luapath] = SysPath
 	        	table.insert(HU.FileMap[FileName], {SysPath = line, LuaPath = luapath})
 	    	end
 	    end
@@ -91,6 +125,9 @@ function HU.InitProtection()
 	HU.Protection[require] = true
 	HU.Protection[HU] = true
 	HU.Protection[HU.Meta] = true
+	HU.Protection[math] = true
+	HU.Protection[string] = true
+	HU.Protection[table] = true
 end
 
 function HU.AddFileFromHUList(FileList)
@@ -174,18 +211,35 @@ function HU.Travel_G()
 		  	for i = 1, math.huge do
 				local name, value = debug.getupvalue(t, i)
 				if not name then break end
+				if type(value) == "function" then
+					for _, funcs in ipairs(HU.ChangedFuncList) do
+						if value == funcs[1] then
+							debug.setupvalue(t, i, funcs[2])
+						end
+					end
+				end
 				f(value)
 			end
 		elseif type(t) == "table" then
 			f(debug.getmetatable(t))
+			local changeIndexs = {}
 			for k,v in pairs(t) do
 				f(k); f(v);
-				if type(v) == "function" or type(k) == "function" then
+				if type(v) == "function" then
 					for _, funcs in ipairs(HU.ChangedFuncList) do
 						if v == funcs[1] then t[k] = funcs[2] end
-						if k == funcs[1] then t[funcs[2]] = t[k]; t[k] = nil end
 					end
 				end
+				if type(k) == "function" then
+					for index, funcs in ipairs(HU.ChangedFuncList) do
+						if k == funcs[1] then changeIndexs[#changeIndexs+1] = index end
+					end
+				end
+			end
+			for _, index in ipairs(changeIndexs) do
+				local funcs = HU.ChangedFuncList[index]
+				t[funcs[2]] = t[funcs[1]] 
+				t[funcs[1]] = nil
 			end
 		end
 	end
@@ -232,6 +286,10 @@ function HU.HotUpdateCode(LuaPath, SysPath)
 			end
 			collectgarbage("collect")
 		end
+	elseif HU.OldCode[SysPath] == nil then 
+		io.input(SysPath)
+		HU.OldCode[SysPath] = io.read("*all")
+		io.input():close()
 	end
 end
 

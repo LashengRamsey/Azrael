@@ -1,0 +1,78 @@
+package client_chat;
+option py_generic_services=true;//是否生成python服务
+import "universal/public.proto";
+import "universal/base.proto";
+
+//频道id定义：1.世界 2.门派 3.队伍 31.组队 4.仙盟 41.仙盟公告 5.当前频道 6.系统频道 61.传闻频道 7.战斗频道
+
+//发送的消息
+message sendMsg{
+	required int32 channelId=1; //频道id(请看上面的频道id定义)
+	optional bytes content=2; //内容
+	optional int32 isAudio=3; //是否语音，0.否 1.是
+	optional int32 audioLen=4; // 语音长度(秒为单位)
+	optional int32 audioIdx=5; //语音序号
+}
+
+
+//发送者信息
+message senderInfo{
+	required int64 senderId=1; //发送者id, 0表示系统且忽略以下所有字段
+	optional int32 shape=2; //头像
+	optional bytes name=3; //名称
+	optional int32 level=4; //等级
+	repeated int32 flagList=5; //标识(未定义)
+	optional int32 teamId=6; //队伍id
+	optional bytes guildName=7; //仙盟名
+	optional int32 school=8; //门派
+}
+
+//一键喊话信息
+message fastChatInfo{
+	required int32 teamId=1;//队伍id
+	optional int32 count=2;//数量
+	optional int32 task=3;//任务
+	repeated int32 target=4;//目标范围
+}
+
+//语音信息
+message audioInfo{
+	required int32 audioIdx=1; //语音序号
+	optional int32 audioLen=2; //语音长度(秒为单位)
+}
+
+//接收到的消息
+message receiveMsg{
+	required int32 channelId=1; //频道id(请看上面的频道id定义)
+	optional senderInfo sender=2; //发送者信息
+	optional bytes content=3; //内容
+	optional int32 isAudio=4; //是否语音，0.否 1.是
+	optional fastChatInfo fastChat=5;//一键喊话信息
+	optional audioInfo audio=6;//语音信息
+	optional int32 roll=7; //滚动控制, 0.不滚动  1.兼滚动  2.只滚动
+}
+
+//屏蔽的频道列表
+message banChannelMsg{
+	repeated int32 channelIdList=1; //频道id列表(请看上面的频道id定义)
+}
+
+//游戏客户端 --> 聊天服务
+service client2chat{
+	rpc rpcChatUp(client_chat.sendMsg)returns(public.fake);//发送聊天信息，上行
+	rpc rpcBanChannelReq(public.fake)returns(public.fake); //请求屏蔽的频道
+	rpc rpcBanChannelSet(client_chat.banChannelMsg)returns(public.fake); //设置屏蔽的频道
+	//rpc rpcAudioReq(client_chat.audioInfo)returns(public.fake); //请求语音信息
+	rpc rpcHeartbeat(public.fake)returns(base.bool_); //心跳包
+}
+
+//聊天服务--> 游戏客户端
+service chat2client{
+	rpc rpcChatDown(client_chat.receiveMsg)returns(public.fake);//接收聊天信息，下行
+	rpc rpcBanChannelRes(client_chat.banChannelMsg)returns(public.fake); //屏蔽的频道
+	rpc rpcModFastChat(client_chat.fastChatInfo)returns(public.fake); //修改一键喊话信息
+	rpc rpcDelFastChat(base.int32_)returns(public.fake); //删除一键喊话  上传队伍id
+	//rpc rpcAudioRes(client_chat.audioInfo)returns(public.fake); //语音信息
+}
+
+

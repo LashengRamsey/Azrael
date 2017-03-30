@@ -1,0 +1,17 @@
+//游戏服务器与游戏客户端的服务
+package client_main;
+
+option py_generic_services=true;//是否生成python服务
+
+import "universal/public.proto";
+import "common.proto";
+
+
+//上行(客户端主动发起)
+service client2main{
+}
+
+//下行(服务端主动发起)
+service main2client{
+
+}

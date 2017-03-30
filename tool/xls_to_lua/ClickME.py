@@ -22,6 +22,13 @@ map对应python元表{1:1, 2:2, 3:3},填写时无需填写{}，注意字符串�
 可丢弃某一列（属性栏为空），可缩进，但每次缩进时的第一列不可丢弃
 '''
 
+#在这里填需要导表的文件名
+FILELIST = [
+'1',
+'2',
+]
+
+
 import sys, os, traceback
 import  json
 import  xdrlib ,sys
@@ -167,7 +174,7 @@ def _check_head(sheet, nrows, record_start_row, index_c,attr_type,head_data):
     else:
         bHead=False
         bNew=False
-    print  '++++++++++++++++++++++++++++++++ ',index_c, pre_bNew, pre_bIgnoreName, bIgnoreName ,bFrontEmpty, bBackEmpty , bHead, bNew
+    # print  '++++++++++++++++++++++++++++++++ ',index_c, pre_bNew, pre_bIgnoreName, bIgnoreName ,bFrontEmpty, bBackEmpty , bHead, bNew
     return bHead, bNew
 
 def _get_file_name(sheet_name):
@@ -176,7 +183,7 @@ def _get_file_name(sheet_name):
     if sheet_name.find('unUsed') >= 0:
         unUsed = True
     if len(split_str) > 1:
-        return split_str[1], unUsed
+        return split_str[1]+"Data", unUsed
     else:
         return 'NONE', True
 
@@ -224,8 +231,8 @@ def export_sheet(sheet):
     sh = sheet
     lines = []
     (file_name, unUsed) = _get_file_name(sh.name)
-    file_name += "Data"
-    print ">>info: ", sh.nrows, "x", sh.ncols, sh.name, ' file_name:', file_name
+    if file_name != 'NONE':
+        print ">>data: ", sh.nrows, "x", sh.ncols, sh.name, ' file_name:', file_name
     if sh.nrows <= 0 or unUsed:
         return
     data_start_row = 2
@@ -320,6 +327,8 @@ def output_lua(head_data, excel_data, outfile):
     f.write(var_name + ' = {}\n')
     f.writelines(_data_tolua(var_name, excel_data))
     f.close()
+
+    glAllMakeFile.append('require("%s")'%(var_name))
 
 def _data_tolua(var_name, excel_data):
     lines = []
@@ -581,20 +590,42 @@ def _parse_table_data(sh, head_data, parent_c, table_name, real_type, table_attr
         table_str ="{}"
     return table_str, rowsNO, colsNO
 
+
+glAllMakeFile = []
 def main():
     # 取得文件列表
     infiles = []
+    TEMPLIST = []
+	
+    for i in FILELIST:
+		TEMPLIST.append(i.encode("cp936"))
+	
     for root, dirs, files in os.walk( EXCEL_PATH ):
         for fn in files:
             if fn.startswith('~'):
                 continue
             if fn.endswith('.xls') or fn.endswith('.xlsx'):
-                infiles.append(root+'\\'+fn)
+				pointPos = fn.find(".")
+				fileName = fn[:pointPos]
+				if fileName in TEMPLIST:
+					infiles.append(root+'\\'+fn)
 
     # 输出
     for p in infiles:
+        print '\n'
         print 'parse excel:',p
         export_file(p)
+
+    # output LUA
+    if IS_OUTPUT_LUA:
+        init_file = "initRequire.lua"
+        f = open(os.path.join(OUTPUT_LUA_PATH, init_file), 'w')
+        if not f:
+            print "无法创建文件:%s" % init_file
+            return
+        f.write('module(..., package.seeall)\n--导入数据表\n\n')
+        f.write("%s"%("\n".join(glAllMakeFile)))
+        f.close()
 
 
 if __name__ == "__main__":

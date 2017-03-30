@@ -11,6 +11,7 @@
 #include "timer.h"
 #include "connection.h"
 #include "luanetwork.h"
+#include "lua_module_register.h"
 
 
 #define LuaDebug
@@ -114,6 +115,7 @@ static int error_hook(lua_State *L)
 	ERRLOG(errdump.c_str());
 	ERRLOG("=======Report error to server========");
 
+	printf("%s\n", errdump.c_str());
 	//µ÷ÓÃ½Å±¾
 	LuaSvr::call("CHandlerError", "S", &errdump);
 
@@ -289,7 +291,8 @@ void LuaSvr::init()
 		scriptCTT_ = new ScriptTimeCheckThread(L_);
 		LOG("init ScriptTimeCheckThread succ!!!!");
 	}
-
+	luaopen_struct(L_);
+	luaopen_pb(L_);
 	onInit();
 
 #ifndef WIN32
