@@ -1,0 +1,295 @@
+Lua5.1中的API函数
+
+
+lua_State* luaL_newstate()
+Lua脚本的编译执行是相互独立的，在不同的线程上执行。
+通过luaL_newstate()函数可以申请一个虚拟机，返回指针类型 lua_State。
+今后其他所有Lua Api函数的调用都需要此指针作为第一参数，用来指定某个虚拟机。
+lua_State* L = luaL_newstate();
+---------------------------------------------------------------------------------------
+void  lua_close(lua_State *L)
+销毁指定 Lua 状态机中的所有对象（如果有垃圾收集相关的元方法的话，会调用它们），
+并且释放状态机中使用的所有动态内存。在一些平台上，你可以不必调用这个函数，
+因为当宿主程序结束的时候，所有的资源就自然被释放掉了。另一方面，长期运行的程序，
+比如一个后台程序或是一个 web 服务器，当不再需要它们的时候就应该释放掉相关状态机。
+这样可以避免状态机扩张的过大。 
+lua_close(L);
+---------------------------------------------------------------------------------------
+lua_State* lua_newthread(lua_State *L)
+
+---------------------------------------------------------------------------------------
+int   lua_gettop(lua_State *L)
+取得栈的高度
+for (int i = 0; i < 10; ++i)
+      lua_pushnumber(L, i);
+printf("%d", lua_gettop(L));
+--> 10
+---------------------------------------------------------------------------------------
+void  lua_settop(lua_State *L, int idx)
+设置栈的高度，如果之前的栈顶比新设置的更高，那么高出来的元素会被丢弃，反之压入nil来补足大小。
+另外，Lua提供了一个宏，用来从栈中弹出n个元素：#define lua_pop(L, n) lua_settop(L, -(n)-1)
+for (int i = 0; i < 10; ++i)
+      lua_pushnumber(L, i);
+lua_settop(L, 5)
+printf("%d", lua_gettop(L));
+--> 5
+---------------------------------------------------------------------------------------
+void  lua_pushvalue(lua_State *L, int idx)
+将指定索引上值的副本压入栈
+for (int i = 1; i <= 3; ++i)
+      lua_pushnumber(i);
+栈中元素：（从下往上） 1 2 3
+lua_pushvalue(L, 2)
+栈中元素：（从下往上） 1 2 3 2
+---------------------------------------------------------------------------------------
+void  lua_remove(lua_State *L, int idx)
+删除指定索引上的元素，并将该位置之上的所有元素下移以补空缺
+for (int i = 1; i <= 3; ++i)
+      lua_pushnumber(i);
+栈中元素：（从下往上） 1 2 3
+lua_remove(L, 2)
+栈中元素：（从下往上） 1 3
+---------------------------------------------------------------------------------------
+void  lua_insert(lua_State *L, int idx)
+移指定位置上的所有元素以开辟一个空间槽的空间，然后将栈顶元素移到该位置
+for (int i = 1; i <= 5; ++i)
+      lua_pushnumber(i);
+栈中元素：（从下往上） 1 2 3 4 5
+lua_insert(L, 3)
+栈中元素：（从下往上） 1 2 5 4 3
+---------------------------------------------------------------------------------------
+void  lua_replace(lua_State *L, int idx)
+弹出栈顶的值，并将该值设置到指定索引上，但它不会移动任何东西
+for (int i = 1; i <= 5; ++i)
+      lua_pushnumber(i);
+栈中元素：（从下往上） 1 2 3 4 5
+lua_replace(L, 3)
+栈中元素：（从下往上） 1 2 5 4
+---------------------------------------------------------------------------------------
+int   lua_checkstack(lua_State *L, int sz)
+扩大栈的可用尺寸，栈的默认尺寸是20，此函数会确保堆栈上至少有 sz 个空位。
+如果不能把堆栈扩展到相应的尺寸，函数返回 false 。这个函数永远不会缩小堆栈；
+如果堆栈已经比需要的大了，那么就放在那里不会产生变化。
+lua_checkstack(L, 100)
+---------------------------------------------------------------------------------------
+void  lua_xmove(lua_State* from, lua_State* to, int n)
+
+
+//access functions (stack -> C)
+int   lua_isnumber(lua_State *L, int idx)
+int   lua_isstring(lua_State *L, int idx)
+int   lua_iscfunction(lua_State *L, int idx)
+int   lua_isuserdata(lua_State *L, int idx)
+
+int lua_isnil(lua_State *L, int idx);
+int lua_isboolean(lua_State *L, int idx);
+int lua_istable(lua_State *L, int idx);
+int lua_isfunction(lua_State *L, int idx);
+int lua_islightuserdata (lua_State *L, int idx);
+上面四个函数都有一个同样的原型int lua_is*(lua_State *L, int index)，
+用来查询某值是否能转换成某个类型的值。对于任意数字，lua_isstring都返回真。
+lua_pushnumber(L, 994);
+lua_pushstring(L, "hello,lua");
+lua_isnumber(L, 1)-->true
+lua_isnumber(L, 2)-->false
+lua_isstring(L,1)-->true
+未完
+---------------------------------------------------------------------------------------
+int   lua_type(lua_State *L, int idx)
+得到一个元素的类型，返回整型，返回值是如下列表之一：
+
+#define LUA_TNONE  (-1)
+
+#define LUA_TNIL  0
+#define LUA_TBOOLEAN  1
+#define LUA_TLIGHTUSERDATA 2
+#define LUA_TNUMBER  3
+#define LUA_TSTRING  4
+#define LUA_TTABLE  5
+#define LUA_TFUNCTION  6
+#define LUA_TUSERDATA  7
+#define LUA_TTHREAD  8
+
+lua_pushnumber(L, 55);
+lua_type(L, 1)-->LUA_TNUMBER
+---------------------------------------------------------------------------------------
+const char* lua_typename(lua_State *L, int tp)
+将一个类型编码转换成类型名
+lua_typename(L, 1)-->boolean
+lua_typename(L, 3)-->number
+---------------------------------------------------------------------------------------
+
+int   lua_equal(lua_State *L, int idx1, int idx2)
+如果依照 Lua 中 == 操作符语义，索引 index1 和 index2 中的值相同的话，返回 1 。否则返回 0 。
+如果任何一个索引无效也会返回 0。 
+lua_pushstring(L, "this");
+lua_pushboolean(L, 1);
+lua_pushboolean(L, 1);
+lua_equal(L, -2, -3)
+-->0
+lua_equal(L, -1, -2)
+-->1
+lua_equal(L, -1, -10)
+-->0
+---------------------------------------------------------------------------------------
+int   lua_rawequal(lua_State *L, int idx1, int idx2)
+int   lua_lessthan(lua_State *L, int idx1, int idx2)
+
+
+---------------------------------------------------------------------------------------
+lua_Number lua_tonumber(lua_State *L, int idx)
+lua_Integer lua_tointeger(lua_State *L, int idx)
+int   lua_toboolean(lua_State *L, int idx)
+const char* lua_tolstring(lua_State *L, int idx, size_t *len)
+以上四个函数都有一个原型lua_to*(lua_State *L, int idx)，用于从栈中取一个值。
+如果指定的元素不具有正确的类型，调用这些函数也不会有问题，
+在这种情况下，调用lua_toboolean，lua_tonumber，lua_tointeger会返回0，其它函数会返回NULL。
+通常不使用lua_is*函数，只需在调用它们之
+后测试返回结果是否为NULL就可以了。
+lua_pushnumber(L, 100)
+lua_tonumber(L, 1)-->100
+lua_pushinteger(L, 200)
+lua_tointeger(L, -1)-->200
+lua_pushboolean(L, 0)
+lua_toboolean(L, -1)-->false
+lua_pushstring(L, "hello,lua")
+lua_tolstring(L, -1, &len)-->hello,lua 
+注：len是传出参数，表示字符串的长度，如果想忽略此参数，传入NULL
+---------------------------------------------------------------------------------------
+size_t  lua_objlen(lua_State *L, int idx)
+返回值的长度，如果类型不正确，返回0
+lua_pushstring(L, "hello,lua")
+lua_objlen(L, 1)-->9
+---------------------------------------------------------------------------------------
+lua_CFunction lua_tocfunction(lua_State *L, int idx)
+void*  lua_touserdata(lua_State *L, int idx)
+lua_State* lua_tothread(lua_State *L, int idx)
+const void* lua_topointer(lua_State *L, int idx)
+
+
+
+//push functions (C -> stack)
+void  lua_pushnil(lua_State *L)
+void  lua_pushnumber(lua_State *L, lua_Number n)
+void  lua_pushinteger(lua_State *L, lua_Integer n)
+void  lua_pushlstring(lua_State *L, const char* s, size_t l)
+void  lua_pushstring(lua_State *L, const char *s)
+const char* lua_pushvfstring(lua_State *L, const char *fmt, va_list argp)
+const char* lua_pushfstring(lua_State *L, const char *fmt, ...)
+void  lua_pushcclosure(lua_State *L, lua_CFunction fn, int n)
+void  lua_pushboolean(lua_State *L, void *b)
+void  lua_pushlightuserdata(lua_State *L, void *p)
+int   lua_pushthread(lua_State *L)
+
+
+void  lua_gettable(lua_State *L, int idx)
+---------------------------------------------------------------------------------------
+void  lua_getfield(lua_State *L, int idx, const char *k)
+把 t[k] 值压入堆栈，这里的 t 是指有效索引 index 指向的值。
+在 Lua 中，这个函数可能触发对应 "index" 事件的元方法
+---------------------------------------------------------------------------------------
+void  lua_rawget(lua_State *L, int idx)
+void  lua_rawgeti(lua_State *L, int idx, int n)
+---------------------------------------------------------------------------------------
+void  lua_createtable(lua_State *L, int narr, int nrec)
+创建一个新的空 table 压入堆栈。这个新 table 将被预分配 narr 个元素的数组空间以及 nrec 个元素的非数组空间。
+当你明确知道表中需要多少个元素时，预分配就非常有用。如果你不知道，可以使用函数 lua_newtable。 
+举例暂缺
+---------------------------------------------------------------------------------------
+void*  lua_newuserdata(lua_State *L, size_t sz)
+int   lua_getmetatable(lua_State *L, int objindex)
+---------------------------------------------------------------------------------------
+void  lua_getfenv(lua_State *L, int idx)
+
+把索引处值的环境表压入堆栈
+---------------------------------------------------------------------------------------
+void  lua_settable(lua_State *L, int idx);
+void  lua_setfield(lua_State *L, int idx, const char *k)
+void  lua_rawset(lua_State *L, int idx)
+void  lua_rawseti(lua_State *L, int idx, int n)
+int   lua_setmetatable(lua_State *L, int objindex)
+int   lua_setfenv(lua_State *L, int idx)
+
+
+//'load' and 'call' functions (load and run lua code)
+void  lua_call(lua_State *L, int nargs, int nresults);
+int   lua_pcall(lua_State *L, int nargs, int nresults, int errfunc)
+---------------------------------------------------------------------------------------
+int   lua_cpcall(lua_State *L, lua_CFunction func, void *ud)
+以保护模式调用 C 函数 func 。 func 只有能从堆栈上拿到一个参数，就是包含有 ud 的 light userdata。
+当有错误时， lua_cpcall 返回和 lua_pcall 相同的错误代码，并在栈顶留下错误对象；否则它返回零，并不会修改堆栈。
+所有从 func 内返回的值都会被扔掉。
+举例暂缺
+---------------------------------------------------------------------------------------
+int   lua_load(lua_State *L, lua_Reader reader, void *dt, const char *chunkname);
+---------------------------------------------------------------------------------------
+int   lua_dump(lua_State *L, lua_Writer writer, void *data);
+把函数 dump 成二进制 chunk 。函数接收栈顶的 Lua 函数做参数，然后生成它的二进制 chunk 。
+若被 dump 出来的东西被再次加载，加载的结果就相当于原来的函数。
+当它在产生 chunk 的时候，lua_dump 通过调用函数 writer （参见 lua_Writer）来写入数据，
+后面的 data 参数会被传入 writer 。 
+最后一次由写入器 (writer) 返回值将作为这个函数的返回值返回； 0 表示没有错误。 
+这个函数不会把 Lua 返回弹出堆栈。 
+举例暂缺
+---------------------------------------------------------------------------------------
+int   lua_yield(lua_State *L, int nresults)
+int   lua_resume(lua_State *L, int narg)
+int   lua_status(lua_State *L)
+
+---------------------------------------------------------------------------------------
+int   lua_gc(lua_State *L, int what, int data)
+
+控制垃圾收集器。 这个函数根据其参数 what 发起几种不同的任务： 
+ * LUA_GCSTOP: 停止垃圾收集器。 
+ * LUA_GCRESTART: 重启垃圾收集器。 
+ * LUA_GCCOLLECT: 发起一次完整的垃圾收集循环。 
+ * LUA_GCCOUNT: 返回 Lua 使用的内存总量（以 K 字节为单位）。 
+ * LUA_GCCOUNTB: 返回当前内存使用量除以 1024 的余数。 
+ * LUA_GCSTEP: 发起一步增量垃圾收集。步数由 data 控制（越大的值意味着越多步），
+ 而其具体含义（具体数字表示了多少）并未标准化。如果你想控制这个步数，必须实验性的测试 data 的值。
+ 如果这一步结束了一个垃圾收集周期，返回返回 1 。 
+ * LUA_GCSETPAUSE: 把 data/100 设置为 garbage-collector pause 的新值。函数返回以前的值。 
+ * LUA_GCSETSTEPMUL: 把 arg/100 设置成 step multiplier 。函数返回以前的值。
+---------------------------------------------------------------------------------------
+int   lua_error(lua_State *L)
+产生一个 Lua 错误。错误信息（实际上可以是任何类型的 Lua 值）必须被置入栈顶。
+这个函数会做一次长跳转，因此它不会再返回。（参见 luaL_error）。
+lua_pushstring(L, "one error");
+lua_error(L);
+printf("%s", "本行已经执行不到了");
+---------------------------------------------------------------------------------------
+int   lua_next(lua_State *L, int idx)
+---------------------------------------------------------------------------------------
+void  lua_concat(lua_State *L, int n)
+连接栈顶的 n 个值，然后将这些值出栈，并把结果放在栈顶。如果 n 为 1 ，结果就是一个字符串放在栈上
+（即，函数什么都不做）；如果 n 为 0 ，结果是一个空串。 连接依照 Lua 中创建语义完成，
+如果尝试把两个不能连接的类型连接，程序会给出错误提示。
+ lua_pushstring(L, "this");
+ lua_pushboolean(L, 1);
+ lua_pushnumber(L, 9989);
+ lua_pushnumber(L, 1111);
+ lua_pushboolean(L, 0);
+ lua_pushstring(L, "满天都是小星星");
+ lua_pushnumber(L, 1986);
+ lua_pushstring(L, "onebyone");
+-->'this' 'true' '9989' '1111' 'false' '满天都是小星星' '1986' 'onebyone'
+lua_concat(L, 3);
+-->'this' 'true' '9989' '1111' 'false' '满天都是小星星1986onebyone'
+---------------------------------------------------------------------------------------
+lua_Alloc lua_getallocf(lua_State *L, void **ud)
+返回给定状态机的内存分配器函数。如果 ud 不是 NULL ，Lua 把调用 lua_newstate 时传入的那个指针放入 *ud 。 
+---------------------------------------------------------------------------------------
+void  lua_setallocf(lua_State *L, lua_Alloc f, void *ud)
+
+
+//Functions to be called by the debuger in specific events
+int   lua_getstack(lua_State *L, int level, lua_Debug *ar)
+int   lua_getinfo(lua_State *L, const char *what, lua_Debug *ar)
+const char* lua_getlocal(lua_State *L, const lua_Debug *ar, int n)
+const char* lua_setlocal(lua_State *L, const lua_Debug *ar, int n)
+const char* lua_getupvalue(lua_State *L, int funcindex, int n)
+const char* lua_setupvalue(lua_State *L, int funcindex, int n)
+int   lua_sethook(lua_State *L, lua_Hook func, int mask, int count);
+lua_Hook lua_gethook(lua_State *L)
+int   lua_gethookmask(lua_State *L)
+int   lua_gethookcount(lua_State *L)

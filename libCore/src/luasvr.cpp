@@ -1,97 +1,56 @@
 #include <string.h>
 #include <fcntl.h>
 #include "luasvr.h"
-#include "log.h"
 #include "net.h"
 #include "app.h"
-#include <time.h>
 #include "luaglobal.h"
-#include "arch.h"
 #include "luabit.h"
 #include "timer.h"
 #include "connection.h"
 #include "luanetwork.h"
 #include "lua_module_register.h"
 
-
-#define LuaDebug
+//#define LuaDebug
 
 LuaSvr* LuaSvr::luaSvrSelf_ = NULL;
-
-
 static int gRef[REF_MAX];
-
-typedef std::map<std::string, int> RefMap;
-RefMap gRefMap;
-
+typedef std::map<std::string, int> FuncNameRefMap;
+FuncNameRefMap gFuncNameRefMap;//保存字符串对应的ref值
 //脚本最大执行时间
-static uint maxScriptTime = 10000;
-
-class ScriptTimeCheckThread : public Thread{
-public:
-	ScriptTimeCheckThread(lua_State *L):Thread(false)
-	{
-		L_ = L;
-		enterTimer_ = 0;
-		level_ = 0;
-		break_ = 0;
-		run();
-	}
-
-	void enter()
-	{
-		if(level_ == 0)
-			enterTimer_=(uint)time(NULL);
-		level_++;
-	}
-
-	void leave()
-	{
-		level_--;
-		if(level_==0)
-			enterTimer_=0;
-	}
-
-	static void timeoutBreak(lua_State *L, lua_Debug *D)
-	{
-		lua_sethook(L, NULL, 0, 0);
-		luaL_error(L, "Script timeout over 10 seconds.");
-	}
-
-	virtual void work()
-	{
-		int enterTime = 0;
-		while(true)
-		{
-			thread_sleep(1000);
-			enterTime = enterTimer_;
-			if (enterTime && maxScriptTime && time(NULL)-enterTime > maxScriptTime)
-			{
-				int mask = LUA_MASKCALL | LUA_MASKRET | LUA_MASKLINE | LUA_MASKCOUNT;
-				int ret = lua_sethook(L_, timeoutBreak, mask, 1);
-				printf("check script time out:%d-%d-%d", (uint)time(NULL), enterTime, level_);
-				enterTimer_ = 0;
-			}
-			if (break_)
-				break;
-		}
-	}
-
-	void terminate()
-	{
-		break_ = 1;
-	}
-
-private:
-	lua_State* L_;
-	uint enterTimer_;
-	uint level_;
-	uint break_;
-};
-
-
-
+uint ScriptTimeCheckThread::maxScriptTime = 10000;
 ScriptTimeCheckThread* LuaSvr::scriptCTT_ = NULL;
+static bool script_update = false;
+
+//dump整个堆栈的内容
+static void stackDump(lua_State *L) {
+	int i;
+	int top = lua_gettop(L);
+	for (i = 1; i <= top; i++) {  /* repeat for each level */
+		int t = lua_type(L, i);
+		switch (t) {
+
+		case LUA_TSTRING:  /* strings */
+			printf("`%s'", lua_tostring(L, i));
+			break;
+
+		case LUA_TBOOLEAN:  /* booleans */
+			printf(lua_toboolean(L, i) ? "true" : "false");
+			break;
+
+		case LUA_TNUMBER:  /* numbers */
+			printf("%g", lua_tonumber(L, i));
+			break;
+
+		default:  /* other values */
+			printf("%s", lua_typename(L, t));
+			break;
+
+		}
+		printf("  ");  /* put a separator */
+	}
+	printf("\n");     /* end the listing */
+}
+
 //脚本错误信息
 //panic 函数可以从栈顶取到出错信息
 static int error_hook(lua_State *L)
@@ -128,100 +87,62 @@ static int error_hook(lua_State *L)
 //任何 C 库都可以在这张表里保存数据，为了防止冲突，你需要特别小心的选择键名。
 //一般的用法是，你可以用一个包含你的库名的字符串做为键名，
 //或者可以取你自己 C 代码中的一个地址，以 light userdata 的形式做键
-void ref(lua_State *L, const char *fn, int r)
+void setRef(lua_State *L, const char *funcName, int ref)
 {
-	gRef[r] = luaL_ref(L, LUA_REGISTRYINDEX);
-	gRefMap[fn] = gRef[r];
+	//luaL_ref从栈中弹出一个值，以一个新的数字作为key将其保存到registry中，并返回这个key
+	gRef[ref] = luaL_ref(L, LUA_REGISTRYINDEX);
+	gFuncNameRefMap[funcName] = gRef[ref];
 }
 
-//获取脚本函数
-void LuaSvr::initRef()
+ScriptTimeCheckThread::ScriptTimeCheckThread(lua_State *L) : Thread(false)
 {
-	for (int i = 0; i < REF_MAX; ++i)
-	{
-		gRef[i] = LUA_NOREF;
-	}
-
-	lua_getglobal(L_, "CHandlerTimer");
-	if (lua_isnil(L_, -1))
-	{
-		FATAL("[LUA FATAL] lua script no CHandlerTimer function****");
-	}
-	ref(L_, "CHandlerTimer", REF_DO_TIMER);
-
-	lua_getglobal(L_, "CHandlerMsg");
-	if (lua_isnil(L_, -1))
-	{
-		FATAL("[LUA FATAL] lua script no CHandlerMsg function****");
-	}
-	ref(L_, "CHandlerMsg", REF_DO_MSG);
-
-	lua_getglobal(L_, "CHandlerConnect");
-	if (lua_isnil(L_, -1))
-	{
-		FATAL("[LUA FATAL] lua script no CHandlerConnect function****");
-	}
-	ref(L_, "CHandlerConnect", REF_CONNECT);
-
-	lua_getglobal(L_, "CHandlerDisconnect");
-	if (lua_isnil(L_, -1))
-	{
-		FATAL("[LUA FATAL] lua script no CHandlerDisconnect function****");
-	}
-	ref(L_, "CHandlerDisconnect", REF_DISCONNECT);
-
-	lua_getglobal(L_, "CHandlerError");
-	if (lua_isnil(L_, -1))
-	{
-		FATAL("[LUA FATAL] lua script no CHandlerError function****");
-	}
-	ref(L_, "CHandlerError", REF_ERROR);
-
-	lua_getglobal(L_, "CHandlerNetMsg");
-	if (lua_isnil(L_, -1))
-	{
-		FATAL("[LUA FATAL] lua script no CHandlerNetMsg function****");
-	}
-	ref(L_, "CHandlerNetMsg", REF_NET_MSG);
+	L_ = L;
+	enterTimer_ = 0;
+	level_ = 0;
+	break_ = 0;
+	run();
 }
 
-int LuaSvr::getRef( int ref)
+void ScriptTimeCheckThread::enter()
 {
-	if (ref > 0 && ref < REF_MAX)
+	if (level_ == 0) {
+		enterTimer_ = (uint)time(NULL);
+	}
+	level_++;
+}
+
+void ScriptTimeCheckThread::leave()
+{
+	level_--;
+	if (level_ == 0) {
+		enterTimer_ = 0;
+	}
+}
+
+void ScriptTimeCheckThread::timeoutBreak(lua_State *L, lua_Debug *D)
+{
+	lua_sethook(L, NULL, 0, 0);
+	luaL_error(L, "Script timeout over 10 seconds.");
+}
+
+void ScriptTimeCheckThread::work()
+{
+	int enterTime = 0;
+	while (true)
 	{
-		if (gRef[ref] != LUA_NOREF && gRef[ref] != LUA_REFNIL)
+		thread_sleep(1000);
+		enterTime = enterTimer_;
+		if (enterTime && maxScriptTime && time(NULL) - enterTime > maxScriptTime)
 		{
-			lua_rawgeti(L_, LUA_REGISTRYINDEX, gRef[ref]);
-			if (!lua_isnil(L_, -1))
-				return 0;
+			int mask = LUA_MASKCALL | LUA_MASKRET | LUA_MASKLINE | LUA_MASKCOUNT;
+			int ret = lua_sethook(L_, timeoutBreak, mask, 1);
+			printf("check script time out:%d-%d-%d", (uint)time(NULL), enterTime, level_);
+			enterTimer_ = 0;
 		}
+		if (break_)
+			break;
 	}
-	return 1;
 }
-
-int LuaSvr::getRef(const char* fn)
-{
-	int ref = LUA_REFNIL;
-	RefMap::iterator it = gRefMap.find(fn);
-	if (it != gRefMap.end())
-		ref = it->second;
-
-	if (ref != LUA_NOREF && ref != LUA_REFNIL)
-	{
-		lua_rawgeti(L_, LUA_REGISTRYINDEX, ref);
-		if (!lua_isnil(L_, -1))
-			return 0;
-	}
-	
-	return 1;
-}
-
-
-LuaSvr* LuaSvr::get()
-{
-	return luaSvrSelf_;
-}
-
 
 LuaSvr::LuaSvr()
 {
@@ -231,7 +152,6 @@ LuaSvr::LuaSvr()
 	timeGc_ = 0;
 	checkthread_ = 1;
 }
-
 
 LuaSvr::LuaSvr(int checkthread)
 {
@@ -258,27 +178,120 @@ LuaSvr::~LuaSvr()
 	}
 }
 
+//获取脚本函数
+void LuaSvr::initRef()
+{
+	for (int i = 0; i < REF_MAX; ++i)
+	{
+		gRef[i] = LUA_NOREF;
+	}
 
+	lua_getglobal(L_, "CHandlerTimer");
+	if (!lua_isfunction(L_, -1))//if (lua_isnil(L_, -1))
+	{
+		FATAL("[LUA FATAL] lua script no CHandlerTimer function****");
+	}
+	setRef(L_, "CHandlerTimer", REF_DO_TIMER);
+
+	lua_getglobal(L_, "CHandlerMsg");
+	if (!lua_isfunction(L_, -1))//if (lua_isnil(L_, -1))
+	{
+		FATAL("[LUA FATAL] lua script no CHandlerMsg function****");
+	}
+	setRef(L_, "CHandlerMsg", REF_DO_MSG);
+
+	lua_getglobal(L_, "CHandlerConnect");
+	if (!lua_isfunction(L_, -1))//if (lua_isnil(L_, -1))
+	{
+		FATAL("[LUA FATAL] lua script no CHandlerConnect function****");
+	}
+	setRef(L_, "CHandlerConnect", REF_CONNECT);
+
+	lua_getglobal(L_, "CHandlerDisconnect");
+	if (!lua_isfunction(L_, -1))//if (lua_isnil(L_, -1))
+	{
+		FATAL("[LUA FATAL] lua script no CHandlerDisconnect function****");
+	}
+	setRef(L_, "CHandlerDisconnect", REF_DISCONNECT);
+
+	lua_getglobal(L_, "CHandlerError");
+	if (!lua_isfunction(L_, -1))//if (lua_isnil(L_, -1))
+	{
+		FATAL("[LUA FATAL] lua script no CHandlerError function****");
+	}
+	setRef(L_, "CHandlerError", REF_ERROR);
+
+	lua_getglobal(L_, "CHandlerNetMsg");
+	if (!lua_isfunction(L_, -1))//if (lua_isnil(L_, -1))
+	{
+		FATAL("[LUA FATAL] lua script no CHandlerNetMsg function****");
+	}
+	setRef(L_, "CHandlerNetMsg", REF_NET_MSG);
+}
+
+//根据fn，把对应的函数入栈
+int LuaSvr::getRef(int ref)
+{
+	if (ref > 0 && ref < REF_MAX)
+	{
+		if (gRef[ref] != LUA_NOREF && gRef[ref] != LUA_REFNIL)
+		{
+			lua_rawgeti(L_, LUA_REGISTRYINDEX, gRef[ref]);
+			if (!lua_isnil(L_, -1))
+				return 0;
+		}
+	}
+	return 1;
+}
+
+//根据fn，把对应的函数入栈
+int LuaSvr::getRef(const char* funcName)
+{
+	int ref = LUA_REFNIL;
+	FuncNameRefMap::iterator it = gFuncNameRefMap.find(funcName);
+	if (it != gFuncNameRefMap.end()) {
+		ref = it->second;
+	}
+
+	if (ref != LUA_NOREF && ref != LUA_REFNIL)
+	{	
+		//对应的函数入栈
+		lua_rawgeti(L_, LUA_REGISTRYINDEX, ref);
+		if (!lua_isnil(L_, -1))
+			return 0;
+	}
+	
+	return 1;
+}
+
+LuaSvr* LuaSvr::get()
+{
+	return luaSvrSelf_;
+}
+
+//设置全局变量
 void LuaSvr::set(const char *key, const char *val)
 {
 	lua_pushstring(L_, val);
 	lua_setglobal(L_, key);
 }
 
-
 void LuaSvr::init()
 {
-	L_ = luaL_newstate();
+	L_ = luaL_newstate();//分配一个虚拟机
+	if (!L_) {
+		FATAL("[LUA FATAL] LuaSvr init luaL_newstate error");
+		return;
+	}
+	luaL_openlibs(L_);//载入所有lua标准库
+	lua_settop(L_, 0);//清空堆栈
 
-	luaL_openlibs(L_);
-	lua_settop(L_, 0);
-
-	//设置一个新的 panic （恐慌） 函数
+	//设置一个新的 panic函数
 	lua_atpanic(L_, error_hook);
 	lua_pushcfunction(L_,error_hook);
 	stackErrorHook_= lua_gettop(L_);
 	
-	//注册c层接口给lua脚本用
+	//注册c层接口给lua脚本用,把luaL_Reg 数组中的所有函数注册到lua中
 	luaL_register(L_, "_G", LuaGlobal::functions);
 	Lua::Lunar<Bit>::Register(L_);
 	Lua::Lunar<Timer>::Register(L_);
@@ -302,28 +315,34 @@ void LuaSvr::init()
 
 }
 
-
 void LuaSvr::reload()
 {
 	lua_newtable(L_);
 	lua_setfield(L_, LUA_REGISTRYINDEX, "_LOADED");
 	luaL_openlibs(L_);
-
 	scriptInit();
 }
 
+void LuaSvr::run()
+{
+	bool ret = scriptInit();
+	if (!ret)
+	{
+		ERRLOG("luasvr run failed");
+		printf("luasvr run failed\n");
+	}
+}
 
 bool LuaSvr::scriptInit()
 {
+	//初始化脚本
 	const char *mainscript = Config::GetValue("MainScript");
-
 	if (!mainscript)
 	{
 		ERRLOG("Can't find main script key section\n");
 		return false;
 	}
-	//for(int i=0;i<strlen(mainscript);++i)
-	//	printf("===%c", mainscript[i]);
+	
 	INFO("load main script file:%s", mainscript);
 	if (luaL_loadfile(L_, mainscript) || lua_pcall(L_, 0, LUA_MULTRET, stackErrorHook_))
 	{
@@ -332,7 +351,7 @@ bool LuaSvr::scriptInit()
 	}
 
 	initRef();
-
+	//初始脚本调用函数，默认是init
 	const char *init_func = Config::GetValue("InitFunc");
 	if (init_func)
 	{
@@ -344,17 +363,14 @@ bool LuaSvr::scriptInit()
 		lua_getglobal(L_, "init");
 		return scriptCall(L_, 0, 0);
 	}
-
 }
-
-
-static bool script_update = false;
 
 void LuaSvr::setScriptUpdate()
 {
 	script_update = true;
 }
 
+//更新脚本
 void LuaSvr::loadScript()
 {
 	if (!script_update)
@@ -380,16 +396,6 @@ void LuaSvr::loadScript()
 	if (LuaSvr::scriptCTT_)
 		LuaSvr::scriptCTT_->leave();
 	return;
-}
-
-void LuaSvr::run()
-{
-	bool ret = scriptInit();
-	if(!ret)
-	{
-		ERRLOG("luasvr run failed");
-		printf("luasvr run failed\n");
-	}
 }
 
 //控制垃圾收集器。
@@ -439,7 +445,6 @@ void LuaSvr::doUpdate(uint dtime)
 	}
 
 	loadScript();
-
 }
 
 bool LuaSvr::call(const char* fmt, ...)
@@ -471,9 +476,11 @@ bool LuaSvr::call(const char* fmt, va_list va)
 			break;
 		case 'l':
 			{
-				int64 i = va_arg(va, int64);
-				lua_pushinteger(L, (int64)i);
+				//int64 i = va_arg(va, int64);
+				//lua_pushinteger(L, (int64)i);
 				//lua_pushinteger(L, (lua_Number)i);
+				lua_Integer i = va_arg(va, lua_Integer);
+				lua_pushinteger(L, i);
 				pc++;
 			}
 			break;
@@ -570,7 +577,6 @@ bool LuaSvr::call(const char *fn, const char* fmt, ...)
 	return ret;
 }
 
-
 bool LuaSvr::call(const char* fn, int nargs, int nrets)
 {
 	if (!LuaSvr::get())
@@ -625,5 +631,3 @@ bool LuaSvr::scriptCall(lua_State *L, int nargs, int nrets)
 
 	return ret;
 }
-
-

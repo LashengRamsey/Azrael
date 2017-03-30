@@ -24,7 +24,7 @@ LUA_FUNC_END
 
 int Bit::c_bnot(lua_State* L)
 {
-	int value = lua_tonumber(L, -1);
+	int value = (int)lua_tonumber(L, -1);
 	lua_pushnumber(L, ~value);
 	return 1;
 }
@@ -39,7 +39,7 @@ int Bit::c_band64(lua_State* L)
 {
 	int64 rvalue = lua_tointeger(L, -1);
 	int64 lvalue = lua_tointeger(L, -2);
-	lua_pushnumber(L, rvalue&lvalue);
+	lua_pushnumber(L, (LUA_NUMBER)(rvalue&lvalue));
 	return 1;
 }
 int Bit::c_bor(lua_State* L)
@@ -53,7 +53,7 @@ int Bit::c_bor64(lua_State* L)
 {
 	int64 rvalue = lua_tointeger(L, -1);
 	int64 lvalue = lua_tointeger(L, -2);
-	lua_pushnumber(L, rvalue|lvalue);
+	lua_pushnumber(L, (LUA_NUMBER)(rvalue|lvalue));
 	return 1;
 }
 int Bit::c_bxor(lua_State* L)
@@ -67,7 +67,7 @@ int Bit::c_bxor64(lua_State* L)
 {
 	int64 rvalue = lua_tointeger(L, -1);
 	int64 lvalue = lua_tointeger(L, -2);
-	lua_pushnumber(L, rvalue^lvalue);
+	lua_pushnumber(L, (LUA_NUMBER)(rvalue^lvalue));
 	return 1;
 }
 int Bit::c_blsh(lua_State* L)
@@ -81,7 +81,7 @@ int Bit::c_blsh64(lua_State* L)
 {
 	int64 rvalue = lua_tointeger(L, -1);
 	int64 lvalue = lua_tointeger(L, -2);
-	lua_pushnumber(L, rvalue<<lvalue);
+	lua_pushnumber(L, (LUA_NUMBER)(rvalue<<lvalue));
 	return 1;
 }
 int Bit::c_brsh(lua_State* L)
@@ -95,7 +95,7 @@ int Bit::c_brsh64(lua_State* L)
 {
 	int64 rvalue = lua_tointeger(L, -1);
 	int64 lvalue = lua_tointeger(L, -2);
-	lua_pushnumber(L, rvalue>>lvalue);
+	lua_pushnumber(L, (LUA_NUMBER)(rvalue>>lvalue));
 	return 1;
 }
 int Bit::c_onBit(lua_State* L)

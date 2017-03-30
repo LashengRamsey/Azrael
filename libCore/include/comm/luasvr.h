@@ -1,10 +1,12 @@
 #ifndef LUASVR_H
 #define LUASVR_H
 
+#include <time.h>
 #include "lua.hpp"
 #include "celltype.h"
 #include "log.h"
-
+#include "arch.h"
+//registry索引
 enum LuaRef{
 	REF_IDLE = 1,
 	REF_DO_TIMER,
@@ -13,9 +15,11 @@ enum LuaRef{
 	REF_DISCONNECT,
 	REF_ERROR,
 	REF_NET_MSG,
-	REF_MAX,
+	REF_MAX	//最大值，一定放在最下面
 };
 
+
+//没用
 struct LuaStackKeeper
 {
 	LuaStackKeeper(lua_State* L)
@@ -25,6 +29,9 @@ struct LuaStackKeeper
 	}
 	~LuaStackKeeper()
 	{
+		//lua_settop设置栈顶（也就是堆栈中的元素个数）为一个指定的值。
+		//如果开始的栈顶高于新的栈顶，顶部的值被丢弃。
+		//否则，为了得到指定的大小这个函数压入相应个数的空值（nil）到栈上
 		lua_settop(L_, top);
 	}
 
@@ -82,14 +89,37 @@ private:
 	lua_State* L_;
 
 	int stackErrorHook_;
-	int stackMsgHandler_;
-	int luaMemMax_;
+	int stackMsgHandler_;//nothing todo
+	int luaMemMax_;		//记录lua_gc最大一次的内存大小
 
-	uint timeElapse_;
-	uint timeGc_;
-	uint checkthread_;
+	uint timeElapse_;	//nothing todo
+	uint timeGc_;		//每隔一段时间做一次gc
+	uint checkthread_;//是否需要检查线程
 
 };
 
+
+//检查脚本运行时间是否超时了，超时就打断
+class ScriptTimeCheckThread : public Thread {
+public:
+	ScriptTimeCheckThread(lua_State *L);
+	
+	void enter();
+	void leave();
+	static void timeoutBreak(lua_State *L, lua_Debug *D);
+	virtual void work();
+
+	void terminate()
+	{
+		break_ = 1;
+	}
+
+private:
+	lua_State* L_;
+	uint enterTimer_;
+	uint level_;
+	uint break_;
+	static uint maxScriptTime;
+};
 
 #endif //LUASVR_H

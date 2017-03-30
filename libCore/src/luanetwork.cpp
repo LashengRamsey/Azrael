@@ -210,7 +210,7 @@ void LuaNetwork::resolvePacketTableItem(lua_State* L, class Buf* buf)
 		{
 			size_t len = 0;
 			const char *v = luaL_checklstring(L, -1, &len);
-			buf->writeLitteString(v, len);
+			buf->writeLitteString(v, (short)len);
 			break;
 		}
 	case 1:
@@ -233,7 +233,7 @@ void LuaNetwork::resolvePacketTableItem(lua_State* L, class Buf* buf)
 		}
 	case 8:
 		{
-			int64 v = luaL_checknumber(L, -1);
+			int64 v = (int64)luaL_checknumber(L, -1);
 			buf->writeInt64(v);
 			break;
 		}

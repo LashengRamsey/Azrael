@@ -376,7 +376,7 @@ int LuaGlobal::C_ToNumber(lua_State* L)
 	std::string sValue = lua_tostring(L, -1);
 	int64 iValue = 0;
 	sscanf(sValue.c_str(), "%I64x", &iValue);
-	lua_pushnumber(L, iValue);
+	lua_pushnumber(L, (lua_Number)iValue);
 	return 1;
 }
 

@@ -206,7 +206,7 @@ uint64 timeStamp()
 
 uint timeDistance(uint64 A, uint64 B)
 {
-	uint c = (B - A)*0.000001f;
+	uint c = (uint)((B - A)*0.000001f);
 	return c;
 }
 
